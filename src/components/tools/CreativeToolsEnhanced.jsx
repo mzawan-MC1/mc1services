@@ -9,7 +9,7 @@ import { Upload, Download, Copy, Check, Image as ImageIcon, Trash2, Move, Plus, 
 import { toast } from 'sonner';
 import { CopyButton, ResetButton, SavePrefsButton } from './ToolHelpers';
 import ShareTool from './ShareTool';
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 
 // Photo Editor with Filters
 export function PhotoEditor() {

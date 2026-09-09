@@ -18,6 +18,7 @@ dist-ssr
 backups/
 releases/
 .vercel/
+supabase/.temp/
 
 # Editor directories and files
 .vscode/*

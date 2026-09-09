@@ -10,7 +10,7 @@ import { Upload, Download, Type, PenLine, Trash2, Plus, Move, Square, Circle, Mi
 import { toast } from 'sonner';
 import { CopyButton, ResetButton } from './ToolHelpers';
 import ShareTool from './ShareTool';
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 
 export default function PDFEditor() {
   const [pdfImage, setPdfImage] = useState(null);
