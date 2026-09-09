@@ -13,7 +13,7 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 export default function Layout({ children, currentPageName }) {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
-  
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
@@ -112,7 +112,7 @@ export default function Layout({ children, currentPageName }) {
   const isActive = (href) => currentPageName === href;
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col overflow-x-clip bg-white">
       <TrackingCode />
       <ScrollToTop />
       <style>{`
@@ -135,11 +135,11 @@ export default function Layout({ children, currentPageName }) {
           font-family: 'Tajawal', 'Cairo', sans-serif;
         }
       `}</style>
-      
+
       {/* Import Arabic Fonts */}
       <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
 
-      {/* 
+      {/*
          If the page is an Admin Page (starts with "Admin"), we do NOT render the public header/footer.
          This prevents double wrapping if the Admin pages already have their own layout (AdminLayout).
       */}
@@ -212,9 +212,9 @@ export default function Layout({ children, currentPageName }) {
                 {/* Logo */}
                 <Link to={createPageUrl('Home')} className="flex items-center gap-3">
                   {siteSettings.logo_url ? (
-                    <img 
-                      src={siteSettings.logo_url} 
-                      alt={siteSettings.company_name || 'MCS Consultancy'} 
+                    <img
+                      src={siteSettings.logo_url}
+                      alt={siteSettings.company_name || 'MCS Consultancy'}
                       className="h-12 w-auto object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -408,9 +408,9 @@ export default function Layout({ children, currentPageName }) {
                 <div>
                   <div className="flex items-center gap-3 mb-6">
                     {siteSettings.logo_url ? (
-                      <img 
-                        src={siteSettings.logo_url} 
-                        alt={siteSettings.company_name || 'MCS Consultancy'} 
+                      <img
+                        src={siteSettings.logo_url}
+                        alt={siteSettings.company_name || 'MCS Consultancy'}
                         className="h-12 w-auto object-contain"
                         onError={(e) => {
                           e.target.style.display = 'none';
@@ -471,8 +471,8 @@ export default function Layout({ children, currentPageName }) {
                   <ul className="space-y-3">
                     {services.map((service) => (
                       <li key={service.name}>
-                        <Link 
-                          to={createPageUrl(service.href)} 
+                        <Link
+                          to={createPageUrl(service.href)}
                           className="text-slate-400 hover:text-white transition-colors"
                         >
                           {service.name}
@@ -488,8 +488,8 @@ export default function Layout({ children, currentPageName }) {
                   <ul className="space-y-3">
                     {navLinks.filter(link => !link.dropdown).map((link) => (
                       <li key={link.name}>
-                        <Link 
-                          to={createPageUrl(link.href)} 
+                        <Link
+                          to={createPageUrl(link.href)}
                           className="text-slate-400 hover:text-white transition-colors"
                         >
                           {link.name}

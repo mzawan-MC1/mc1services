@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { MessageCircle, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -18,12 +18,12 @@ export default function WhatsAppButton() {
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        className="fixed bottom-6 right-6 z-50"
+        className="fixed bottom-6 right-8 sm:right-6 z-50"
       >
         <div className="relative">
           {/* Pulse Animation */}
           <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-75" />
-          
+
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="relative w-14 h-14 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg flex items-center justify-center transition-all"
@@ -41,7 +41,7 @@ export default function WhatsAppButton() {
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            className="fixed bottom-24 right-6 z-50 w-80 bg-white rounded-2xl shadow-2xl overflow-hidden"
+            className="fixed bottom-24 right-8 sm:right-6 z-50 w-80 max-w-[calc(100vw-4rem)] bg-white rounded-2xl shadow-2xl overflow-hidden"
           >
             {/* Header */}
             <div className="bg-green-500 text-white p-4">
@@ -60,7 +60,7 @@ export default function WhatsAppButton() {
             <div className="p-4 bg-slate-50">
               <div className="bg-white rounded-lg p-3 shadow-sm mb-3">
                 <p className="text-sm text-slate-700">
-                  👋 Hi there! I'm {agentName}. How can I help you today?
+                  👋 Hi there! I&apos;m {agentName}. How can I help you today?
                 </p>
               </div>
               <button
