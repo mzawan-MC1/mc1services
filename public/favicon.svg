@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="MC1 Services">
+  <defs>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2563eb" />
+      <stop offset="1" stop-color="#7c3aed" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#brand)" />
+  <path d="M12 43V21h6l7 10 7-10h6v22h-6V30l-7 10-7-10v13z" fill="#fff" />
+  <path d="M42 26h5v17h-5zm0-6h5v4h-5z" fill="#bfdbfe" />
+  <path d="M50 21h4v22h-4z" fill="#fff" />
+</svg>

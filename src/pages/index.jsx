@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import Layout from "./Layout.jsx";
 
 import Home from "./Home";
@@ -278,6 +278,33 @@ function NotFound() {
     );
 }
 
+function RouteMetaDefaults() {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        const routeName = pathname.split('/').filter(Boolean).pop() || 'home';
+        const isAdminRoute = pathname.toLowerCase().startsWith('/admin') || routeName.toLowerCase().startsWith('admin');
+
+        let robots = document.querySelector('meta[name="robots"]');
+        if (!robots) {
+            robots = document.createElement('meta');
+            robots.name = 'robots';
+            document.head.appendChild(robots);
+        }
+        robots.content = isAdminRoute ? 'noindex, nofollow' : 'index, follow';
+
+        let canonical = document.querySelector('link[rel="canonical"]');
+        if (!canonical) {
+            canonical = document.createElement('link');
+            canonical.rel = 'canonical';
+            document.head.appendChild(canonical);
+        }
+        canonical.href = new URL(pathname || '/Home', window.location.origin).href;
+    }, [pathname]);
+
+    return null;
+}
+
 // Create a wrapper component that uses useLocation inside the Router context
 function PagesContent() {
     const location = useLocation();
@@ -286,6 +313,7 @@ function PagesContent() {
     return (
         <>
         <ScrollToTop />
+        <RouteMetaDefaults />
         <Layout currentPageName={currentPage}>
             <Suspense fallback={<PageLoading />}>
             <Routes>            
