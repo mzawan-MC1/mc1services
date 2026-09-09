@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../dataLayer';
@@ -9,7 +9,7 @@ import { getLocalizedValue } from '../../utils';
 export default function VideoSection() {
   const [isPlaying, setIsPlaying] = useState(false);
   const { t, i18n } = useTranslation();
-  
+
   const { data: videoContent } = useQuery({
     queryKey: ['video-section'],
     queryFn: async () => {

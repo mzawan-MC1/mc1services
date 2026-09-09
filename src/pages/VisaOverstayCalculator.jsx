@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Plane, AlertCircle, Info, Calendar } from 'lucide-react';
+import { useState } from 'react';
+import { Plane, Info, Calendar } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -235,7 +235,7 @@ export default function VisaOverstayCalculator() {
             </div>
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
               <p className="text-amber-800">
-                <strong>Disclaimer:</strong> This calculator provides estimates only. 
+                <strong>Disclaimer:</strong> This calculator provides estimates only.
                 Actual fines may vary. Contact GDRFA or ICP for official information.
               </p>
             </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -16,7 +16,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import AdminLayout from '../components/admin/AdminLayout';
 
@@ -31,8 +30,7 @@ const pages = [
 
 export default function AdminCMSServices() {
   const queryClient = useQueryClient();
-  const [selectedPage, setSelectedPage] = useState(pages[0]);
-  const [saving, setSaving] = useState(false);
+  const selectedPage = pages[0];
   const [editingService, setEditingService] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 

@@ -76,3 +76,17 @@ The initial `npm audit --omit=dev` reported 12 production-tree advisories: 1 cri
 5. Improve initial metadata behavior and audit canonical/locale handling. Initial defaults completed; locale-specific review remains.
 6. Perform public/admin mobile and accessibility regression checks, then address confirmed issues. Confirmed source issues corrected; visual small-screen regression remains.
 7. Begin visual and business-content modernisation only after the technical foundation is stable.
+## Phase 4 completion update
+
+Recorded: 2026-09-09
+
+- Administrator routes now share one persistent protected shell. Moving among Dashboard, Tasks, Portfolio, FAQ, Testimonials, Site Settings, SEO Settings, User Management, Role Management, and Profile no longer remounts the sidebar or repeats the administrator check.
+- Nested legacy AdminRoute and AdminLayout wrappers remain compatible but bypass duplicate work inside the shared shell.
+- Tools load their implementation only when opened. The unused Recharts dependency and chart wrapper were removed; the analytics view now uses a lightweight accessible CSS chart.
+- Stable vendor chunking reduced the main JavaScript entry from approximately 882 KB / 261 KB gzip to 244 KB / 70 KB gzip. No generated chunk exceeds Vite's 500 KB warning threshold.
+- Full npm audit and production-only npm audit --omit=dev both report zero vulnerabilities. The unused @flydotio/dockerfile development dependency was removed.
+- Full-project lint improved from 822 errors and 10 warnings to zero errors and zero warnings. Unused imports and dead state were removed, real hook dependencies were corrected, ESM configuration was fixed, and markup issues were repaired.
+- The FAQ editor's undefined direct Supabase reference was replaced with the existing dataLayer.faqs API, preserving the application's single database abstraction.
+- A client-logo form state bug was corrected so the visible form closes after a successful save.
+- Temporary production builds, public Tools rendering, and unauthenticated administrator-route redirection all pass locally. Temporary build output and browser tabs were removed.
+- Signed-in administrator navigation must be smoke-tested after the package is deployed because authentication storage is origin-specific. No final dist, deployment, database mutation, or live-site change was performed for this update.

@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { 
-  TrendingUp, Users, Target, BarChart, Share2, Search, 
+import { Users, Target, BarChart, Share2, Search,
   ArrowRight, Check, ChevronDown, Mail, BarChart3
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -21,41 +20,41 @@ export default function MarketingServices() {
   const [openFaq, setOpenFaq] = useState(null);
 
   const services = [
-    { 
-      icon: Search, 
-      title: t('services_page.marketing_services.services.seo.title', 'SEO Optimization'), 
-      description: t('services_page.marketing_services.services.seo.desc', 'Rank higher on search engines and drive organic traffic.'), 
-      features: t('services_page.marketing_services.services.seo.features', { returnObjects: true }) || ['On-Page SEO', 'Technical SEO', 'Keyword Research', 'Link Building'] 
+    {
+      icon: Search,
+      title: t('services_page.marketing_services.services.seo.title', 'SEO Optimization'),
+      description: t('services_page.marketing_services.services.seo.desc', 'Rank higher on search engines and drive organic traffic.'),
+      features: t('services_page.marketing_services.services.seo.features', { returnObjects: true }) || ['On-Page SEO', 'Technical SEO', 'Keyword Research', 'Link Building']
     },
-    { 
-      icon: Share2, 
-      title: t('services_page.marketing_services.services.social.title', 'Social Media'), 
-      description: t('services_page.marketing_services.services.social.desc', 'Engage your audience across all major social platforms.'), 
-      features: t('services_page.marketing_services.services.social.features', { returnObjects: true }) || ['Content Strategy', 'Community Management', 'Paid Advertising', 'Influencer Marketing'] 
+    {
+      icon: Share2,
+      title: t('services_page.marketing_services.services.social.title', 'Social Media'),
+      description: t('services_page.marketing_services.services.social.desc', 'Engage your audience across all major social platforms.'),
+      features: t('services_page.marketing_services.services.social.features', { returnObjects: true }) || ['Content Strategy', 'Community Management', 'Paid Advertising', 'Influencer Marketing']
     },
-    { 
-      icon: Target, 
-      title: t('services_page.marketing_services.services.ppc.title', 'PPC Advertising'), 
-      description: t('services_page.marketing_services.services.ppc.desc', 'Targeted campaigns that deliver immediate results.'), 
-      features: t('services_page.marketing_services.services.ppc.features', { returnObjects: true }) || ['Google Ads', 'Facebook Ads', 'LinkedIn Ads', 'Retargeting'] 
+    {
+      icon: Target,
+      title: t('services_page.marketing_services.services.ppc.title', 'PPC Advertising'),
+      description: t('services_page.marketing_services.services.ppc.desc', 'Targeted campaigns that deliver immediate results.'),
+      features: t('services_page.marketing_services.services.ppc.features', { returnObjects: true }) || ['Google Ads', 'Facebook Ads', 'LinkedIn Ads', 'Retargeting']
     },
-    { 
-      icon: Mail, 
-      title: t('services_page.marketing_services.services.email.title', 'Email Marketing'), 
-      description: t('services_page.marketing_services.services.email.desc', 'Nurture leads and drive conversions with personalized campaigns.'), 
-      features: t('services_page.marketing_services.services.email.features', { returnObjects: true }) || ['Campaign Management', 'Automation', 'List Building', 'Analytics'] 
+    {
+      icon: Mail,
+      title: t('services_page.marketing_services.services.email.title', 'Email Marketing'),
+      description: t('services_page.marketing_services.services.email.desc', 'Nurture leads and drive conversions with personalized campaigns.'),
+      features: t('services_page.marketing_services.services.email.features', { returnObjects: true }) || ['Campaign Management', 'Automation', 'List Building', 'Analytics']
     },
-    { 
-      icon: Users, 
-      title: t('services_page.marketing_services.services.content.title', 'Content Marketing'), 
-      description: t('services_page.marketing_services.services.content.desc', 'Valuable content that attracts and retains customers.'), 
-      features: t('services_page.marketing_services.services.content.features', { returnObjects: true }) || ['Blog Writing', 'Video Content', 'Infographics', 'E-books'] 
+    {
+      icon: Users,
+      title: t('services_page.marketing_services.services.content.title', 'Content Marketing'),
+      description: t('services_page.marketing_services.services.content.desc', 'Valuable content that attracts and retains customers.'),
+      features: t('services_page.marketing_services.services.content.features', { returnObjects: true }) || ['Blog Writing', 'Video Content', 'Infographics', 'E-books']
     },
-    { 
-      icon: BarChart, 
-      title: t('services_page.marketing_services.services.analytics.title', 'Analytics & Reporting'), 
-      description: t('services_page.marketing_services.services.analytics.desc', 'Data-driven insights to optimize your marketing ROI.'), 
-      features: t('services_page.marketing_services.services.analytics.features', { returnObjects: true }) || ['Custom Dashboards', 'Performance Tracking', 'Conversion Analysis', 'Competitor Analysis'] 
+    {
+      icon: BarChart,
+      title: t('services_page.marketing_services.services.analytics.title', 'Analytics & Reporting'),
+      description: t('services_page.marketing_services.services.analytics.desc', 'Data-driven insights to optimize your marketing ROI.'),
+      features: t('services_page.marketing_services.services.analytics.features', { returnObjects: true }) || ['Custom Dashboards', 'Performance Tracking', 'Conversion Analysis', 'Competitor Analysis']
     }
   ];
 

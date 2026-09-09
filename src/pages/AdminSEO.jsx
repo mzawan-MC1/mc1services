@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '../utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Save, Loader2, Search, FileText, Download, Globe } from 'lucide-react';
+import { Save, Loader2, Search, FileText, Download, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -138,7 +135,7 @@ export default function AdminSEO() {
       } else {
         await dataLayer.pageSEO.create({
           // Removed page_identifier as it doesn't exist in schema
-          page_path: 'robots_txt', 
+          page_path: 'robots_txt',
           meta_title: 'Robots.txt',
           meta_description: robotsTxt
         });
@@ -154,7 +151,7 @@ export default function AdminSEO() {
   const generateSitemap = () => {
     const baseUrl = window.location.origin;
     const pages = commonPages.map(p => `${baseUrl}/${p.id}`);
-    
+
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${pages.map(url => `  <url>

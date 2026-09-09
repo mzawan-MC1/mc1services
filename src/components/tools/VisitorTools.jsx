@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { CopyButton, ResetButton, SavePrefsButton, loadPrefs, ShareButtons } from './ToolHelpers';
+import { CopyButton, ResetButton, SavePrefsButton, loadPrefs } from './ToolHelpers';
 
 export default function VisitorTools({ activeTool }) {
   // Itinerary
@@ -62,8 +62,8 @@ export default function VisitorTools({ activeTool }) {
     for (let i = 0; i < days; i++) {
       dayPlan.push({
         day: i + 1,
-        activities: selectedActivities.slice(i * 2, i * 2 + 2).length > 0 
-          ? selectedActivities.slice(i * 2, i * 2 + 2) 
+        activities: selectedActivities.slice(i * 2, i * 2 + 2).length > 0
+          ? selectedActivities.slice(i * 2, i * 2 + 2)
           : ['Free exploration day']
       });
     }
@@ -232,11 +232,11 @@ export default function VisitorTools({ activeTool }) {
     const essentials = ['Passport', 'UAE Visa (if required)', 'Travel insurance', 'Phone charger', 'Cash (AED)', 'Credit card'];
     const beachItems = ['Swimwear', 'Beach towel', 'Flip flops', 'Cover-up'];
     const businessItems = ['Formal attire', 'Business cards', 'Laptop', 'Presentation materials'];
-    
+
     const isWinter = ['october', 'november', 'december', 'january', 'february', 'march'].includes(packingMonth);
     const weatherItems = isWinter ? winterItems : summerItems;
     const purposeItems = packingPurpose === 'business' ? businessItems : beachItems;
-    
+
     return (
       <div className="space-y-6">
         <h3 className="text-xl font-bold">Packing Checklist Generator</h3>

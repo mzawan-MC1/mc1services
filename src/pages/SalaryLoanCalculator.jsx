@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Calculator, AlertCircle, CheckCircle, Info } from 'lucide-react';
+import { useState } from 'react';
+import { Calculator, Info } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -155,7 +155,7 @@ export default function SalaryLoanCalculator() {
         {result && (
           <div className="border-t pt-8 space-y-6">
             <h3 className="text-xl font-bold text-slate-900">Your Loan Eligibility</h3>
-            
+
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-blue-50 rounded-xl p-5">
                 <p className="text-sm text-blue-600 mb-1">Maximum Loan Amount</p>
@@ -198,7 +198,7 @@ export default function SalaryLoanCalculator() {
         <div className="border-t pt-8">
           <h3 className="text-lg font-bold text-slate-900 mb-4">Understanding DBR (Debt Burden Ratio)</h3>
           <p className="text-slate-600 mb-4">
-            The Debt Burden Ratio is the percentage of your monthly income that goes toward debt repayments. 
+            The Debt Burden Ratio is the percentage of your monthly income that goes toward debt repayments.
             UAE Central Bank regulations cap this at 50% for most loans.
           </p>
           <div className="bg-slate-100 rounded-lg p-4">

@@ -7,7 +7,7 @@ import { supabase } from './supabaseClient';
 const AdminAccessContext = createContext(false);
 
 // The project does not currently include a runtime prop-types dependency.
-// eslint-disable-next-line react/prop-types
+
 export default function AdminRoute({ children }) {
   const alreadyProtected = useContext(AdminAccessContext);
 
@@ -18,7 +18,7 @@ export default function AdminRoute({ children }) {
   return <AdminRouteCheck>{children}</AdminRouteCheck>;
 }
 
-// eslint-disable-next-line react/prop-types
+
 function AdminRouteCheck({ children }) {
   const [isAdmin, setIsAdmin] = useState(null);
   const location = useLocation();

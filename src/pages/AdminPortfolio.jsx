@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { Plus, Pencil, Trash2, ArrowLeft, Loader2, Search, Filter, Star, Eye, EyeOff } from 'lucide-react';
+import { Plus, Pencil, Trash2, Loader2, Star, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { toast } from 'sonner';
 import AdminLayout from '../components/admin/AdminLayout';
@@ -26,9 +23,6 @@ const categoryLabels = {
 
 export default function AdminPortfolio() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('all');
 
   const { data: portfolios = [], isLoading } = useQuery({
     queryKey: ['admin-portfolio'],
@@ -159,7 +153,7 @@ export default function AdminPortfolio() {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Delete Portfolio Project?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This will permanently delete "{portfolio.title}". This action cannot be undone.
+                            This will permanently delete &ldquo;{portfolio.title}&rdquo;. This action cannot be undone.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>

@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
 
@@ -13,7 +12,7 @@ export default function TestimonialCard({ testimonial, index = 0 }) {
     >
       <Quote className="w-10 h-10 text-blue-100 mb-4" />
       <p className="text-slate-700 leading-relaxed flex-1 mb-6">
-        "{testimonial.content}"
+        &ldquo;{testimonial.content}&rdquo;
       </p>
       <div className="flex items-center gap-1 mb-4">
         {[...Array(5)].map((_, i) => (

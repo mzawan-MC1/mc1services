@@ -1,36 +1,25 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '../utils';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { Plus, Pencil, Trash2, ArrowLeft, Loader2, GripVertical, X, Upload } from 'lucide-react';
+import { Plus, Pencil, Trash2, Loader2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { toast } from 'sonner';
 import FileUpload from '../components/FileUpload';
 import AdminLayout from '../components/admin/AdminLayout';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 export default function AdminClientLogos() {
   const queryClient = useQueryClient();
   const [editingLogo, setEditingLogo] = useState(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [localLogos, setLocalLogos] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({ name: '', website_url: '', logo_url: '' });
 
   const { data: logos = [], isLoading } = useQuery({
     queryKey: ['client-logos'],
-    queryFn: async () => {
-      const data = await dataLayer.clientLogos.getAll();
-      setLocalLogos(data.sort((a, b) => a.order - b.order));
-      return data;
-    }
+    queryFn: () => dataLayer.clientLogos.getAll()
   });
 
   const saveMutation = useMutation({
@@ -43,7 +32,7 @@ export default function AdminClientLogos() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['client-logos']);
-      setIsDialogOpen(false);
+      setShowForm(false);
       toast.success('Client logo saved');
       // Reset form for next add and exit edit mode
       setEditingLogo(null);
@@ -59,21 +48,6 @@ export default function AdminClientLogos() {
       toast.success('Logo deleted');
     },
     onError: () => toast.error('Failed to delete logo')
-  });
-
-  const updateOrderMutation = useMutation({
-    mutationFn: async (newOrder) => {
-      // Optimistic update done in state, now persist
-      // In a real app, you'd batch update or update changed items
-      // For simplicity, we'll update one by one or use an RPC if available
-      for (const item of newOrder) {
-        await dataLayer.clientLogos.update(item.id, { order: item.order });
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['client-logos']);
-      toast.success('Order updated');
-    }
   });
 
   const handleUpload = (url) => {

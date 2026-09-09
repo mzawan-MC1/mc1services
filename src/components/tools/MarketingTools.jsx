@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Copy, Check, Search, RotateCcw, Save } from 'lucide-react';
+import { Copy, Check, Search } from 'lucide-react';
 import { toast } from 'sonner';
-import { CopyButton, ResetButton, SavePrefsButton, loadPrefs, ShareButtons } from './ToolHelpers';
+import { CopyButton, ResetButton, ShareButtons } from './ToolHelpers';
 
 export default function MarketingTools({ activeTool }) {
   // Ad Size Guide
@@ -325,7 +325,7 @@ export default function MarketingTools({ activeTool }) {
 
     const filteredSizes = adSizes.filter(ad => {
       const matchPlatform = adPlatform === 'all' || ad.platform.toLowerCase() === adPlatform;
-      const matchSearch = searchAdSize === '' || 
+      const matchSearch = searchAdSize === '' ||
         ad.placement.toLowerCase().includes(searchAdSize.toLowerCase()) ||
         ad.platform.toLowerCase().includes(searchAdSize.toLowerCase());
       return matchPlatform && matchSearch;
@@ -337,7 +337,7 @@ export default function MarketingTools({ activeTool }) {
           <h3 className="text-xl font-bold">Ad Size Guide (Images & Video)</h3>
           <ShareButtons toolId="ad-sizes" toolName="Ad Size Guide" />
         </div>
-        
+
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <Label>Filter by Platform</Label>

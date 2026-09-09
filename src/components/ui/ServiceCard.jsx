@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../../utils';
 import { motion } from 'framer-motion';
@@ -16,7 +15,7 @@ export default function ServiceCard({ icon: Icon, title, description, href, inde
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
-      <Link 
+      <Link
         to={createPageUrl(href)}
         className="group block h-full bg-white rounded-2xl p-8 shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-100 transition-all duration-300"
       >

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl, getLocalizedValue } from '../../utils';
 import { motion } from 'framer-motion';

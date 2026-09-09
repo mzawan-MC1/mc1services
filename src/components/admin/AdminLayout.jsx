@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { createPageUrl } from '../../utils';
-import { 
+import {
   LayoutDashboard, FileText, Settings, Search, Image, Users, Mail,
   Menu, X, Eye, LogOut
 } from 'lucide-react';
@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 
 const AdminLayoutContext = createContext(false);
 
-// eslint-disable-next-line react/prop-types
+
 export default function AdminLayout({ children }) {
   const alreadyInsideLayout = useContext(AdminLayoutContext);
 
@@ -21,7 +21,7 @@ export default function AdminLayout({ children }) {
   return <AdminShell>{children}</AdminShell>;
 }
 
-// eslint-disable-next-line react/prop-types
+
 function AdminShell({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [profile, setProfile] = useState({ name: '', avatar: '' });
@@ -106,8 +106,8 @@ function AdminShell({ children }) {
                   <Link
                     to={item.to}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                      location.pathname.toLowerCase() === item.to 
-                        ? 'bg-blue-50 text-blue-700' 
+                      location.pathname.toLowerCase() === item.to
+                        ? 'bg-blue-50 text-blue-700'
                         : 'text-slate-700 hover:bg-slate-100'
                     }`}
                   >
@@ -127,9 +127,9 @@ function AdminShell({ children }) {
                 {sidebarOpen && 'View Site'}
               </Button>
             </Link>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="w-full border-slate-300 text-slate-700 hover:bg-slate-100 justify-start"
               onClick={handleLogout}
             >
@@ -159,8 +159,8 @@ function AdminShell({ children }) {
 
       {/* Mobile Overlay */}
       {sidebarOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 bg-black/20 z-40" 
+        <div
+          className="lg:hidden fixed inset-0 bg-black/20 z-40"
           onClick={() => setSidebarOpen(false)}
         />
       )}

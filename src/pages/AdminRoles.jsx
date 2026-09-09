@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -57,7 +57,7 @@ export default function AdminRoles() {
       }
       setIsDialogOpen(false);
       await loadRoles();
-      try { localStorage.setItem('roles_updated', String(Date.now())); } catch {}
+      try { localStorage.setItem('roles_updated', String(Date.now())); } catch { /* Local storage may be unavailable in privacy mode. */ }
     } catch (e) { toast.error(e.message || 'Failed to save role'); }
   };
 
@@ -66,7 +66,7 @@ export default function AdminRoles() {
       await dataLayer.roles.delete(id);
       toast.success('Role deleted');
       await loadRoles();
-      try { localStorage.setItem('roles_updated', String(Date.now())); } catch {}
+      try { localStorage.setItem('roles_updated', String(Date.now())); } catch { /* Local storage may be unavailable in privacy mode. */ }
     } catch (e) { toast.error(e.message || 'Failed to delete role'); }
   };
 

@@ -1,26 +1,14 @@
-import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { Plus, Pencil, Trash2, ArrowLeft, Loader2, Check } from 'lucide-react';
+import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter
-} from '@/components/ui/dialog';
+
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,30 +25,10 @@ import AdminLayout from '../components/admin/AdminLayout';
 
 export default function AdminPricing() {
   const queryClient = useQueryClient();
-  const [editingPlan, setEditingPlan] = useState(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [featureInput, setFeatureInput] = useState('');
 
   const { data: plans = [], isLoading } = useQuery({
     queryKey: ['pricing-plans'],
     queryFn: () => dataLayer.pricingPlans.getAll()
-  });
-
-  const saveMutation = useMutation({
-    mutationFn: async (data) => {
-      if (editingPlan) {
-        await dataLayer.pricingPlans.update(editingPlan.id, data);
-      } else {
-        await dataLayer.pricingPlans.create(data);
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['pricing-plans']);
-      setIsDialogOpen(false);
-      setEditingPlan(null);
-      toast.success('Pricing plan saved');
-    },
-    onError: () => toast.error('Failed to save plan')
   });
 
   const deleteMutation = useMutation({

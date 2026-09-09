@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { motion } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
-import { dataLayer } from '../components/dataLayer';
-import { 
+import {
   Zap, Bot, Mail, Users, BarChart3, Workflow, Clock, Target,
   ArrowRight, Check, ChevronDown
 } from 'lucide-react';
@@ -12,10 +10,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import SEOHead from '../components/SEOHead';
 import { useTranslation } from 'react-i18next';
-import { getLocalizedValue } from '../utils';
 
 export default function Automation() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [openFaq, setOpenFaq] = useState(null);
 
   const services = [
@@ -82,16 +79,6 @@ export default function Automation() {
     { question: t('services_page.automation.faqs.employees.q', 'Will automation replace my employees?'), answer: t('services_page.automation.faqs.employees.a', 'No, automation is designed to augment your team...') },
     { question: t('services_page.automation.faqs.tools.q', 'What tools do you use for automation?'), answer: t('services_page.automation.faqs.tools.a', 'We work with leading platforms like HubSpot, Salesforce...') }
   ];
-
-  const { data: portfolios = [] } = useQuery({
-    queryKey: ['automation-portfolios'],
-    queryFn: async () => {
-      const all = await dataLayer.portfolio.getAll();
-      return all.filter(p => p.category === 'automation' && p.status === 'published')
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-        .slice(0, 3);
-    }
-  });
 
   return (
     <div>

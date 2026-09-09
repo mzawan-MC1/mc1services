@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { ArrowLeft, Save, Loader2, X, Upload } from 'lucide-react';
+import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import FileUpload from '../components/FileUpload';
 import AdminLayout from '../components/admin/AdminLayout';
@@ -134,11 +134,11 @@ export default function AdminTeamEdit() {
                 <h3 className="font-medium">Common Details</h3>
                 <div>
                   <Label>Profile Link</Label>
-                  <Input 
-                    value={formData.profile_url} 
-                    onChange={(e) => setFormData(p => ({ ...p, profile_url: e.target.value }))} 
-                    placeholder="https://linkedin.com/in/..." 
-                    className="mt-1" 
+                  <Input
+                    value={formData.profile_url}
+                    onChange={(e) => setFormData(p => ({ ...p, profile_url: e.target.value }))}
+                    placeholder="https://linkedin.com/in/..."
+                    className="mt-1"
                   />
                   <p className="text-xs text-slate-500 mt-1">Link to LinkedIn, Instagram, Facebook, etc.</p>
                 </div>

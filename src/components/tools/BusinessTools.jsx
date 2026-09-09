@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import { CopyButton, ResetButton, SavePrefsButton, loadPrefs, ShareButtons } from './ToolHelpers';
 import { RefreshCw, Loader2 } from 'lucide-react';
 
@@ -60,7 +59,7 @@ export default function BusinessTools({ activeTool }) {
       const data = await response.json();
       setLiveRates(data.rates);
       setLastUpdated(new Date().toLocaleTimeString());
-    } catch (error) {
+    } catch (_error) {
       setRatesError('Could not fetch live rates. Using fallback rates.');
     } finally {
       setRatesLoading(false);
@@ -88,7 +87,7 @@ export default function BusinessTools({ activeTool }) {
     const salary = parseFloat(basicSalary) || 0;
     const years = parseFloat(yearsWorked) || 0;
     let gratuity = 0;
-    
+
     if (years < 1) {
       gratuity = 0;
     } else if (years <= 5) {
@@ -143,7 +142,7 @@ export default function BusinessTools({ activeTool }) {
           </div>
         </div>
         <div className="bg-slate-50 rounded-xl p-4 text-sm text-slate-600">
-          <p><strong>Note:</strong> First 5 years: 21 days salary per year. After 5 years: 30 days salary per year. Max gratuity = 2 years' salary.</p>
+          <p><strong>Note:</strong> First 5 years: 21 days salary per year. After 5 years: 30 days salary per year. Max gratuity = 2 years&apos; salary.</p>
         </div>
         <div className="flex gap-2 justify-end pt-4 border-t">
           <ResetButton onReset={() => { setBasicSalary('8000'); setYearsWorked('5'); setContractType('unlimited'); setResignationType('voluntary'); }} />
@@ -313,7 +312,7 @@ export default function BusinessTools({ activeTool }) {
 
   if (activeTool === 'currency') {
     const amount = parseFloat(aedAmount) || 0;
-    
+
     // Use live rates if available, otherwise fallback
     const ratesData = liveRates ? {
       USD: { rate: liveRates.USD, symbol: '$', name: 'US Dollar' },
@@ -325,10 +324,10 @@ export default function BusinessTools({ activeTool }) {
       SAR: { rate: liveRates.SAR, symbol: 'ر.س', name: 'Saudi Riyal' },
       EGP: { rate: liveRates.EGP, symbol: 'E£', name: 'Egyptian Pound' },
     } : exchangeRates;
-    
+
     const converted = amount * (ratesData[targetCurrency]?.rate || 0);
     const results = { 'Converted': `${ratesData[targetCurrency]?.symbol} ${converted.toFixed(2)}` };
-    
+
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center flex-wrap gap-2">

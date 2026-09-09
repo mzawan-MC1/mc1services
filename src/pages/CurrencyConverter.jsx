@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { DollarSign, RefreshCw, ArrowRightLeft, TrendingUp } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { DollarSign, RefreshCw, ArrowRightLeft } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import ToolLayout from '../components/tools/ToolLayout';
 
 const currencies = [
@@ -53,7 +52,7 @@ export default function CurrencyConverter() {
         setRates(data.rates);
         setLastUpdated(new Date().toLocaleString());
       }
-    } catch (err) {
+    } catch (_err) {
       console.log('Using fallback rates');
       setError('Using offline rates. Live rates unavailable.');
       setRates(fallbackRates);
@@ -119,7 +118,7 @@ export default function CurrencyConverter() {
               />
             </div>
           </div>
-          
+
           <div className="flex justify-center">
             <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
               <ArrowRightLeft className="w-5 h-5 text-slate-400" />
@@ -252,7 +251,7 @@ export default function CurrencyConverter() {
             <div className="bg-green-50 rounded-xl p-4">
               <h4 className="font-semibold text-green-900 mb-2">No Commission</h4>
               <p className="text-sm text-green-700">
-                Most UAE exchange houses don't charge commission. Always compare rates before exchanging large amounts.
+                Most UAE exchange houses don&apos;t charge commission. Always compare rates before exchanging large amounts.
               </p>
             </div>
           </div>
@@ -261,7 +260,7 @@ export default function CurrencyConverter() {
         {/* Disclaimer */}
         <div className="bg-slate-100 rounded-xl p-4 text-sm text-slate-600">
           <p>
-            <strong>Disclaimer:</strong> Exchange rates are indicative and updated periodically. 
+            <strong>Disclaimer:</strong> Exchange rates are indicative and updated periodically.
             Actual rates may vary at the time of transaction. This tool is for reference only.
           </p>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -34,7 +34,7 @@ export default function Layout({ children, currentPageName }) {
         try {
           const admin = await dataLayer.auth.isAdmin();
           setIsAdmin(admin);
-        } catch (err) {
+        } catch (_err) {
           setIsAdmin(false);
         }
       };
@@ -72,8 +72,8 @@ export default function Layout({ children, currentPageName }) {
               document.head.appendChild(script.cloneNode(true));
             });
           }
-        } catch (err) {
-          console.error('Failed to load site settings:', err);
+        } catch (_err) {
+          console.error('Failed to load site settings:', _err);
         }
       };
       loadSettings();

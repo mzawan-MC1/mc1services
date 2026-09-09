@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
@@ -11,7 +11,6 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import FileUpload from '../components/FileUpload';
@@ -109,7 +108,7 @@ export default function AdminPortfolioEdit() {
         const slashMatch = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
         const m = val.match(slashMatch);
         if (m) {
-          const [_, a, b, y] = m;
+          const [, a, b, y] = m;
           // Assume locale entered MM/DD/YYYY; try both safely
           const mmdd = `${y}-${String(a).padStart(2,'0')}-${String(b).padStart(2,'0')}`;
           const ddmm = `${y}-${String(b).padStart(2,'0')}-${String(a).padStart(2,'0')}`;
@@ -229,7 +228,7 @@ export default function AdminPortfolioEdit() {
                   <TabsTrigger value="en">English</TabsTrigger>
                   <TabsTrigger value="ar">Arabic</TabsTrigger>
                 </TabsList>
-                
+
                 <TabsContent value="en" className="space-y-4 mt-4">
                   <div><Label>Title *</Label><Input value={formData.title} onChange={(e) => setFormData(p => ({ ...p, title: e.target.value }))} required className="mt-1" /></div>
                   <div><Label>Short Description</Label><Textarea value={formData.short_description} onChange={(e) => setFormData(p => ({ ...p, short_description: e.target.value }))} className="mt-1" rows={3} /></div>
@@ -248,14 +247,14 @@ export default function AdminPortfolioEdit() {
               <div className="border-t pt-4 mt-4 space-y-4">
                 <h3 className="font-medium">Common Details</h3>
                 <div><Label>Client Name</Label><Input value={formData.client_name} onChange={(e) => setFormData(p => ({ ...p, client_name: e.target.value }))} className="mt-1" /></div>
-                
+
                 <div>
                     <Label>Main Image</Label>
                     <div className="text-xs text-slate-500 mb-2">Required size: 1200 x 800 px</div>
                     <div className="mt-2">
-                    <FileUpload 
-                        onUploadComplete={handleMainImageUpload} 
-                        currentFile={formData.main_image_url} 
+                    <FileUpload
+                        onUploadComplete={handleMainImageUpload}
+                        currentFile={formData.main_image_url}
                         validation={{ width: 1200, height: 800 }}
                     />
                     </div>
@@ -278,10 +277,10 @@ export default function AdminPortfolioEdit() {
               <div className="text-sm text-slate-500 font-normal">Required size: 1000 x 700 px</div>
             </CardHeader>
             <CardContent>
-              <GalleryUpload 
-                value={formData.gallery_items} 
-                onChange={handleGalleryChange} 
-                label="Project Gallery" 
+              <GalleryUpload
+                value={formData.gallery_items}
+                onChange={handleGalleryChange}
+                label="Project Gallery"
                 validation={{ width: 1000, height: 700 }}
               />
             </CardContent>

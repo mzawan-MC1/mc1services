@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { motion } from 'framer-motion';
-import { Eye, EyeOff, GripVertical, Save, Plus, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
+import { Eye, EyeOff, GripVertical, Loader2 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import AdminLayout from '../components/admin/AdminLayout';
@@ -38,7 +35,7 @@ export default function AdminToolsManagement() {
   const bulkUpdateMutation = useMutation({
     mutationFn: async (toolsToUpdate) => {
       await Promise.all(
-        toolsToUpdate.map(({ id, data }) => 
+        toolsToUpdate.map(({ id, data }) =>
           dataLayer.tools.update(id, data)
         )
       );

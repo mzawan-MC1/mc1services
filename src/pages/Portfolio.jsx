@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
@@ -30,8 +30,8 @@ export default function Portfolio() {
     queryFn: () => dataLayer.portfolio.getPublished()
   });
 
-  const filteredPortfolios = activeCategory === 'all' 
-    ? portfolios 
+  const filteredPortfolios = activeCategory === 'all'
+    ? portfolios
     : portfolios.filter(p => p.category === activeCategory);
 
   return (
@@ -91,7 +91,7 @@ export default function Portfolio() {
               <p className="text-slate-500 text-lg">{t('portfolio.empty', 'No projects found in this category.')}</p>
             </div>
           ) : (
-            <motion.div 
+            <motion.div
               layout
               className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
             >

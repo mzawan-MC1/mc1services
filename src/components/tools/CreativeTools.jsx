@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Upload, Download, Copy, Check, Image as ImageIcon, FileText, QrCode, Trash2 } from 'lucide-react';
+import { Download, FileText, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function CreativeTools({ activeTool }) {
@@ -41,7 +41,7 @@ export default function CreativeTools({ activeTool }) {
 
   // PDF to Image state
   const [pdfFile, setPdfFile] = useState(null);
-  const [pdfImageUrl, setPdfImageUrl] = useState(null);
+
 
   // Image to PDF state
   const [pdfImages, setPdfImages] = useState([]);
@@ -85,24 +85,24 @@ export default function CreativeTools({ activeTool }) {
   };
 
   // QR Code generation using simple algorithm
-  const generateQRCode = () => {
+  const generateQRCode = useCallback(() => {
     const canvas = qrCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const size = 200;
     canvas.width = size;
     canvas.height = size;
-    
+
     // Simple QR-like pattern (for demo - real QR needs library)
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, size, size);
     ctx.fillStyle = '#000000';
-    
+
     // Generate pattern based on text hash
     const hash = qrText.split('').reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0);
     const modules = 21;
     const moduleSize = size / modules;
-    
+
     for (let i = 0; i < modules; i++) {
       for (let j = 0; j < modules; j++) {
         // Position patterns (corners)
@@ -114,7 +114,7 @@ export default function CreativeTools({ activeTool }) {
         }
       }
     }
-    
+
     // Draw position patterns properly
     const drawPositionPattern = (x, y) => {
       ctx.fillStyle = '#000000';
@@ -124,17 +124,17 @@ export default function CreativeTools({ activeTool }) {
       ctx.fillStyle = '#000000';
       ctx.fillRect(x + 2 * moduleSize, y + 2 * moduleSize, 3 * moduleSize, 3 * moduleSize);
     };
-    
+
     drawPositionPattern(0, 0);
     drawPositionPattern((modules - 7) * moduleSize, 0);
     drawPositionPattern(0, (modules - 7) * moduleSize);
-  };
+  }, [qrText]);
 
   useEffect(() => {
     if (activeTool === 'qr-code' && qrText) {
       generateQRCode();
     }
-  }, [activeTool, qrText]);
+  }, [activeTool, qrText, generateQRCode]);
 
   // Thumbnail creator
   useEffect(() => {
@@ -144,7 +144,7 @@ export default function CreativeTools({ activeTool }) {
       const ctx = canvas.getContext('2d');
       canvas.width = 1280;
       canvas.height = 720;
-      
+
       // Background
       if (thumbBgImage) {
         const img = new window.Image();
@@ -160,7 +160,7 @@ export default function CreativeTools({ activeTool }) {
         ctx.fillRect(0, 0, 1280, 720);
         drawText();
       }
-      
+
       function drawText() {
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'center';
@@ -178,7 +178,7 @@ export default function CreativeTools({ activeTool }) {
       <div className="space-y-6">
         <h3 className="text-xl font-bold">Image Background Removal (Simple)</h3>
         <p className="text-sm text-slate-500">Upload an image and select a color to make transparent. Works best with solid color backgrounds.</p>
-        
+
         <div className="grid md:grid-cols-2 gap-6">
           <div>
             <Label>Upload Image</Label>
@@ -196,7 +196,7 @@ export default function CreativeTools({ activeTool }) {
             <Slider value={tolerance} onValueChange={setTolerance} min={0} max={100} className="mt-2" />
           </div>
         </div>
-        
+
         {bgImage && (
           <div className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
@@ -249,12 +249,12 @@ export default function CreativeTools({ activeTool }) {
     return (
       <div className="space-y-6">
         <h3 className="text-xl font-bold">Image Resizer</h3>
-        
+
         <div>
           <Label>Upload Image</Label>
           <Input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setResizeImage, setOriginalDimensions)} className="mt-2" />
         </div>
-        
+
         {resizeImage && (
           <>
             <div className="bg-slate-50 rounded-lg p-3 text-sm">
@@ -288,7 +288,7 @@ export default function CreativeTools({ activeTool }) {
                 </label>
               </div>
             </div>
-            
+
             <div className="flex gap-2">
               {[{ w: 1920, h: 1080, label: '1080p' }, { w: 1280, h: 720, label: '720p' }, { w: 800, h: 600, label: '800×600' }, { w: 400, h: 400, label: '400×400' }].map(preset => (
                 <Button key={preset.label} variant="outline" size="sm" onClick={() => { setResizeWidth(preset.w.toString()); setResizeHeight(preset.h.toString()); }}>
@@ -296,9 +296,9 @@ export default function CreativeTools({ activeTool }) {
                 </Button>
               ))}
             </div>
-            
+
             <canvas ref={resizeCanvasRef} className="hidden" />
-            
+
             <Button onClick={() => {
               const canvas = resizeCanvasRef.current;
               const ctx = canvas.getContext('2d');
@@ -323,7 +323,7 @@ export default function CreativeTools({ activeTool }) {
     return (
       <div className="space-y-6">
         <h3 className="text-xl font-bold">Image Format Converter</h3>
-        
+
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <Label>Upload Image (JPG or PNG)</Label>
@@ -340,7 +340,7 @@ export default function CreativeTools({ activeTool }) {
             </Select>
           </div>
         </div>
-        
+
         {convertImage && (
           <>
             <div className="bg-slate-50 rounded-lg p-4">
@@ -380,19 +380,19 @@ export default function CreativeTools({ activeTool }) {
       <div className="space-y-6">
         <h3 className="text-xl font-bold">PDF to Image Converter</h3>
         <p className="text-sm text-slate-500">Upload a PDF to convert the first page to an image. (Requires PDF.js library)</p>
-        
+
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
           <p className="text-amber-800 text-sm">
-            ⚠️ <strong>Note:</strong> This feature requires the PDF.js library. For a production implementation, 
+            ⚠️ <strong>Note:</strong> This feature requires the PDF.js library. For a production implementation,
             include the library via CDN. This demo shows the interface design.
           </p>
         </div>
-        
+
         <div>
           <Label>Upload PDF</Label>
           <Input type="file" accept=".pdf" onChange={(e) => setPdfFile(e.target.files[0])} className="mt-2" />
         </div>
-        
+
         {pdfFile && (
           <div className="bg-slate-50 rounded-xl p-6 text-center">
             <FileText className="w-16 h-16 mx-auto text-slate-400 mb-4" />
@@ -412,14 +412,14 @@ export default function CreativeTools({ activeTool }) {
       <div className="space-y-6">
         <h3 className="text-xl font-bold">Image to PDF Converter</h3>
         <p className="text-sm text-slate-500">Upload images to combine into a single PDF document.</p>
-        
+
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
           <p className="text-amber-800 text-sm">
             ⚠️ <strong>Note:</strong> This feature requires jsPDF library. For production, include via CDN.
             This demo shows the interface design.
           </p>
         </div>
-        
+
         <div>
           <Label>Upload Images</Label>
           <Input type="file" accept="image/*" multiple onChange={(e) => {
@@ -433,14 +433,14 @@ export default function CreativeTools({ activeTool }) {
             })).then(images => setPdfImages(images));
           }} className="mt-2" />
         </div>
-        
+
         {pdfImages.length > 0 && (
           <>
             <div className="grid grid-cols-4 gap-3">
               {pdfImages.map((img, i) => (
                 <div key={i} className="relative">
                   <img src={img.data} alt={img.name} className="w-full h-24 object-cover rounded-lg border" />
-                  <button onClick={() => setPdfImages(pdfImages.filter((_, idx) => idx !== i))} 
+                  <button onClick={() => setPdfImages(pdfImages.filter((_, idx) => idx !== i))}
                     className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center">
                     <Trash2 className="w-3 h-3" />
                   </button>
@@ -461,7 +461,7 @@ export default function CreativeTools({ activeTool }) {
       <div className="space-y-6">
         <h3 className="text-xl font-bold">Simple PDF Editor</h3>
         <p className="text-sm text-slate-500">Upload a PDF page image and add text overlay.</p>
-        
+
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <Label>Upload PDF Page (as image)</Label>
@@ -480,7 +480,7 @@ export default function CreativeTools({ activeTool }) {
             <Slider value={[textY]} onValueChange={(v) => setTextY(v[0])} min={0} max={100} className="mt-2" />
           </div>
         </div>
-        
+
         {editPdfImage && (
           <>
             <div className="relative">
@@ -523,24 +523,24 @@ export default function CreativeTools({ activeTool }) {
     return (
       <div className="space-y-6">
         <h3 className="text-xl font-bold">QR Code Generator</h3>
-        
+
         <div>
           <Label>Text or URL</Label>
           <Input value={qrText} onChange={(e) => setQrText(e.target.value)} placeholder="https://example.com" className="mt-2" />
         </div>
-        
+
         <div className="flex justify-center">
           <div className="bg-white p-4 rounded-xl border shadow-sm">
             <canvas ref={qrCanvasRef} width={200} height={200} className="mx-auto" />
           </div>
         </div>
-        
+
         <div className="flex justify-center gap-2">
           <Button onClick={() => downloadCanvas(qrCanvasRef, 'qrcode.png')} className="bg-gradient-to-r from-slate-700 to-slate-900 text-white">
             <Download className="w-4 h-4 mr-2" /> Download QR Code
           </Button>
         </div>
-        
+
         <p className="text-xs text-slate-500 text-center">Note: This generates a stylized QR-like pattern for demo. Use a proper QR library for production.</p>
       </div>
     );
@@ -550,7 +550,7 @@ export default function CreativeTools({ activeTool }) {
     return (
       <div className="space-y-6">
         <h3 className="text-xl font-bold">Thumbnail Creator (1280×720)</h3>
-        
+
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <Label>Title Text</Label>
@@ -572,18 +572,18 @@ export default function CreativeTools({ activeTool }) {
             <Input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setThumbBgImage)} className="mt-2" />
           </div>
         </div>
-        
+
         <div className="flex gap-2">
           {['#3b82f6', '#ef4444', '#22c55e', '#f59e0b', '#8b5cf6', '#1e293b'].map(color => (
             <button key={color} onClick={() => { setThumbBgColor(color); setThumbBgImage(null); }}
               className="w-8 h-8 rounded-full border-2 border-white shadow" style={{ backgroundColor: color }} />
           ))}
         </div>
-        
+
         <div className="bg-slate-100 p-4 rounded-xl">
           <canvas ref={thumbCanvasRef} className="w-full max-w-2xl mx-auto rounded-lg shadow-lg" style={{ aspectRatio: '16/9' }} />
         </div>
-        
+
         <Button onClick={() => downloadCanvas(thumbCanvasRef, 'thumbnail.png')} className="bg-gradient-to-r from-pink-500 to-rose-500 text-white">
           <Download className="w-4 h-4 mr-2" /> Download Thumbnail
         </Button>

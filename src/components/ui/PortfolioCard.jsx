@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../../utils';
 import { motion } from 'framer-motion';
@@ -9,7 +8,7 @@ import { getLocalizedValue } from '../../utils';
 
 export default function PortfolioCard({ portfolio, index = 0, masonry = false }) {
   const { t, i18n } = useTranslation();
-  
+
   const getLoc = (obj, key) => getLocalizedValue(obj, key, i18n.language);
 
   // We can use the translation keys we added to common.json
@@ -28,7 +27,7 @@ export default function PortfolioCard({ portfolio, index = 0, masonry = false })
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
-      <Link 
+      <Link
         to={createPageUrl(`PortfolioDetail?id=${portfolio.id}`)}
         className="group block h-full overflow-hidden rounded-2xl bg-white shadow-sm border border-slate-100 hover:shadow-xl transition-all duration-300"
       >

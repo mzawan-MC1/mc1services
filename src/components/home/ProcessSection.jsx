@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../dataLayer';
@@ -8,7 +7,7 @@ import { getLocalizedValue } from '../../utils';
 
 export default function ProcessSection() {
   const { t, i18n } = useTranslation();
-  
+
   const steps = [
     {
       icon: Search,

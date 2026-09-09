@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from './dataLayer';
 import { MapPin } from 'lucide-react';
@@ -13,8 +12,8 @@ export default function ContactMap() {
 
   if (!mapUrl || mapUrl.trim() === '') {
     return (
-      <div 
-        className="mt-8 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center" 
+      <div
+        className="mt-8 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center"
         style={{ minHeight: '300px', height: '300px' }}
       >
         <div className="text-center p-6">
@@ -27,8 +26,8 @@ export default function ContactMap() {
   }
 
   return (
-    <div 
-      className="mt-8 rounded-xl overflow-hidden bg-slate-200" 
+    <div
+      className="mt-8 rounded-xl overflow-hidden bg-slate-200"
       style={{ minHeight: '300px', height: '300px' }}
     >
       <iframe

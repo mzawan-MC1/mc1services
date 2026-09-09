@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import { useCallback, useEffect, useState, useMemo } from 'react'
 import AdminLayout from '../components/admin/AdminLayout'
 import AdminRoute from '../components/AdminRoute'
 import { useParams, useNavigate } from 'react-router-dom'
@@ -132,7 +132,7 @@ export default function AdminTaskDetailsPage() {
   const [subtasks, setSubtasks] = useState([])
   const [timeline, setTimeline] = useState([])
 
-  const load = async () => {
+  const load = useCallback(async () => {
     try {
       const [t, a, s, tl] = await Promise.all([
         dataLayer.tasks.getById(id),
@@ -156,9 +156,9 @@ export default function AdminTaskDetailsPage() {
       console.error('[load] failed:', e)
       toast.error(e.message || 'Failed to load task')
     }
-  }
+  }, [id])
 
-  useEffect(() => { load() }, [id])
+  useEffect(() => { load() }, [load])
 
   // Derived
   const completedSubtasks = subtasks.filter(s => s.status === 'completed').length
@@ -166,8 +166,6 @@ export default function AdminTaskDetailsPage() {
   const overdue = task?.due_date && new Date(task.due_date) < new Date() && task?.status !== 'completed'
 
   const usersById = useMemo(() => Object.fromEntries(users.map(u => [u.id, u])), [users])
-  const assigneesById = useMemo(() => Object.fromEntries(assignees.map(a => [a.user_id, a])), [assignees])
-
   const createdByUser = task?.created_by ? usersById[task.created_by] : null
 
   // Collect files from timeline (task + subtask attachments)
@@ -205,7 +203,7 @@ export default function AdminTaskDetailsPage() {
       }
     }
     return list.sort((a, b) => new Date(b.uploaded_at) - new Date(a.uploaded_at))
-  }, [timeline, usersById, subtasks, task])
+  }, [timeline, usersById, subtasks, task?.id, task?.title])
 
   // Updates (conversation) - task-level updates + subtask comments
   const updates = useMemo(() => {
@@ -247,7 +245,7 @@ export default function AdminTaskDetailsPage() {
   }, [timeline, usersById, subtasks])
 
   // Activity feed events
-  const activityEvents = useMemo(() => formatActivity(timeline, usersById, subtasks, task), [timeline, usersById, subtasks, task])
+  const activityEvents = useMemo(() => formatActivity(timeline, usersById, subtasks), [timeline, usersById, subtasks])
 
   // ====== Quick edit handlers (Overview tab) ======
   const quickUpdate = async (patch, eventType, eventPayload = {}) => {
@@ -516,7 +514,6 @@ export default function AdminTaskDetailsPage() {
                 assignees={assignees}
                 users={users}
                 subtasks={subtasks}
-                timeline={timeline}
                 completedSubtasks={completedSubtasks}
                 totalSubtasks={totalSubtasks}
                 overdue={overdue}
@@ -573,7 +570,7 @@ export default function AdminTaskDetailsPage() {
 }
 
 // ====== Activity formatter ======
-function formatActivity(timeline, usersById, subtasks, task) {
+function formatActivity(timeline, usersById, subtasks) {
   const stById = Object.fromEntries((subtasks || []).map(s => [s.id, s]))
   return (timeline || [])
     .map(ev => {
@@ -597,7 +594,7 @@ function formatActivity(timeline, usersById, subtasks, task) {
           icon = Clock; color = 'text-yellow-600 bg-yellow-100'
           detail = 'started the task'
           break
-        case 'status_changed':
+        case 'status_changed': {
           icon = CheckCircle2
           const to = ev.payload?.to || ''
           if (to === 'completed') color = 'text-green-600 bg-green-100'
@@ -605,6 +602,7 @@ function formatActivity(timeline, usersById, subtasks, task) {
           else color = 'text-slate-500 bg-slate-100'
           detail = `changed status from ${formatStatus(ev.payload?.from)} to ${formatStatus(to)}`
           break
+        }
         case 'assignee_added': {
           icon = User; color = 'text-indigo-600 bg-indigo-100'
           const added = usersById[ev.payload?.user_id]
@@ -684,7 +682,7 @@ function formatActivity(timeline, usersById, subtasks, task) {
 }
 
 // ====== Overview Tab ======
-function OverviewTab({ task, assignees, users, subtasks, timeline, completedSubtasks, totalSubtasks, overdue, onQuickUpdate, onToggleAssignee }) {
+function OverviewTab({ task, assignees, users, subtasks, completedSubtasks, totalSubtasks, overdue, onQuickUpdate, onToggleAssignee }) {
   const [editField, setEditField] = useState(null) // 'title' | 'description' | null
   const [draft, setDraft] = useState({})
 

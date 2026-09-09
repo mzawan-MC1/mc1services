@@ -28,11 +28,20 @@ export default [
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
-      'react/jsx-no-target-blank': 'off',
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
+      // This JavaScript codebase does not use runtime PropTypes. Component
+      // contracts are validated through tests, linting and the build instead.
+      'react/prop-types': 'off',
+      'no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
       ],
+      'react/jsx-no-target-blank': 'off',
+      // Shared UI modules intentionally co-locate components and small helpers.
+      'react-refresh/only-export-components': 'off',
     },
   },
 ]

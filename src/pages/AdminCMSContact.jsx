@@ -1,21 +1,17 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '../utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { ArrowLeft, Save, Loader2, Plus, Trash } from 'lucide-react';
+import { Save, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
-import FileUpload from '../components/FileUpload';
 import AdminLayout from '../components/admin/AdminLayout';
 
 export default function AdminCMSContact() {
   const queryClient = useQueryClient();
-  const [saving, setSaving] = useState(false);
   const [selectedSection, setSelectedSection] = useState('hero');
 
   const { data: contactContent = [], isLoading } = useQuery({

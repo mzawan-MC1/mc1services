@@ -1,12 +1,11 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { 
-  Video, Camera, Mic, Music, Film, Play, 
-  ArrowRight, CheckCircle 
+import {
+  Video, Camera, Mic, Film, Play,
+  ArrowRight
 } from 'lucide-react';
 import SectionHeader from '../components/ui/SectionHeader';
 import PortfolioCard from '../components/ui/PortfolioCard';
@@ -50,14 +49,6 @@ export default function Production() {
       return all.filter(p => p.category === 'production' && p.status === 'published')
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         .slice(0, 3);
-    }
-  });
-
-  const { data: plans = [] } = useQuery({
-    queryKey: ['prod-plans'],
-    queryFn: async () => {
-      const all = await dataLayer.pricingPlans.getAll();
-      return all.filter(p => p.category === 'production');
     }
   });
 

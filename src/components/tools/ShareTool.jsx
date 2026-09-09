@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Share2, Facebook, MessageCircle, Mail, Link2, Copy, Check, Twitter } from 'lucide-react';
+import { Share2, Facebook, MessageCircle, Mail, Copy, Check, Twitter } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -13,7 +13,7 @@ import {
 
 export default function ShareTool({ toolId, toolName, results = null, inputs = null }) {
   const [copied, setCopied] = useState(false);
-  
+
   // Build share URL with inputs
   const buildShareUrl = () => {
     const baseUrl = window.location.origin + window.location.pathname;
@@ -28,9 +28,9 @@ export default function ShareTool({ toolId, toolName, results = null, inputs = n
     }
     return `${baseUrl}?${params.toString()}`;
   };
-  
+
   const shareUrl = buildShareUrl();
-  
+
   // Format results for text sharing
   const formatResults = () => {
     if (!results) return '';
@@ -42,40 +42,40 @@ export default function ShareTool({ toolId, toolName, results = null, inputs = n
     }
     return String(results);
   };
-  
+
   const shareText = `Check out this ${toolName} tool! ${results ? '\n\nResults:\n' + formatResults() : ''}`;
-  
+
   const copyLink = () => {
     navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     toast.success('Link copied!');
     setTimeout(() => setCopied(false), 2000);
   };
-  
+
   const copyResults = () => {
     const text = `${toolName}\n\n${formatResults()}\n\n${shareUrl}`;
     navigator.clipboard.writeText(text);
     toast.success('Results copied!');
   };
-  
+
   const shareWhatsApp = () => {
     window.open(`https://wa.me/?text=${encodeURIComponent(shareText + '\n\n' + shareUrl)}`, '_blank');
   };
-  
+
   const shareFacebook = () => {
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`, '_blank');
   };
-  
+
   const shareTwitter = () => {
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
   };
-  
+
   const shareEmail = () => {
     const subject = encodeURIComponent(`Check out this ${toolName} tool`);
     const body = encodeURIComponent(`${shareText}\n\n${shareUrl}`);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
-  
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -99,7 +99,7 @@ export default function ShareTool({ toolId, toolName, results = null, inputs = n
               </Button>
             </div>
           </div>
-          
+
           {/* Social Share Buttons */}
           <div>
             <label className="text-sm font-medium text-slate-700 mb-2 block">Share via</label>
@@ -122,7 +122,7 @@ export default function ShareTool({ toolId, toolName, results = null, inputs = n
               </Button>
             </div>
           </div>
-          
+
           {/* Copy Results */}
           {results && (
             <Button onClick={copyResults} className="w-full">

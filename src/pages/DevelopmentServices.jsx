@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { 
+import {
   Globe, Smartphone, Code, Monitor, Plug, Palette, Cloud, Database,
   ArrowRight, Check, ChevronDown
 } from 'lucide-react';
@@ -13,7 +13,6 @@ import { Badge } from '@/components/ui/badge';
 import PortfolioCard from '../components/ui/PortfolioCard';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedValue } from '../utils';
-import { getLocalizedFaqQuestion } from '../utils/faqMapping';
 
 export default function DevelopmentServices() {
   const { t, i18n } = useTranslation();
@@ -125,7 +124,7 @@ export default function DevelopmentServices() {
               {t('development_services.hero_badge', 'Development Services')}
             </Badge>
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              {t('development_services.hero_title', 'Build Your Digital')} 
+              {t('development_services.hero_title', 'Build Your Digital')}
               <span className="block bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
                 {t('development_services.hero_title_highlight', 'Future With Us')}
               </span>

@@ -1,11 +1,10 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { 
-  Globe, Code, Palette, Smartphone, Zap, Shield, ArrowRight, Database 
+import {
+  Globe, Code, Palette, Smartphone, Zap, Shield, ArrowRight, Database
 } from 'lucide-react';
 import SectionHeader from '../components/ui/SectionHeader';
 import PortfolioCard from '../components/ui/PortfolioCard';
@@ -15,7 +14,7 @@ import { getLocalizedValue } from '../utils';
 
 export default function WebDevelopment() {
   const { t, i18n } = useTranslation();
-  
+
   const features = [
     { icon: Code, title: t('services_page.web_development.features.custom_dev.title', 'Custom Development'), desc: t('services_page.web_development.features.custom_dev.desc', 'Tailored solutions built from scratch to match your unique requirements.') },
     { icon: Palette, title: t('services_page.web_development.features.ui_ux.title', 'UI/UX Design'), desc: t('services_page.web_development.features.ui_ux.desc', 'Beautiful, intuitive interfaces that delight users and drive conversions.') },
@@ -39,7 +38,7 @@ export default function WebDevelopment() {
       return all.filter(p => p.category === 'web_development').slice(0, 3);
     }
   });
-  
+
   // Fetch page specific content if available in DB, otherwise use static translations
   const { data: pageContent } = useQuery({
     queryKey: ['service-content', 'web-development'],

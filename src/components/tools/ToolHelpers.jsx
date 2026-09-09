@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Copy, Check, RotateCcw, Save, Share2, Facebook, MessageCircle, Mail, Twitter } from 'lucide-react';
+import { Copy, Check, RotateCcw, Save, Facebook, MessageCircle, Mail, Twitter } from 'lucide-react';
 import { toast } from 'sonner';
 
 // Copy to clipboard button
 export function CopyButton({ value, label = 'Copy' }) {
   const [copied, setCopied] = React.useState(false);
-  
+
   const handleCopy = () => {
     navigator.clipboard.writeText(String(value));
     setCopied(true);
     toast.success('Copied to clipboard!');
     setTimeout(() => setCopied(false), 2000);
   };
-  
+
   return (
     <Button variant="outline" size="sm" onClick={handleCopy} className="gap-1">
       {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
@@ -40,7 +40,7 @@ export function SavePrefsButton({ toolId, values, label = 'Save Defaults' }) {
     localStorage.setItem('uaeToolsPrefs', JSON.stringify(prefs));
     toast.success('Preferences saved!');
   };
-  
+
   return (
     <Button variant="outline" size="sm" onClick={handleSave} className="gap-1">
       <Save className="w-3 h-3" />
@@ -87,7 +87,7 @@ export function ToolActions({ onReset, toolId, values }) {
 // Quick share buttons (inline version)
 export function ShareButtons({ toolId, toolName, results = null, inputs = null }) {
   const [copied, setCopied] = useState(false);
-  
+
   const buildShareUrl = () => {
     const baseUrl = window.location.origin + window.location.pathname;
     const params = new URLSearchParams();
@@ -101,9 +101,9 @@ export function ShareButtons({ toolId, toolName, results = null, inputs = null }
     }
     return `${baseUrl}?${params.toString()}`;
   };
-  
+
   const shareUrl = buildShareUrl();
-  
+
   const formatResults = () => {
     if (!results) return '';
     if (typeof results === 'string') return results;
@@ -112,34 +112,34 @@ export function ShareButtons({ toolId, toolName, results = null, inputs = null }
     }
     return String(results);
   };
-  
+
   const shareText = `Check out this ${toolName}! ${results ? '\nResults:\n' + formatResults() : ''}`;
-  
+
   const copyLink = () => {
     navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     toast.success('Link copied!');
     setTimeout(() => setCopied(false), 2000);
   };
-  
+
   const shareWhatsApp = () => {
     window.open(`https://wa.me/?text=${encodeURIComponent(shareText + '\n\n' + shareUrl)}`, '_blank');
   };
-  
+
   const shareFacebook = () => {
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
   };
-  
+
   const shareTwitter = () => {
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
   };
-  
+
   const shareEmail = () => {
     const subject = encodeURIComponent(`Check out this ${toolName}`);
     const body = encodeURIComponent(`${shareText}\n\n${shareUrl}`);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
-  
+
   return (
     <div className="flex items-center gap-1">
       <Button variant="ghost" size="icon" onClick={copyLink} title="Copy Link" className="h-8 w-8">

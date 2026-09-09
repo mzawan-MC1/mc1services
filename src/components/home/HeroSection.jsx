@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl, getLocalizedValue } from '../../utils';
 import { motion } from 'framer-motion';
@@ -28,11 +27,11 @@ export default function HeroSection() {
   const buttonLinkSecondary = heroContent?.button_link_secondary || 'Portfolio';
   const showSecondaryButton = heroContent?.show_secondary_button !== false;
   const sectionHeight = heroContent?.section_height || 'min-h-screen';
-  
+
   // Handle localized subtitle/service pills
   const subtitle = getLoc('subtitle');
-  const servicePills = subtitle 
-    ? subtitle.split(',') 
+  const servicePills = subtitle
+    ? subtitle.split(',')
     : [
         t('home.pills.software', 'Software Development'),
         t('home.pills.marketing', 'Digital Marketing'),
@@ -49,7 +48,7 @@ export default function HeroSection() {
         <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-blue-500/30 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 animate-pulse" />
         <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/30 rounded-full blur-[150px] translate-x-1/4 translate-y-1/4 animate-pulse" />
         <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-pink-500/20 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
-        
+
         {/* Grid Pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
       </div>
@@ -144,7 +143,7 @@ export default function HeroSection() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="flex flex-wrap justify-center gap-3 mt-16"
           >
-            {servicePills.map((service, i) => (
+            {servicePills.map((service) => (
               <span
                 key={service}
                 className="px-4 py-2 bg-white/5 backdrop-blur-sm rounded-full text-sm text-slate-300 border border-white/10"

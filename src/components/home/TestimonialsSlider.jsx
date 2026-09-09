@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../dataLayer';
@@ -57,9 +57,9 @@ export default function TestimonialsSlider() {
               className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10"
             >
               <Quote className="w-12 h-12 text-blue-400/30 mb-6" />
-              
+
               <p className="text-xl md:text-2xl text-white leading-relaxed mb-8">
-                "{getLoc(testimonials[current], 'content')}"
+                &ldquo;{getLoc(testimonials[current], 'content')}&rdquo;
               </p>
 
               <div className="flex items-center gap-1 mb-6">
@@ -107,7 +107,7 @@ export default function TestimonialsSlider() {
               >
                 <ChevronLeft className="w-5 h-5 text-white" />
               </button>
-              
+
               <div className="flex gap-2">
                 {testimonials.map((_, i) => (
                   <button

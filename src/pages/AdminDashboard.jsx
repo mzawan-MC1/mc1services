@@ -1,13 +1,12 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { 
+import {
   Briefcase, MessageSquare, Users, HelpCircle, Plus
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import AdminLayout from '../components/admin/AdminLayout';
 import AdminRoute from '../components/AdminRoute';
@@ -60,8 +59,8 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {quickActions.map((action) => (
               <Link key={action.href} to={createPageUrl(action.href)}>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full justify-start border-slate-300 text-slate-700 hover:bg-slate-100 h-auto py-3"
                 >
                   <action.icon className="w-4 h-4 mr-2" />
@@ -77,10 +76,10 @@ export default function AdminDashboard() {
           <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">Overview</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {stats.map((stat, i) => (
-              <motion.div 
-                key={stat.label} 
-                initial={{ opacity: 0, y: 20 }} 
-                animate={{ opacity: 1, y: 0 }} 
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
               >
                 <Card className="hover:shadow-md transition-shadow">

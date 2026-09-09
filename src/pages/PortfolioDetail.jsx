@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl, getLocalizedValue } from '../utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { 
-  ArrowLeft, ExternalLink, Calendar, Building2, Loader2, 
+import {
+  ArrowLeft, ExternalLink, Calendar, Building2, Loader2,
   ChevronLeft, ChevronRight, X, ZoomIn, Play, Target, Lightbulb, Trophy, Quote
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -44,10 +44,10 @@ export default function PortfolioDetail() {
   const testimonial = testimonials[0];
 
   // Combine main image, gallery images, and videos for the slider
-  const allMedia = portfolio ? [
+  const allMedia = useMemo(() => portfolio ? [
     ...(portfolio.main_image_url ? [{ type: 'image', url: portfolio.main_image_url }] : []),
     ...gallery.map(img => ({ type: 'image', url: img.image_url }))
-  ] : [];
+  ] : [], [portfolio, gallery]);
 
   const getEmbedUrl = (url) => {
     if (url.includes('youtube.com/watch')) {
@@ -72,13 +72,13 @@ export default function PortfolioDetail() {
   useEffect(() => {
     if (allMedia.length <= 1) return;
     if (allMedia[currentSlide]?.type === 'video') return;
-    
+
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % allMedia.length);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [allMedia.length, currentSlide]);
+  }, [allMedia, currentSlide]);
 
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % allMedia.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + allMedia.length) % allMedia.length);
@@ -142,7 +142,7 @@ export default function PortfolioDetail() {
       {/* Content */}
       <section className="py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+
           {/* Media Carousel */}
           {allMedia.length > 0 && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-16">
@@ -161,7 +161,7 @@ export default function PortfolioDetail() {
                       <motion.img key={currentSlide} src={allMedia[currentSlide]?.url} alt={getLoc(portfolio, 'title')} className="w-full h-full object-cover" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
                     )}
                   </AnimatePresence>
-                  
+
                   {allMedia.length > 1 && (
                     <>
                       <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg rtl:right-4 rtl:left-auto">
@@ -262,7 +262,7 @@ export default function PortfolioDetail() {
               {testimonial && (
                 <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="bg-slate-900 rounded-2xl p-8 text-white">
                   <Quote className="w-10 h-10 text-blue-400/30 mb-4" />
-                  <p className="text-lg leading-relaxed mb-6">"{getLoc(testimonial, 'content')}"</p>
+                  <p className="text-lg leading-relaxed mb-6">&ldquo;{getLoc(testimonial, 'content')}&rdquo;</p>
                   <div className="flex items-center gap-4">
                     {testimonial.image_url ? (
                       <img src={testimonial.image_url} alt={testimonial.client_name} className="w-12 h-12 rounded-full" />

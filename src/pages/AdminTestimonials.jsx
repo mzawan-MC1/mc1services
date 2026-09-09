@@ -1,9 +1,8 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { Plus, Pencil, Trash2, Star, ArrowLeft, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Star, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -94,7 +93,7 @@ export default function AdminTestimonials() {
                       </span>
                     )}
                   </div>
-                  <p className="text-slate-700 mb-4 line-clamp-3">"{testimonial.content}"</p>
+                  <p className="text-slate-700 mb-4 line-clamp-3">&ldquo;{testimonial.content}&rdquo;</p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1">
                       {[...Array(5)].map((_, i) => (

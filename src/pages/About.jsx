@@ -1,20 +1,19 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl, getLocalizedValue } from '../utils';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { Target, Eye, Heart, Users, Award, Briefcase, Linkedin, Twitter, ArrowRight, Instagram, Facebook, Link as LinkIcon } from 'lucide-react';
+import { Target, Eye, Heart, Users, Linkedin, Twitter, ArrowRight, Instagram, Facebook, Link as LinkIcon } from 'lucide-react';
 import SectionHeader from '../components/ui/SectionHeader';
 import SEOHead from '../components/SEOHead';
 import { useTranslation } from 'react-i18next';
 
 const SocialIcon = ({ url }) => {
   if (!url) return null;
-  
+
   const lowerUrl = url.toLowerCase();
   let Icon = LinkIcon;
-  
+
   if (lowerUrl.includes('linkedin.com')) Icon = Linkedin;
   else if (lowerUrl.includes('instagram.com')) Icon = Instagram;
   else if (lowerUrl.includes('facebook.com')) Icon = Facebook;
@@ -22,9 +21,9 @@ const SocialIcon = ({ url }) => {
   else if (lowerUrl.includes('snapchat.com')) Icon = LinkIcon;
 
   return (
-    <a 
-      href={url} 
-      target="_blank" 
+    <a
+      href={url}
+      target="_blank"
       rel="noopener noreferrer"
       className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 hover:bg-blue-600 text-blue-600 hover:text-white transition-colors"
       onClick={(e) => e.stopPropagation()}
@@ -36,7 +35,7 @@ const SocialIcon = ({ url }) => {
 
 export default function About() {
   const { t, i18n } = useTranslation();
-  
+
   const values = [
     {
       icon: Target,

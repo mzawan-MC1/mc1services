@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
 import { CopyButton, ResetButton, SavePrefsButton, loadPrefs, ShareButtons } from './ToolHelpers';
-import { RefreshCw, Loader2 } from 'lucide-react';
 
 export default function DailyLifeTools({ activeTool }) {
   // Utility Bill
@@ -37,8 +34,8 @@ export default function DailyLifeTools({ activeTool }) {
   const [monthlyKm, setMonthlyKm] = useState('1500');
   const [fuelEfficiency, setFuelEfficiency] = useState('12');
   const [fuelType, setFuelType] = useState('special');
-  const [liveFuelPrices, setLiveFuelPrices] = useState(null);
-  const [fuelPriceDate, setFuelPriceDate] = useState('December 2024');
+  const [liveFuelPrices] = useState(null);
+  const [fuelPriceDate] = useState('December 2024');
 
   // Default fuel prices (Dec 2024 UAE prices)
   const defaultFuelPrices = { special: 2.66, super: 2.77, e_plus: 2.58, diesel: 2.79 };
@@ -48,7 +45,7 @@ export default function DailyLifeTools({ activeTool }) {
   useEffect(() => {
     const rentPrefs = loadPrefs('daily-rent');
     if (rentPrefs?.salary) setSalary(rentPrefs.salary);
-    
+
     const livingPrefs = loadPrefs('daily-living');
     if (livingPrefs?.rent) setRent(livingPrefs.rent);
   }, []);

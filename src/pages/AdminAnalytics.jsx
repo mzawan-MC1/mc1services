@@ -82,7 +82,7 @@ export default function AdminAnalytics() {
 }
 
 // Runtime PropTypes are not used in this JavaScript project.
-// eslint-disable-next-line react/prop-types
+
 function MetricCard({ title, value, icon: Icon }) {
   return (
     <Card>

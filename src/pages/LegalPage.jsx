@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
 import SEOHead from '../components/SEOHead';
@@ -34,7 +33,7 @@ export default function LegalPage({ slug, defaultTitle }) {
       <SEOHead pageIdentifier={slug} />
       <div className="min-h-screen pt-24 pb-16 bg-slate-50">
         <div className="container mx-auto px-6">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-8 md:p-12"
@@ -42,8 +41,8 @@ export default function LegalPage({ slug, defaultTitle }) {
             <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-8 pb-6 border-b border-slate-100">
               {title}
             </h1>
-            
-            <div 
+
+            <div
               className="prose prose-slate max-w-none prose-headings:font-bold prose-a:text-blue-600 hover:prose-a:text-blue-700"
               dir={isRTL ? 'rtl' : 'ltr'}
               dangerouslySetInnerHTML={{ __html: content }}

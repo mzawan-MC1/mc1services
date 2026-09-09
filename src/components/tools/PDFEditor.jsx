@@ -1,14 +1,13 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload, Download, Type, PenLine, Trash2, Plus, Move, Square, Circle, Minus, FileSignature } from 'lucide-react';
+import { Download, Type, Trash2, Plus, Move, Square, Circle, Minus, FileSignature } from 'lucide-react';
 import { toast } from 'sonner';
-import { CopyButton, ResetButton } from './ToolHelpers';
+import { ResetButton } from './ToolHelpers';
 import ShareTool from './ShareTool';
 import { jsPDF } from 'jspdf';
 
@@ -17,20 +16,20 @@ export default function PDFEditor() {
   const [activeTab, setActiveTab] = useState('text');
   const [elements, setElements] = useState([]);
   const [selectedElement, setSelectedElement] = useState(null);
-  const [signature, setSignature] = useState(null);
+
   const [isDrawing, setIsDrawing] = useState(false);
-  
+
   // New element form state
   const [newText, setNewText] = useState('');
   const [newTextColor, setNewTextColor] = useState('#000000');
   const [newTextSize, setNewTextSize] = useState([16]);
   const [newTextFont, setNewTextFont] = useState('Arial');
-  
-  const canvasRef = useRef(null);
+
+
   const signatureRef = useRef(null);
   const previewRef = useRef(null);
   const imageRef = useRef(null);
-  
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -47,7 +46,7 @@ export default function PDFEditor() {
       reader.readAsDataURL(file);
     }
   };
-  
+
   // Add text element
   const addTextElement = () => {
     if (!newText.trim()) return;
@@ -65,7 +64,7 @@ export default function PDFEditor() {
     setNewText('');
     toast.success('Text added! Drag to position.');
   };
-  
+
   // Add form field
   const addFormField = (fieldType) => {
     const newElement = {
@@ -82,7 +81,7 @@ export default function PDFEditor() {
     setElements([...elements, newElement]);
     toast.success(`${fieldType} field added!`);
   };
-  
+
   // Signature canvas handling
   const startDrawing = (e) => {
     if (activeTab !== 'signature') return;
@@ -93,7 +92,7 @@ export default function PDFEditor() {
     ctx.beginPath();
     ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
   };
-  
+
   const draw = (e) => {
     if (!isDrawing || activeTab !== 'signature') return;
     const canvas = signatureRef.current;
@@ -105,22 +104,22 @@ export default function PDFEditor() {
     ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
     ctx.stroke();
   };
-  
+
   const stopDrawing = () => {
     setIsDrawing(false);
   };
-  
+
   const clearSignature = () => {
     const canvas = signatureRef.current;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    setSignature(null);
+
   };
-  
+
   const saveSignature = () => {
     const canvas = signatureRef.current;
     const dataUrl = canvas.toDataURL('image/png');
-    setSignature(dataUrl);
+
     const newElement = {
       id: Date.now(),
       type: 'signature',
@@ -133,31 +132,31 @@ export default function PDFEditor() {
     setElements([...elements, newElement]);
     toast.success('Signature added to document!');
   };
-  
+
   // Remove element
   const removeElement = (id) => {
     setElements(elements.filter(el => el.id !== id));
     setSelectedElement(null);
   };
-  
+
   // Update element position
   const updateElementPosition = (id, x, y) => {
     setElements(elements.map(el => el.id === id ? { ...el, x, y } : el));
   };
-  
+
   // Draw preview
   const drawPreview = useCallback(() => {
     const canvas = previewRef.current;
     const img = imageRef.current;
     if (!canvas || !img) return;
-    
+
     const ctx = canvas.getContext('2d');
     canvas.width = img.width;
     canvas.height = img.height;
-    
+
     // Draw base image
     ctx.drawImage(img, 0, 0);
-    
+
     // Draw elements
     elements.forEach(el => {
       if (el.type === 'text') {
@@ -201,7 +200,7 @@ export default function PDFEditor() {
           ctx.drawImage(sigImg, el.x, el.y, el.width, el.height);
         };
       }
-      
+
       // Highlight selected
       if (selectedElement === el.id) {
         ctx.strokeStyle = '#3b82f6';
@@ -214,11 +213,11 @@ export default function PDFEditor() {
       }
     });
   }, [elements, selectedElement]);
-  
+
   useEffect(() => {
     if (pdfImage) drawPreview();
   }, [pdfImage, elements, selectedElement, drawPreview]);
-  
+
   // Handle canvas click to select/move elements
   const handleCanvasClick = (e) => {
     const canvas = previewRef.current;
@@ -227,60 +226,60 @@ export default function PDFEditor() {
     const scaleY = canvas.height / rect.height;
     const x = (e.clientX - rect.left) * scaleX;
     const y = (e.clientY - rect.top) * scaleY;
-    
+
     // Find clicked element
     const clicked = elements.find(el => {
       const elWidth = el.width || 100;
       const elHeight = el.height || el.size || 20;
       return x >= el.x && x <= el.x + elWidth && y >= el.y - elHeight && y <= el.y;
     });
-    
+
     setSelectedElement(clicked?.id || null);
   };
-  
+
   // Toggle field check
   const toggleFieldCheck = (id) => {
-    setElements(elements.map(el => 
+    setElements(elements.map(el =>
       el.id === id ? { ...el, checked: !el.checked } : el
     ));
   };
-  
+
   // Update field value
   const updateFieldValue = (id, value) => {
-    setElements(elements.map(el => 
+    setElements(elements.map(el =>
       el.id === id ? { ...el, value } : el
     ));
   };
-  
+
   // Download as PDF
   const downloadPDF = () => {
     const canvas = previewRef.current;
     if (!canvas) return;
-    
+
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
     const pdf = new jsPDF({
       orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
       unit: 'px',
       format: [canvas.width, canvas.height]
     });
-    
+
     pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
     pdf.save('edited-document.pdf');
     toast.success('PDF downloaded!');
   };
-  
+
   // Download as image
   const downloadImage = () => {
     const canvas = previewRef.current;
     if (!canvas) return;
-    
+
     const link = document.createElement('a');
     link.download = 'edited-document.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
     toast.success('Image downloaded!');
   };
-  
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -288,12 +287,12 @@ export default function PDFEditor() {
         <ShareTool toolId="pdf-edit" toolName="PDF Editor" />
       </div>
       <p className="text-sm text-slate-500">Upload a PDF page (as image) to add text, fill forms, and sign documents.</p>
-      
+
       <div>
         <Label>Upload PDF Page (JPG/PNG)</Label>
         <Input type="file" accept="image/*" onChange={handleImageUpload} className="mt-2" />
       </div>
-      
+
       {pdfImage && (
         <>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -311,7 +310,7 @@ export default function PDFEditor() {
                 <Trash2 className="w-4 h-4 mr-1" /> Remove
               </TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="text" className="space-y-4 mt-4">
               <div className="grid md:grid-cols-4 gap-4">
                 <div className="md:col-span-2">
@@ -343,7 +342,7 @@ export default function PDFEditor() {
                 </Button>
               </div>
             </TabsContent>
-            
+
             <TabsContent value="forms" className="space-y-4 mt-4">
               <p className="text-sm text-slate-600">Add form fields to fill out the document.</p>
               <div className="flex flex-wrap gap-2">
@@ -357,7 +356,7 @@ export default function PDFEditor() {
                   <Minus className="w-4 h-4 mr-1" /> Text Field
                 </Button>
               </div>
-              
+
               {elements.filter(el => el.type === 'field').length > 0 && (
                 <div className="bg-slate-50 rounded-xl p-4 space-y-3">
                   <Label>Fill Form Fields</Label>
@@ -365,9 +364,9 @@ export default function PDFEditor() {
                     <div key={el.id} className="flex items-center gap-3">
                       {el.fieldType === 'checkbox' && (
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input 
-                            type="checkbox" 
-                            checked={el.checked} 
+                          <input
+                            type="checkbox"
+                            checked={el.checked}
                             onChange={() => toggleFieldCheck(el.id)}
                             className="w-5 h-5 rounded border-slate-300"
                           />
@@ -376,9 +375,9 @@ export default function PDFEditor() {
                       )}
                       {el.fieldType === 'radio' && (
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input 
-                            type="radio" 
-                            checked={el.checked} 
+                          <input
+                            type="radio"
+                            checked={el.checked}
                             onChange={() => toggleFieldCheck(el.id)}
                             className="w-5 h-5"
                           />
@@ -387,8 +386,8 @@ export default function PDFEditor() {
                       )}
                       {el.fieldType === 'textbox' && (
                         <div className="flex-1">
-                          <Input 
-                            value={el.value} 
+                          <Input
+                            value={el.value}
                             onChange={(e) => updateFieldValue(el.id, e.target.value)}
                             placeholder={`Text field ${el.id}`}
                           />
@@ -402,7 +401,7 @@ export default function PDFEditor() {
                 </div>
               )}
             </TabsContent>
-            
+
             <TabsContent value="signature" className="space-y-4 mt-4">
               <p className="text-sm text-slate-600">Draw your signature below:</p>
               <div className="border-2 border-dashed border-slate-300 rounded-xl p-2 bg-white">
@@ -435,7 +434,7 @@ export default function PDFEditor() {
                 </Button>
               </div>
             </TabsContent>
-            
+
             <TabsContent value="remove" className="space-y-4 mt-4">
               <p className="text-sm text-slate-600">Click on elements in the preview to select, then remove them here.</p>
               {elements.length === 0 ? (
@@ -463,7 +462,7 @@ export default function PDFEditor() {
               )}
             </TabsContent>
           </Tabs>
-          
+
           {/* Position controls for selected element */}
           {selectedElement && (
             <div className="bg-blue-50 rounded-xl p-4">
@@ -471,16 +470,16 @@ export default function PDFEditor() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>X: {elements.find(e => e.id === selectedElement)?.x || 0}</Label>
-                  <Slider 
-                    value={[elements.find(e => e.id === selectedElement)?.x || 0]} 
+                  <Slider
+                    value={[elements.find(e => e.id === selectedElement)?.x || 0]}
                     onValueChange={([x]) => updateElementPosition(selectedElement, x, elements.find(e => e.id === selectedElement)?.y || 0)}
                     min={0} max={800} className="mt-2"
                   />
                 </div>
                 <div>
                   <Label>Y: {elements.find(e => e.id === selectedElement)?.y || 0}</Label>
-                  <Slider 
-                    value={[elements.find(e => e.id === selectedElement)?.y || 0]} 
+                  <Slider
+                    value={[elements.find(e => e.id === selectedElement)?.y || 0]}
                     onValueChange={([y]) => updateElementPosition(selectedElement, elements.find(e => e.id === selectedElement)?.x || 0, y)}
                     min={0} max={1200} className="mt-2"
                   />
@@ -488,17 +487,17 @@ export default function PDFEditor() {
               </div>
             </div>
           )}
-          
+
           {/* Preview */}
           <div className="bg-slate-100 p-4 rounded-xl overflow-auto">
-            <canvas 
-              ref={previewRef} 
+            <canvas
+              ref={previewRef}
               onClick={handleCanvasClick}
-              className="max-w-full h-auto mx-auto rounded-lg border cursor-pointer" 
-              style={{ maxHeight: 500 }} 
+              className="max-w-full h-auto mx-auto rounded-lg border cursor-pointer"
+              style={{ maxHeight: 500 }}
             />
           </div>
-          
+
           {/* Download buttons */}
           <div className="flex gap-2">
             <Button onClick={downloadPDF} className="bg-gradient-to-r from-red-500 to-orange-500 text-white">

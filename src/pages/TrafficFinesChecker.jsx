@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Car, ExternalLink, AlertTriangle, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -83,7 +83,7 @@ export default function TrafficFinesChecker() {
           <div>
             <p className="font-medium text-amber-800">Demo Version</p>
             <p className="text-sm text-amber-700">
-              This tool shows sample data for demonstration purposes. For actual fines, 
+              This tool shows sample data for demonstration purposes. For actual fines,
               please use the official government portals linked below.
             </p>
           </div>

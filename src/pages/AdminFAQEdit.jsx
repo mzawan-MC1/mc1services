@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -30,13 +30,13 @@ export default function AdminFAQEdit() {
   });
 
   useEffect(() => {
-    if (faq) setFormData({ 
-      question: faq.question || '', 
-      answer: faq.answer || '', 
-      question_ar: faq.question_ar || '', 
-      answer_ar: faq.answer_ar || '', 
-      category: faq.category || 'general', 
-      display_order: faq.display_order || 0 
+    if (faq) setFormData({
+      question: faq.question || '',
+      answer: faq.answer || '',
+      question_ar: faq.question_ar || '',
+      answer_ar: faq.answer_ar || '',
+      category: faq.category || 'general',
+      display_order: faq.display_order || 0
     });
   }, [faq]);
 
@@ -47,8 +47,9 @@ export default function AdminFAQEdit() {
       }
       let nextOrder = parseInt(data.display_order, 10);
       if (!nextOrder || nextOrder <= 0) {
-        const { data: last } = await supabase.from('faqs').select('display_order').order('display_order', { ascending: false }).limit(1);
-        nextOrder = (last && last[0]?.display_order ? last[0].display_order : 0) + 1;
+        const existingFaqs = await dataLayer.faqs.getAll();
+        const highestOrder = existingFaqs.reduce((highest, faq) => Math.max(highest, faq.display_order || 0), 0);
+        nextOrder = highestOrder + 1;
       }
       if (isEditing) {
         await dataLayer.faqs.update(id, { ...data, display_order: nextOrder });

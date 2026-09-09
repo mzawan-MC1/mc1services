@@ -1,12 +1,11 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { 
+import {
   Server, Shield, Cloud, Headphones, Settings, Users,
-  ArrowRight, CheckCircle 
+  ArrowRight, CheckCircle
 } from 'lucide-react';
 import SectionHeader from '../components/ui/SectionHeader';
 import PortfolioCard from '../components/ui/PortfolioCard';

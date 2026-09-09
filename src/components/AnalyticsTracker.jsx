@@ -28,7 +28,7 @@ export default function AnalyticsTracker() {
           user_agent: navigator.userAgent,
           session_id: getSessionId()
         });
-      } catch (err) {
+      } catch (_err) {
         // Silent fail
       }
     };

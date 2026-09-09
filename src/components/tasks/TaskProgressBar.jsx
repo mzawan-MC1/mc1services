@@ -1,4 +1,3 @@
-import React from 'react'
 
 export default function TaskProgressBar({ completed = 0, total = 0, status = 'pending', showText = true, compact = false }) {
   let pct = 0

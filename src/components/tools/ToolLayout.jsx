@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../../utils';
 import { motion } from 'framer-motion';
@@ -13,7 +13,7 @@ export default function ToolLayout({ title, description, icon: Icon, color, chil
   useEffect(() => {
     // Update document title
     document.title = metaTitle || `${title} | Free UAE Tool | MCS Consultancy`;
-    
+
     // Update or create meta description
     let metaDesc = document.querySelector('meta[name="description"]');
     if (!metaDesc) {

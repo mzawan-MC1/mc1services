@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../dataLayer';
@@ -20,7 +19,7 @@ export default function StatsSection() {
     queryFn: async () => {
       const sections = await dataLayer.homeContent.getBySection('stats');
       if (sections[0]?.content_data?.stats) {
-        return sections[0].content_data.stats; 
+        return sections[0].content_data.stats;
       }
       return stats;
     },
