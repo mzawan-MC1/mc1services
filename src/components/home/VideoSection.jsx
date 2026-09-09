@@ -52,20 +52,20 @@ export default function VideoSection() {
               {getLoc(videoContent, 'title') || t('home.video_section.title', 'Your Partner in Digital Transformation')}
             </h2>
             <div className="text-lg text-slate-600 mb-8 leading-relaxed whitespace-pre-line">
-              {getLoc(videoContent, 'description') || t('home.video_section.desc', 'MCS Consultancy is a full-service technology and marketing agency dedicated to helping businesses thrive in the digital age. We combine technical expertise with creative excellence to deliver solutions that drive real results.\n\nFrom startups to enterprises, we\'ve helped over 80 clients achieve their digital goals through innovative software development, strategic marketing, and cutting-edge IT solutions.')}
+              {getLoc(videoContent, 'description') || t('home.video_section.desc', 'MCS Consultancy brings technology, marketing, automation, and IT expertise together to solve practical business problems. We focus on clear communication, dependable delivery, and maintainable solutions.')}
             </div>
             <div className="flex flex-wrap gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full" />
-                <span className="text-slate-600">{t('home.video_section.features.agile', 'Agile Methodology')}</span>
+                <span className="text-slate-600">{t('home.video_section.features.agile', 'Clear Communication')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                <span className="text-slate-600">{t('home.video_section.features.support', '24/7 Support')}</span>
+                <span className="text-slate-600">{t('home.video_section.features.support', 'Practical Delivery')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-purple-500 rounded-full" />
-                <span className="text-slate-600">{t('home.video_section.features.global', 'Global Delivery')}</span>
+                <span className="text-slate-600">{t('home.video_section.features.global', 'Ongoing Support')}</span>
               </div>
             </div>
           </motion.div>

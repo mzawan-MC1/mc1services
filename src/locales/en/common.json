@@ -61,18 +61,18 @@
     "lets_discuss": "Let's discuss how we can help you achieve your digital goals with our comprehensive solutions.",
     "book_consultation": "Book a Consultation",
     "explore_services": "Explore Services",
-    "hero_title_default": "We Build Digital Experiences That Drive Growth",
-    "hero_desc_default": "From cutting-edge software solutions to data-driven marketing strategies, we transform your vision into digital success.",
-    "view_work": "View Our Work",
-    "future_ready": "Future-Ready Tech & Marketing Consultancy",
+    "hero_title_default": "Practical Digital Solutions Built Around Your Business",
+    "hero_desc_default": "Websites, custom software, mobile apps, automation, digital marketing, and IT support delivered by one accountable team.",
+    "view_work": "Explore Our Services",
+    "future_ready": "Technology, Marketing & Automation Partner",
     "video_section": {
       "subtitle": "Who We Are",
       "title": "Your Partner in Digital Transformation",
-      "desc": "MCS Consultancy is a full-service technology and marketing agency dedicated to helping businesses thrive in the digital age. We combine technical expertise with creative excellence to deliver solutions that drive real results.\n\nFrom startups to enterprises, we've helped over 80 clients achieve their digital goals through innovative software development, strategic marketing, and cutting-edge IT solutions.",
+      "desc": "MCS Consultancy brings technology, marketing, automation, and IT expertise together to solve practical business problems. We focus on clear communication, dependable delivery, and solutions your team can continue to use and maintain.",
       "features": {
-        "agile": "Agile Methodology",
-        "support": "24/7 Support",
-        "global": "Global Delivery"
+        "agile": "Clear Communication",
+        "support": "Practical Delivery",
+        "global": "Ongoing Support"
       }
     },
     "process": {
@@ -132,7 +132,7 @@
     "about_title": "Driving Digital Transformation",
     "about_desc": "We're a team of passionate technologists, creatives, and strategists dedicated to helping businesses thrive in the digital age.",
     "our_story": "Our Story",
-    "our_story_content": "Founded with a vision to bridge the gap between technology and business success, MCS Consultancy has grown from a small team of developers into a full-service digital agency serving clients worldwide.\n\nOver the years, we've expanded our expertise to encompass web and app development, digital marketing, production services, and comprehensive IT solutions. Our multidisciplinary approach allows us to deliver integrated solutions that drive real business results.\n\nToday, we're proud to be trusted partners for businesses of all sizes, from ambitious startups to established enterprises. Our commitment to quality, innovation, and client success remains at the heart of everything we do.",
+    "our_story_content": "MCS Consultancy brings software, marketing, production, automation, and IT capabilities together under one team. We begin with the business need, define a practical plan, and deliver the right mix of services for each project.\n\nOur aim is straightforward: communicate clearly, execute dependably, and build solutions that remain useful and maintainable after launch.",
     "built_on_innovation": "Built on a Foundation of Innovation",
     "our_values": "Our Values",
     "what_drives_us": "What Drives Us",
@@ -221,8 +221,8 @@
   "portfolio": {
     "hero": {
       "subtitle": "Our Portfolio",
-      "title": "Our Work Speaks for Itself",
-      "desc": "Explore our diverse portfolio of successful projects across development, marketing, and creative services."
+      "title": "Selected Work and Project Experience",
+      "desc": "Browse the projects that have been approved for public display across our technology, marketing, and creative services."
     },
     "categories": {
       "all": "All Projects",
@@ -247,6 +247,12 @@
     },
     "client": "Client",
     "empty": "No projects found in this category.",
+    "empty_title": "Our project showcase is being updated",
+    "empty_description": "We are preparing selected work for publication. Tell us what you need and we will discuss relevant experience privately.",
+    "start_project": "Discuss Your Project",
+    "load_error": "Portfolio temporarily unavailable",
+    "load_error_description": "We could not load our work right now. Please try again.",
+    "try_again": "Try Again",
     "detail": {
       "project_not_found": "Project Not Found",
       "back_to_portfolio": "Back to Portfolio",

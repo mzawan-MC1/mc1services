@@ -19,12 +19,12 @@ export default function HeroSection() {
 
   const getLoc = (key) => getLocalizedValue(heroContent, key, i18n.language, false);
 
-  const title = getLoc('title') || t('home.hero_title_default', 'We Build Digital Experiences That Drive Growth');
-  const description = getLoc('description') || t('home.hero_desc_default', 'From cutting-edge software solutions to data-driven marketing strategies, we transform your vision into digital success.');
+  const title = getLoc('title') || t('home.hero_title_default', 'Practical Digital Solutions Built Around Your Business');
+  const description = getLoc('description') || t('home.hero_desc_default', 'Websites, custom software, mobile apps, automation, digital marketing, and IT support delivered by one accountable team.');
   const buttonText = getLoc('button_text') || t('home.book_consultation', 'Book Consultation');
   const buttonLink = heroContent?.button_link || 'Contact';
-  const buttonTextSecondary = getLoc('button_text_secondary') || t('home.view_work', 'View Our Work');
-  const buttonLinkSecondary = heroContent?.button_link_secondary || 'Portfolio';
+  const buttonTextSecondary = getLoc('button_text_secondary') || t('home.view_work', 'Explore Our Services');
+  const buttonLinkSecondary = heroContent?.button_link_secondary || 'DevelopmentServices';
   const showSecondaryButton = heroContent?.show_secondary_button !== false;
   const sectionHeight = heroContent?.section_height || 'min-h-screen';
 
@@ -93,7 +93,7 @@ export default function HeroSection() {
           >
             <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-blue-300 text-sm font-medium mb-8 border border-white/10">
               <Rocket className="w-4 h-4" />
-              {t('home.future_ready', 'Future-Ready Tech & Marketing Consultancy')}
+              {t('home.future_ready', 'Technology, Marketing & Automation Partner')}
             </span>
           </motion.div>
 

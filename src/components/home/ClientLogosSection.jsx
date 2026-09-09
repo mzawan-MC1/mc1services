@@ -11,17 +11,8 @@ export default function ClientLogosSection() {
     queryFn: () => dataLayer.clientLogos.getAll()
   });
 
-  // Fallback logos if none in database
-  const displayLogos = logos.length > 0 ? logos : [
-    { name: 'TechCorp', logo_url: null },
-    { name: 'InnovateLab', logo_url: null },
-    { name: 'GrowthCo', logo_url: null },
-    { name: 'FutureTech', logo_url: null },
-    { name: 'DigitalFirst', logo_url: null },
-    { name: 'CloudNine', logo_url: null }
-  ];
-
-  const items = displayLogos;
+  // Client names are trust signals, so only show entries managed in the CMS.
+  const items = logos.filter((logo) => logo?.name);
   const itemsPerView = 7;
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -40,6 +31,8 @@ export default function ClientLogosSection() {
     }
     return arr;
   }, [items, index]);
+
+  if (items.length === 0) return null;
 
   return (
     <section className="py-16 bg-slate-50">
@@ -70,7 +63,7 @@ export default function ClientLogosSection() {
               transition={{ delay: i * 0.1 }}
               className="grayscale hover:grayscale-0 transition-all duration-300"
             >
-              <a href={logo.website_url || '#'} target={logo.website_url ? '_blank' : undefined} rel="noopener noreferrer">
+              <a href={logo.website_url || undefined} target={logo.website_url ? '_blank' : undefined} rel="noopener noreferrer">
                 {logo.logo_url ? (
                   <img src={logo.logo_url} alt={logo.name} className="h-10 md:h-12 object-contain" />
                 ) : (

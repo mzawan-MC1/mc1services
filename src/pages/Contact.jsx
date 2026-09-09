@@ -330,7 +330,7 @@ export default function Contact() {
                         })} 
                         maxLength={40}
                         className={`mt-2 ${errors.phone ? 'border-red-500' : ''}`}
-                        placeholder="+1 (234) 567-890" 
+                        placeholder="+971 50 123 4567"
                         dir="ltr"
                       />
                       {errors.phone && (

@@ -17,7 +17,7 @@ export default function PortfolioCard({ portfolio, index = 0, masonry = false })
   };
 
   const title = getLoc(portfolio, 'title');
-  const description = getLoc(portfolio, 'description') || getLoc(portfolio, 'short_description');
+  const description = getLoc(portfolio, 'short_description') || getLoc(portfolio, 'description');
   const clientName = portfolio.client_name; // Assuming client name is usually same, or we could add _ar if needed but usually names are proper nouns.
 
   return (

@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { Loader2 } from 'lucide-react';
+import { ArrowRight, FolderOpen, Loader2, RefreshCw } from 'lucide-react';
 import PortfolioCard from '../components/ui/PortfolioCard';
 import SEOHead from '../components/SEOHead';
 import { useTranslation } from 'react-i18next';
@@ -25,10 +26,16 @@ export default function Portfolio() {
     { value: 'creative', label: t('portfolio.categories.creative', 'Creative') }
   ];
 
-  const { data: portfolios = [], isLoading } = useQuery({
+  const { data: portfolios = [], isLoading, isError, refetch } = useQuery({
     queryKey: ['portfolios'],
     queryFn: () => dataLayer.portfolio.getPublished()
   });
+
+  const availableCategories = portfolios.length === 0
+    ? []
+    : categories.filter((category) =>
+        category.value === 'all' || portfolios.some((portfolio) => portfolio.category === category.value)
+      );
 
   const filteredPortfolios = activeCategory === 'all'
     ? portfolios
@@ -53,10 +60,10 @@ export default function Portfolio() {
               {t('portfolio.hero.subtitle', 'Our Portfolio')}
             </span>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              {t('portfolio.hero.title', 'Our Work Speaks for Itself')}
+              {t('portfolio.hero.title', 'Selected Work and Project Experience')}
             </h1>
             <p className="text-xl text-slate-300">
-              {t('portfolio.hero.desc', 'Explore our diverse portfolio of successful projects across development, marketing, and creative services.')}
+              {t('portfolio.hero.desc', 'Browse the projects that have been approved for public display across our technology, marketing, and creative services.')}
             </p>
           </motion.div>
         </div>
@@ -67,7 +74,7 @@ export default function Portfolio() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Category Filter */}
           <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {categories.map(cat => (
+            {availableCategories.map(cat => (
               <button
                 key={cat.value}
                 onClick={() => setActiveCategory(cat.value)}
@@ -86,9 +93,25 @@ export default function Portfolio() {
             <div className="flex justify-center py-20">
               <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
             </div>
+          ) : isError ? (
+            <div className="mx-auto max-w-xl rounded-2xl border border-red-100 bg-red-50 px-6 py-12 text-center">
+              <RefreshCw className="mx-auto mb-4 h-10 w-10 text-red-500" />
+              <h2 className="text-2xl font-bold text-slate-900">{t('portfolio.load_error', 'Portfolio temporarily unavailable')}</h2>
+              <p className="mt-3 text-slate-600">{t('portfolio.load_error_description', 'We could not load our work right now. Please try again.')}</p>
+              <button type="button" onClick={() => refetch()} className="mt-6 inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 font-medium text-white transition hover:bg-slate-800">
+                <RefreshCw className="h-4 w-4" />
+                {t('portfolio.try_again', 'Try Again')}
+              </button>
+            </div>
           ) : filteredPortfolios.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-slate-500 text-lg">{t('portfolio.empty', 'No projects found in this category.')}</p>
+            <div className="mx-auto max-w-xl rounded-2xl border border-slate-200 bg-slate-50 px-6 py-12 text-center">
+              <FolderOpen className="mx-auto mb-4 h-10 w-10 text-blue-600" />
+              <h2 className="text-2xl font-bold text-slate-900">{t('portfolio.empty_title', 'Our project showcase is being updated')}</h2>
+              <p className="mt-3 text-slate-600">{t('portfolio.empty_description', 'We are preparing selected work for publication. Tell us what you need and we will discuss relevant experience privately.')}</p>
+              <Link to="/Contact" className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 font-medium text-white shadow-sm transition hover:shadow-lg">
+                {t('portfolio.start_project', 'Discuss Your Project')}
+                <ArrowRight className="h-4 w-4 rtl:rotate-180" />
+              </Link>
             </div>
           ) : (
             <motion.div

@@ -122,11 +122,9 @@ export default function About() {
                 {getLoc(aboutContent.intro, 'title') || t('about.built_on_innovation', 'Built on a Foundation of Innovation')}
               </h2>
               <div className="space-y-4 text-slate-600 leading-relaxed whitespace-pre-line">
-                {getLoc(aboutContent.intro, 'content') || t('about.our_story_content', `Founded with a vision to bridge the gap between technology and business success, MCS Consultancy has grown from a small team of developers into a full-service digital agency serving clients worldwide.
+                {getLoc(aboutContent.intro, 'content') || t('about.our_story_content', `MCS Consultancy brings software, marketing, production, automation, and IT capabilities together under one team. We begin with the business need, define a practical plan, and deliver the right mix of services for each project.
 
-Over the years, we've expanded our expertise to encompass web and app development, digital marketing, production services, and comprehensive IT solutions. Our multidisciplinary approach allows us to deliver integrated solutions that drive real business results.
-
-Today, we're proud to be trusted partners for businesses of all sizes, from ambitious startups to established enterprises. Our commitment to quality, innovation, and client success remains at the heart of everything we do.`)}
+Our aim is straightforward: communicate clearly, execute dependably, and build solutions that remain useful and maintainable after launch.`)}
               </div>
             </motion.div>
             <motion.div
@@ -169,31 +167,6 @@ Today, we're proud to be trusted partners for businesses of all sizes, from ambi
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-3">{value.title}</h3>
                 <p className="text-slate-600">{value.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="py-24 bg-gradient-to-br from-slate-900 to-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8 text-center">
-            {[
-              { value: '10+', label: t('about.years_experience', 'Years of Experience') },
-              { value: '150+', label: t('about.projects_delivered', 'Projects Delivered') },
-              { value: '50+', label: t('about.happy_clients', 'Happy Clients') },
-              { value: '25+', label: t('about.team_members', 'Team Members') }
-            ].map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-              >
-                <p className="text-5xl font-bold text-white mb-2">{stat.value}</p>
-                <p className="text-slate-400">{stat.label}</p>
               </motion.div>
             ))}
           </div>
