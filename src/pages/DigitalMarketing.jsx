@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
 import {
-  TrendingUp, Users, Target, BarChart, Share2, Search,
+  Users, Target, BarChart, Share2, Search,
   ArrowRight, Mail, Megaphone
 } from 'lucide-react';
 import SectionHeader from '../components/ui/SectionHeader';
@@ -54,12 +54,6 @@ export default function DigitalMarketing() {
     }
   ];
 
-  const stats = [
-    { value: '250%', label: t('services_page.digital_marketing.stats.roi', 'Average ROI Increase') },
-    { value: '150%', label: t('services_page.digital_marketing.stats.traffic', 'Traffic Growth') },
-    { value: '85%', label: t('services_page.digital_marketing.stats.leads', 'Lead Generation Boost') }
-  ];
-
   const { data: portfolios = [] } = useQuery({
     queryKey: ['marketing-portfolios'],
     queryFn: async () => {
@@ -91,7 +85,7 @@ export default function DigitalMarketing() {
                 {t('services_page.digital_marketing.hero_desc', 'Data-driven marketing strategies that amplify your brand, attract qualified leads, and maximize your ROI.')}
               </p>
               <Link
-                to={createPageUrl('Contact')}
+                to={createPageUrl('Contact?service=digital_marketing')}
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all"
               >
                 {t('services_page.digital_marketing.cta', 'Grow Your Business')}
@@ -111,24 +105,6 @@ export default function DigitalMarketing() {
             </motion.div>
           </div>
         </div>
-      </section>
-
-      {/* Stats */}
-      <section className="relative -mt-12 z-10 max-w-4xl mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-white rounded-2xl shadow-xl p-8 grid md:grid-cols-3 gap-8"
-        >
-          {stats.map((stat, i) => (
-            <div key={i} className="text-center">
-              <TrendingUp className="w-8 h-8 text-green-600 mx-auto mb-3" />
-              <p className="text-4xl font-bold text-slate-900 mb-1">{stat.value}</p>
-              <p className="text-slate-600">{stat.label}</p>
-            </div>
-          ))}
-        </motion.div>
       </section>
 
       {/* Services */}
@@ -187,7 +163,7 @@ export default function DigitalMarketing() {
             {t('services_page.digital_marketing.cta_desc', "Let's create a marketing strategy that delivers results.")}
           </p>
           <Link
-            to={createPageUrl('Contact')}
+            to={createPageUrl('Contact?service=digital_marketing')}
             className="inline-flex items-center gap-2 bg-white text-green-900 px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all"
           >
             {t('services_page.digital_marketing.cta_button', 'Get Started')}

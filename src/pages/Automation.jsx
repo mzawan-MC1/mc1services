@@ -44,7 +44,7 @@ export default function Automation() {
       icon: Bot,
       title: t('services_page.automation.services.ai.title', 'AI & Chatbots'),
       description: t('services_page.automation.services.ai.desc', 'Intelligent automation powered by artificial intelligence.'),
-      features: t('services_page.automation.services.ai.features', { returnObjects: true }) || ['Customer Support Bots', 'Lead Qualification', 'FAQ Automation', '24/7 Availability']
+      features: t('services_page.automation.services.ai.features', { returnObjects: true }) || ['Customer Support Bots', 'Lead Qualification', 'FAQ Automation', 'Consistent Availability']
     },
     {
       icon: Target,
@@ -64,13 +64,6 @@ export default function Automation() {
       description: t('services_page.automation.services.integration.desc', 'Connect your tools and automate data flow between systems.'),
       features: t('services_page.automation.services.integration.features', { returnObjects: true }) || ['Zapier/Make', 'API Integrations', 'Data Sync', 'Multi-platform']
     }
-  ];
-
-  const benefits = [
-    { value: '70%', label: t('services_page.automation.benefits.time_saved', 'Time Saved') },
-    { value: '3x', label: t('services_page.automation.benefits.productivity_boost', 'Productivity Boost') },
-    { value: '50%', label: t('services_page.automation.benefits.cost_reduction', 'Cost Reduction') },
-    { value: '24/7', label: t('services_page.automation.benefits.operation_24_7', 'Operation') }
   ];
 
   const faqs = [
@@ -107,36 +100,13 @@ export default function Automation() {
             <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
               {t('services_page.automation.hero_desc', 'Save time, reduce costs, and scale your operations with intelligent automation solutions.')}
             </p>
-            <Link to={createPageUrl('Contact')}>
+            <Link to={createPageUrl('Contact?service=automation')}>
               <Button size="lg" className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-8 py-6 text-lg rounded-full">
                 {t('services_page.automation.cta', 'Get Started')}
                 <ArrowRight className="w-5 h-5 ml-2 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
               </Button>
             </Link>
           </motion.div>
-        </div>
-      </section>
-
-      {/* Benefits */}
-      <section className="py-16 bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {benefits.map((b, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="text-center"
-              >
-                <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent mb-2">
-                  {b.value}
-                </div>
-                <p className="text-slate-600 font-medium">{b.label}</p>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -279,11 +249,11 @@ export default function Automation() {
             {t('services_page.automation.cta_title', 'Ready to Automate Your Business?')}
           </h2>
           <p className="text-xl text-amber-100 mb-8">
-            {t('services_page.automation.cta_desc', 'Get a free automation audit and discover how much time you can save.')}
+            {t('services_page.automation.cta_desc', 'Tell us about your current workflow and the bottlenecks you want to remove.')}
           </p>
-          <Link to={createPageUrl('Contact')}>
+          <Link to={createPageUrl('Contact?service=automation')}>
             <Button size="lg" className="bg-white text-orange-600 hover:bg-orange-50 px-8 py-6 text-lg rounded-full">
-              {t('services_page.automation.cta_button', 'Book Free Consultation')}
+              {t('services_page.automation.cta_button', 'Discuss Automation')}
               <ArrowRight className="w-5 h-5 ml-2 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
             </Button>
           </Link>

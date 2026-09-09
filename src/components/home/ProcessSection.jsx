@@ -61,7 +61,7 @@ export default function ProcessSection() {
             {getLoc(processContent, 'title') || t('home.process.title', 'How We Work')}
           </h2>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            {getLoc(processContent, 'description') || t('home.process.desc', 'A proven methodology that transforms ideas into successful digital products')}
+            {getLoc(processContent, 'description') || t('home.process.desc', 'A clear four-step process that turns business needs into practical digital solutions')}
           </p>
         </motion.div>
 

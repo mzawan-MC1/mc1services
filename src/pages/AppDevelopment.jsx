@@ -53,7 +53,7 @@ export default function AppDevelopment() {
                 {t('services_page.app_development.description', 'Transform your ideas into powerful mobile applications that users love. Native and cross-platform solutions for iOS and Android.')}
               </p>
               <Link
-                to={createPageUrl('Contact')}
+                to={createPageUrl('Contact?service=app_development')}
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all"
               >
                 {t('services_page.app_development.cta', 'Start Your App')}
@@ -128,8 +128,8 @@ export default function AppDevelopment() {
               />
               <div className="space-y-4">
                 {(t('services_page.app_development.why_mobile.list', { returnObjects: true }) || [
-                  'Over 6 billion smartphone users worldwide',
-                  'Users spend 90% of mobile time in apps',
+                  'Reach customers on the devices they use every day',
+                  'Offer focused experiences for repeat customer interactions',
                   'Higher engagement than mobile websites',
                   'Push notifications for direct communication',
                   'Offline functionality capabilities'
@@ -172,7 +172,7 @@ export default function AppDevelopment() {
             {t('services_page.app_development.cta_desc', "Let's turn your idea into reality.")}
           </p>
           <Link
-            to={createPageUrl('Contact')}
+            to={createPageUrl('Contact?service=app_development')}
             className="inline-flex items-center gap-2 bg-white text-purple-900 px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all"
           >
             {t('services_page.app_development.cta_button', 'Get In Touch')}

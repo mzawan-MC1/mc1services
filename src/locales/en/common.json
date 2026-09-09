@@ -78,7 +78,7 @@
     "process": {
       "subtitle": "Our Process",
       "title": "How We Work",
-      "desc": "A proven methodology that transforms ideas into successful digital products",
+      "desc": "A clear four-step process that turns business needs into practical digital solutions",
       "steps": {
         "discovery": { "title": "Discover", "desc": "We dive deep into your business goals, audience, and challenges to craft the perfect strategy." },
         "design": { "title": "Design", "desc": "Our creative team designs stunning, user-centered experiences that captivate and convert." },
@@ -159,11 +159,12 @@
   "contact": {
     "get_in_touch_hero": "Get In Touch",
     "lets_build_amazing": "Let's Build Something Amazing Together",
-    "ready_to_start": "Ready to start your project? Schedule a free consultation or send us a message.",
+    "ready_to_start": "Ready to start your project? Send us the details and we will discuss the right next step.",
     "contact_info": "Contact Information",
     "have_project": "Have a project in mind? Let's discuss how we can help bring your vision to life.",
     "chat_whatsapp": "Chat on WhatsApp",
     "send_message_title": "Send Us a Message",
+    "form_intro": "Choose the closest service and briefly describe the outcome you need.",
     "full_name": "Full Name",
     "email_address": "Email Address",
     "phone_number": "Phone Number",
@@ -178,10 +179,13 @@
       "app_development": "Mobile App Development",
       "custom_software": "Custom Software",
       "digital_marketing": "Digital Marketing",
+      "automation": "Business Automation",
+      "production": "Production & Creative Services",
       "branding": "Branding & Design",
       "seo": "SEO & SEM",
       "social_media": "Social Media Marketing",
       "it_consulting": "IT Consulting",
+      "it_services": "IT Services & Consulting",
       "other": "Other"
     },
     "placeholders": {
@@ -275,7 +279,7 @@
       "what_we_offer": "What We Offer",
       "process": "Our Process",
       "how_we_work": "How We Work",
-      "process_desc": "A proven methodology that ensures your project is delivered on time and exceeds expectations.",
+      "process_desc": "A clear delivery process that keeps scope, progress, and decisions visible.",
       "our_work": "Our Work",
       "recent_work": "See some of our recent work."
     },
@@ -311,7 +315,7 @@
       "hero_title": "Grow Your Brand",
       "hero_title_highlight": "With Data-Driven Marketing",
       "hero_desc": "Strategic marketing campaigns that amplify your brand, engage your audience, and drive measurable growth.",
-      "cta_button": "Get Your Marketing Plan",
+      "cta_button": "Discuss Your Marketing Goals",
       "services_title": "Our Marketing Services",
       "services_desc": "Full-spectrum marketing solutions to grow your business",
       "services": {
@@ -323,7 +327,7 @@
         "analytics": { "title": "Analytics & Reporting", "desc": "Data-driven insights to optimize your marketing ROI.", "features": ["Custom Dashboards", "Performance Tracking", "Conversion Analysis", "Competitor Analysis"] }
       },
       "case_studies_title": "Real Results, Real Growth",
-      "case_studies_desc": "Average results from our marketing campaigns",
+      "case_studies_desc": "Examples of marketing work approved for public display",
       "results": {
         "traffic": "Increase in Traffic",
         "conversion": "Conversion Rate",
@@ -336,7 +340,7 @@
       "faq_title": "Frequently Asked Questions",
       "cta_title": "Ready to Grow Your Business?",
       "cta_desc": "Let's create a marketing strategy that drives results.",
-      "cta_final_button": "Get a Free Consultation"
+      "cta_final_button": "Discuss Your Marketing"
     },
     "app_development": {
       "title": "App Development",
@@ -355,8 +359,8 @@
       "why_mobile": {
         "title": "Reach Your Customers Anywhere",
         "list": [
-          "Over 6 billion smartphone users worldwide",
-          "Users spend 90% of mobile time in apps",
+          "Reach customers on the devices they use every day",
+          "Offer focused experiences for repeat customer interactions",
           "Higher engagement than mobile websites",
           "Push notifications for direct communication",
           "Offline functionality capabilities"
@@ -385,7 +389,7 @@
         "email": { "title": "Email Marketing Automation", "desc": "Automated email campaigns that nurture leads and drive conversions.", "features": ["Drip Campaigns", "Behavioral Triggers", "A/B Testing", "Personalization"] },
         "crm": { "title": "CRM Automation", "desc": "Automate your customer relationship management for better engagement.", "features": ["Lead Scoring", "Contact Management", "Sales Pipeline", "Follow-up Automation"] },
         "analytics": { "title": "Marketing Analytics", "desc": "Automated reporting and insights for data-driven decisions.", "features": ["Automated Reports", "Dashboard Creation", "ROI Tracking", "Performance Alerts"] },
-        "ai": { "title": "AI & Chatbots", "desc": "Intelligent automation powered by artificial intelligence.", "features": ["Customer Support Bots", "Lead Qualification", "FAQ Automation", "24/7 Availability"] },
+        "ai": { "title": "AI & Chatbots", "desc": "Intelligent automation powered by artificial intelligence.", "features": ["Customer Support Bots", "Lead Qualification", "FAQ Automation", "Consistent Availability"] },
         "social": { "title": "Social Media Automation", "desc": "Schedule and automate your social media presence.", "features": ["Post Scheduling", "Content Calendar", "Auto-responses", "Analytics Integration"] },
         "task": { "title": "Task & Project Automation", "desc": "Automate project workflows and team collaboration.", "features": ["Task Assignment", "Deadline Reminders", "Status Updates", "Team Notifications"] },
         "integration": { "title": "Integration Automation", "desc": "Connect your tools and automate data flow between systems.", "features": ["Zapier/Make", "API Integrations", "Data Sync", "Multi-platform"] }
@@ -407,8 +411,8 @@
         "tools": { "q": "What tools do you use for automation?", "a": "We work with leading platforms like HubSpot, Salesforce, Zapier, Make, and custom solutions depending on your needs and existing tech stack." }
       },
       "cta_title": "Ready to Automate Your Business?",
-      "cta_desc": "Get a free automation audit and discover how much time you can save.",
-      "cta_button": "Book Free Consultation"
+      "cta_desc": "Tell us about your current workflow and the bottlenecks you want to remove.",
+      "cta_button": "Discuss Automation"
     },
     "digital_marketing": {
       "hero_title": "Digital Marketing",
@@ -444,14 +448,14 @@
         "cloud": { "title": "Cloud Services", "desc": "AWS, Azure, and Google Cloud solutions and migration." },
         "security": { "title": "Cybersecurity", "desc": "Protect your business with comprehensive security solutions." },
         "infrastructure": { "title": "Infrastructure", "desc": "Network design, implementation, and management." },
-        "support": { "title": "IT Support", "desc": "24/7 technical support and helpdesk services." },
+        "support": { "title": "IT Support", "desc": "Flexible technical support and helpdesk services." },
         "managed": { "title": "Managed Services", "desc": "Complete IT management so you can focus on business." },
         "consulting": { "title": "IT Consulting", "desc": "Strategic technology planning and guidance." }
       },
       "why_choose_title": "Partner With IT Experts",
       "benefits": [
-        "Reduce operational costs by up to 40%",
-        "24/7 monitoring and support",
+        "Reduce operational friction and avoidable costs",
+        "Monitoring and support matched to your needs",
         "Enterprise-grade security",
         "Scalable infrastructure",
         "Dedicated account management",
@@ -493,7 +497,7 @@
       "faq_title": "Frequently Asked Questions",
       "cta_title": "Ready to Build Something Amazing?",
       "cta_desc": "Let's discuss your project and create a custom solution.",
-      "get_quote": "Get a Free Quote",
+      "get_quote": "Request a Project Estimate",
       "start_project": "Start Your Project",
       "services_list": {
         "website_development": { "title": "Website Development", "desc": "Custom websites that are fast, secure, and optimized for conversions.", "features": ["Responsive Design", "CMS Integration", "E-commerce", "Performance Optimization"] },

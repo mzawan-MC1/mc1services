@@ -68,7 +68,7 @@ export default function WebDevelopment() {
                 {getLoc(pageContent, 'hero_description') || t('services_page.web_development.description', 'We create stunning, high-performance websites and web applications that help your business stand out and succeed online.')}
               </p>
               <Link
-                to={createPageUrl('Contact')}
+                to={createPageUrl('Contact?service=web_development')}
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all"
               >
                 {getLoc(pageContent, 'cta_text') || t('services_page.hero.cta', 'Start Your Project')}
@@ -125,7 +125,7 @@ export default function WebDevelopment() {
           <SectionHeader
             label={t('services_page.sections.process', 'Our Process')}
             title={t('services_page.sections.how_we_work', 'How We Work')}
-            description={t('services_page.sections.process_desc', 'A proven methodology that ensures your project is delivered on time and exceeds expectations.')}
+            description={t('services_page.sections.process_desc', 'A clear delivery process that keeps scope, progress, and decisions visible.')}
           />
           <div className="grid md:grid-cols-4 gap-8">
             {process.map((item, i) => (
@@ -177,7 +177,7 @@ export default function WebDevelopment() {
             {t('services_page.cta.lets_create', "Let's create something amazing together.")}
           </p>
           <Link
-            to={createPageUrl('Contact')}
+            to={createPageUrl('Contact?service=web_development')}
             className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all"
           >
             {t('services_page.cta.get_in_touch', 'Get In Touch')}

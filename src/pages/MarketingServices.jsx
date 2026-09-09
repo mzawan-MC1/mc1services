@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
 import { Users, Target, BarChart, Share2, Search,
-  ArrowRight, Check, ChevronDown, Mail, BarChart3
+  ArrowRight, Check, ChevronDown, Mail
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -56,12 +56,6 @@ export default function MarketingServices() {
       description: t('services_page.marketing_services.services.analytics.desc', 'Data-driven insights to optimize your marketing ROI.'),
       features: t('services_page.marketing_services.services.analytics.features', { returnObjects: true }) || ['Custom Dashboards', 'Performance Tracking', 'Conversion Analysis', 'Competitor Analysis']
     }
-  ];
-
-  const caseStudyResults = [
-    { label: t('services_page.marketing_services.results.traffic', 'Increase in Traffic'), before: '5K', after: '50K', growth: '+900%' },
-    { label: t('services_page.marketing_services.results.conversion', 'Conversion Rate'), before: '1.2%', after: '4.8%', growth: '+300%' },
-    { label: t('services_page.marketing_services.results.revenue', 'Revenue Growth'), before: '$20K', after: '$180K', growth: '+800%' }
   ];
 
   const { data: portfolios = [] } = useQuery({
@@ -127,9 +121,9 @@ export default function MarketingServices() {
             <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
               {t('services_page.marketing_services.hero_desc', 'Strategic marketing campaigns that amplify your brand, engage your audience, and drive measurable growth.')}
             </p>
-            <Link to={createPageUrl('Contact')}>
+            <Link to={createPageUrl('Contact?service=digital_marketing')}>
               <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-6 text-lg rounded-full">
-                {t('services_page.marketing_services.cta_button', 'Get Your Marketing Plan')}
+                {t('services_page.marketing_services.cta_button', 'Discuss Your Marketing Goals')}
                 <ArrowRight className="w-5 h-5 ml-2 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
               </Button>
             </Link>
@@ -183,53 +177,6 @@ export default function MarketingServices() {
         </div>
       </section>
 
-      {/* Case Study Results */}
-      <section className="py-24 bg-gradient-to-br from-slate-900 to-purple-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              {t('services_page.marketing_services.case_studies_title', 'Real Results, Real Growth')}
-            </h2>
-            <p className="text-xl text-slate-300">{t('services_page.marketing_services.case_studies_desc', 'Average results from our marketing campaigns')}</p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {caseStudyResults.map((result, i) => (
-              <motion.div
-                key={result.label}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 text-center"
-              >
-                <BarChart3 className="w-10 h-10 text-purple-400 mx-auto mb-4" />
-                <p className="text-slate-400 mb-4">{result.label}</p>
-                <div className="flex items-center justify-center gap-4 mb-4">
-                  <div>
-                    <p className="text-sm text-slate-500">{t('services_page.marketing_services.results.before', 'Before')}</p>
-                    <p className="text-2xl font-bold text-slate-400">{result.before}</p>
-                  </div>
-                  <ArrowRight className="w-6 h-6 text-purple-400 rtl:rotate-180" />
-                  <div>
-                    <p className="text-sm text-slate-500">{t('services_page.marketing_services.results.after', 'After')}</p>
-                    <p className="text-2xl font-bold text-white">{result.after}</p>
-                  </div>
-                </div>
-                <Badge className="bg-green-500/20 text-green-400 border-0 text-lg py-1 px-3">
-                  {result.growth}
-                </Badge>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Pricing */}
       {plans.length > 0 && (
         <section className="py-24 bg-white">
@@ -267,7 +214,7 @@ export default function MarketingServices() {
                       </li>
                     ))}
                   </ul>
-                  <Link to={createPageUrl('Contact')}>
+                  <Link to={createPageUrl('Contact?service=digital_marketing')}>
                     <Button className={`w-full ${plan.is_popular ? 'bg-white text-purple-600 hover:bg-purple-50' : 'bg-purple-600 text-white hover:bg-purple-700'}`}>
                       {plan.cta_text || t('common.get_started', 'Get Started')}
                     </Button>
@@ -343,9 +290,9 @@ export default function MarketingServices() {
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">{t('services_page.marketing_services.cta_title', 'Ready to Grow Your Business?')}</h2>
           <p className="text-xl text-purple-100 mb-8">{t('services_page.marketing_services.cta_desc', "Let's create a marketing strategy that drives results.")}</p>
-          <Link to={createPageUrl('Contact')}>
+          <Link to={createPageUrl('Contact?service=digital_marketing')}>
             <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-50 px-8 py-6 text-lg rounded-full">
-              {t('services_page.marketing_services.cta_final_button', 'Get a Free Consultation')}
+              {t('services_page.marketing_services.cta_final_button', 'Discuss Your Marketing')}
               <ArrowRight className="w-5 h-5 ml-2 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
             </Button>
           </Link>

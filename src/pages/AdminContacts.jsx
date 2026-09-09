@@ -29,9 +29,15 @@ import AdminLayout from '../components/admin/AdminLayout';
 const serviceLabels = {
   web_development: 'Web Development',
   app_development: 'App Development',
+  custom_software: 'Custom Software',
   digital_marketing: 'Digital Marketing',
-  production: 'Production',
-  it_services: 'IT Services',
+  automation: 'Business Automation',
+  production: 'Production & Creative Services',
+  branding: 'Branding & Design',
+  seo: 'SEO & SEM',
+  social_media: 'Social Media Marketing',
+  it_services: 'IT Services & Consulting',
+  it_consulting: 'IT Services & Consulting',
   other: 'Other'
 };
 

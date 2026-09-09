@@ -132,7 +132,7 @@ export default function DevelopmentServices() {
             <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
               {t('development_services.hero_desc', 'From websites to enterprise software, we deliver cutting-edge solutions that drive business growth.')}
             </p>
-            <Link to={createPageUrl('Contact')}>
+            <Link to={createPageUrl('Contact?service=custom_software')}>
               <Button size="lg" className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-6 text-lg rounded-full">
                 {t('development_services.start_project', 'Start Your Project')}
                 <ArrowRight className="w-5 h-5 ml-2 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
@@ -268,7 +268,7 @@ export default function DevelopmentServices() {
                       </li>
                     ))}
                   </ul>
-                  <Link to={createPageUrl('Contact')}>
+                  <Link to={createPageUrl('Contact?service=custom_software')}>
                     <Button className={`w-full ${plan.is_popular ? 'bg-white text-blue-600 hover:bg-blue-50' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>
                       {plan.cta_text || t('common.get_started', 'Get Started')}
                     </Button>
@@ -348,9 +348,9 @@ export default function DevelopmentServices() {
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">{t('development_services.cta_title', 'Ready to Build Something Amazing?')}</h2>
           <p className="text-xl text-blue-100 mb-8">{t('development_services.cta_desc', "Let's discuss your project and create a custom solution.")}</p>
-          <Link to={createPageUrl('Contact')}>
+          <Link to={createPageUrl('Contact?service=custom_software')}>
             <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-6 text-lg rounded-full">
-              {t('development_services.get_quote', 'Get a Free Quote')}
+              {t('development_services.get_quote', 'Request a Project Estimate')}
               <ArrowRight className="w-5 h-5 ml-2 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
             </Button>
           </Link>

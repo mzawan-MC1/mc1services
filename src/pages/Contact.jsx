@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
@@ -17,9 +18,27 @@ import { getLocalizedFaqQuestion, getLocalizedFaqAnswer } from '../utils/faqMapp
 import TurnstileWidget from '../components/TurnstileWidget';
 
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '';
+const SERVICE_INTEREST_VALUES = new Set([
+  'web_development',
+  'app_development',
+  'custom_software',
+  'digital_marketing',
+  'automation',
+  'production',
+  'branding',
+  'seo',
+  'social_media',
+  'it_services',
+  'other'
+]);
 
 export default function Contact() {
   const { t, i18n } = useTranslation();
+  const [searchParams] = useSearchParams();
+  const requestedService = searchParams.get('service');
+  const [selectedService, setSelectedService] = useState(() =>
+    SERVICE_INTEREST_VALUES.has(requestedService) ? requestedService : ''
+  );
   const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
   const [turnstileToken, setTurnstileToken] = useState('');
@@ -31,24 +50,33 @@ export default function Contact() {
     { value: 'app_development', label: t('contact.services.app_development', 'Mobile App Development') },
     { value: 'custom_software', label: t('contact.services.custom_software', 'Custom Software') },
     { value: 'digital_marketing', label: t('contact.services.digital_marketing', 'Digital Marketing') },
+    { value: 'automation', label: t('contact.services.automation', 'Business Automation') },
+    { value: 'production', label: t('contact.services.production', 'Production & Creative Services') },
     { value: 'branding', label: t('contact.services.branding', 'Branding & Design') },
     { value: 'seo', label: t('contact.services.seo', 'SEO & SEM') },
     { value: 'social_media', label: t('contact.services.social_media', 'Social Media Marketing') },
-    { value: 'it_consulting', label: t('contact.services.it_consulting', 'IT Consulting') },
+    { value: 'it_services', label: t('contact.services.it_services', 'IT Services & Consulting') },
     { value: 'other', label: t('contact.services.other', 'Other') }
   ];
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm({
+  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
     defaultValues: {
       name: '',
       email: '',
       phone: '',
       company: '',
-      service_interest: '',
+      service_interest: selectedService,
       message: '',
       website: ''
     }
   });
+
+  useEffect(() => {
+    if (SERVICE_INTEREST_VALUES.has(requestedService)) {
+      setSelectedService(requestedService);
+      setValue('service_interest', requestedService, { shouldDirty: false });
+    }
+  }, [requestedService, setValue]);
 
   const { data: contactContent = {} } = useQuery({
     queryKey: ['contact-content'],
@@ -102,6 +130,7 @@ export default function Contact() {
     onSuccess: () => {
       setSubmitted(true);
       reset();
+      setSelectedService('');
       toast.success(t('contact.message_received', 'Message sent successfully!'));
     },
     onError: () => {
@@ -148,7 +177,7 @@ export default function Contact() {
               {getLoc(contactContent.hero, 'title') || t('contact.lets_build_amazing', "Let's Build Something Amazing Together")}
             </h1>
             <p className="text-xl text-slate-300">
-              {getLoc(contactContent.hero, 'content') || t('contact.ready_to_start', 'Ready to start your project? Schedule a free consultation or send us a message.')}
+              {getLoc(contactContent.hero, 'content') || t('contact.ready_to_start', 'Ready to start your project? Send us the details and we will discuss the right next step.')}
             </p>
           </motion.div>
         </div>
@@ -270,9 +299,12 @@ export default function Contact() {
                     <Label htmlFor="website">Website</Label>
                     <Input id="website" tabIndex={-1} autoComplete="off" {...register('website')} />
                   </div>
-                  <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                  <h2 className="text-2xl font-bold text-slate-900 mb-2">
                     {getLoc(contactContent.form, 'title') || t('contact.send_message_title', 'Send Us a Message')}
                   </h2>
+                  <p className="text-slate-600 mb-6">
+                    {t('contact.form_intro', 'Choose the closest service and briefly describe the outcome you need.')}
+                  </p>
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <Label htmlFor="name">{t('contact.full_name', 'Full Name')} *</Label>
@@ -352,7 +384,13 @@ export default function Contact() {
                     </div>
                     <div className="md:col-span-2">
                       <Label htmlFor="service">{t('contact.service_interest', 'What service are you interested in?')}</Label>
-                      <Select value={watch('service_interest')} onValueChange={(v) => setValue('service_interest', v)}>
+                      <Select
+                        value={selectedService}
+                        onValueChange={(value) => {
+                          setSelectedService(value);
+                          setValue('service_interest', value, { shouldDirty: true });
+                        }}
+                      >
                         <SelectTrigger className="mt-2">
                           <SelectValue placeholder={t('common.view_all', "Select a service")} />
                         </SelectTrigger>

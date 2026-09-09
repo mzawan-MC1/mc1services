@@ -19,14 +19,14 @@ export default function ITServices() {
     { icon: Cloud, title: t('services_page.it_services.services.cloud.title', 'Cloud Services'), desc: t('services_page.it_services.services.cloud.desc', 'AWS, Azure, and Google Cloud solutions and migration.') },
     { icon: Shield, title: t('services_page.it_services.services.security.title', 'Cybersecurity'), desc: t('services_page.it_services.services.security.desc', 'Protect your business with comprehensive security solutions.') },
     { icon: Server, title: t('services_page.it_services.services.infrastructure.title', 'Infrastructure'), desc: t('services_page.it_services.services.infrastructure.desc', 'Network design, implementation, and management.') },
-    { icon: Headphones, title: t('services_page.it_services.services.support.title', 'IT Support'), desc: t('services_page.it_services.services.support.desc', '24/7 technical support and helpdesk services.') },
+    { icon: Headphones, title: t('services_page.it_services.services.support.title', 'IT Support'), desc: t('services_page.it_services.services.support.desc', 'Flexible technical support and helpdesk services.') },
     { icon: Settings, title: t('services_page.it_services.services.managed.title', 'Managed Services'), desc: t('services_page.it_services.services.managed.desc', 'Complete IT management so you can focus on business.') },
     { icon: Users, title: t('services_page.it_services.services.consulting.title', 'IT Consulting'), desc: t('services_page.it_services.services.consulting.desc', 'Strategic technology planning and guidance.') }
   ];
 
   const benefits = t('services_page.it_services.benefits', { returnObjects: true }) || [
-    'Reduce operational costs by up to 40%',
-    '24/7 monitoring and support',
+    'Reduce operational friction and avoidable costs',
+    'Monitoring and support matched to your needs',
     'Enterprise-grade security',
     'Scalable infrastructure',
     'Dedicated account management',
@@ -62,7 +62,7 @@ export default function ITServices() {
                 {t('services_page.it_services.hero_desc', 'Comprehensive IT solutions to streamline your operations, enhance security, and drive business growth.')}
               </p>
               <Link
-                to={createPageUrl('Contact')}
+                to={createPageUrl('Contact?service=it_services')}
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all"
               >
                 {t('services_page.it_services.cta', 'Get IT Support')}
@@ -175,7 +175,7 @@ export default function ITServices() {
             {t('services_page.it_services.cta_desc', "Let's optimize your IT infrastructure together.")}
           </p>
           <Link
-            to={createPageUrl('Contact')}
+            to={createPageUrl('Contact?service=it_services')}
             className="inline-flex items-center gap-2 bg-white text-cyan-900 px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all"
           >
             {t('services_page.it_services.cta_button', 'Contact Us')}
