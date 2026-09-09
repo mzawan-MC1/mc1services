@@ -51,7 +51,7 @@ function ToolLoading() {
 }
 
 export default function Tools() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [activeCategory, setActiveCategory] = useState('marketing');
   const [activeTool, setActiveTool] = useState(null);
   const toolRef = useRef(null);
@@ -80,28 +80,27 @@ export default function Tools() {
     queryFn: () => dataLayer.tools.getVisible()
   });
 
-  // SEO Meta Tags - Managed via SEOHead
+  // Structured data mirrors the tools currently enabled in the CMS.
   useEffect(() => {
-    // Add ItemList schema for all tools
     const existingSchema = document.querySelector('script[data-schema="tools-hub"]');
-    if (existingSchema) existingSchema.remove();
+    existingSchema?.remove();
 
+    if (dbTools.length === 0) return undefined;
+
+    const itemListElement = dbTools.map((tool, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": i18n.language === 'ar' && tool.title_ar ? tool.title_ar : tool.title
+    }));
     const schemaData = {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      "name": "UAE Tools Hub – Free Online Tools",
-      "description": "Comprehensive collection of 30+ free calculators and tools for UAE residents, visitors, marketers, and businesses",
+      "name": t('tools.hero_title', 'UAE Tools Hub – Free Online Tools'),
+      "description": t('tools.schema_description', 'Practical online calculators and utilities for UAE residents, visitors, marketers and businesses.'),
       "mainEntity": {
         "@type": "ItemList",
-        "numberOfItems": 30,
-        "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Marketing Budget Calculator" },
-          { "@type": "ListItem", "position": 2, "name": "ROAS Calculator" },
-          { "@type": "ListItem", "position": 3, "name": "QR Code Generator" },
-          { "@type": "ListItem", "position": 4, "name": "UAE Gratuity Calculator" },
-          { "@type": "ListItem", "position": 5, "name": "Visa Overstay Calculator" },
-          { "@type": "ListItem", "position": 6, "name": "AED Currency Converter" }
-        ]
+        "numberOfItems": dbTools.length,
+        "itemListElement": itemListElement
       }
     };
 
@@ -111,12 +110,8 @@ export default function Tools() {
     script.textContent = JSON.stringify(schemaData);
     document.head.appendChild(script);
 
-    return () => {
-      const schema = document.querySelector('script[data-schema="tools-hub"]');
-      if (schema) schema.remove();
-    };
-  }, []);
-
+    return () => script.remove();
+  }, [dbTools, i18n.language, t]);
   const handleToolClick = (toolId) => {
     setActiveTool(activeTool === toolId ? null : toolId);
     setTimeout(() => {
@@ -160,7 +155,9 @@ export default function Tools() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-3xl mx-auto">
             <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">{t('tools.hero_title', 'UAE Tools Hub – Free Online Tools')}</h1>
             <p className="text-lg text-slate-300 mb-6">
-              {t('tools.hero_desc', '30+ free calculators and tools for digital marketers, creative professionals, UAE residents, visitors, and businesses. No registration required.')}
+              {toolsLoading
+                ? t('tools.hero_desc_loading', 'Free online tools for UAE residents, visitors, marketers and businesses. No registration required.')
+                : t('tools.hero_desc', { count: dbTools.length, defaultValue: '{{count}} free online tools for UAE residents, visitors, marketers and businesses. No registration required.' })}
             </p>
           </motion.div>
         </div>

@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import PortfolioCard from '../components/ui/PortfolioCard';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedValue } from '../utils';
+import SEOHead from '../components/SEOHead';
 
 export default function DevelopmentServices() {
   const { t, i18n } = useTranslation();
@@ -97,10 +98,10 @@ export default function DevelopmentServices() {
   });
 
   const defaultFaqs = [
-    { question: t('services_page.development_services.faqs.timeline.q', 'How long does a typical project take?'), answer: t('services_page.development_services.faqs.timeline.a', 'Project timelines vary based on scope. A simple website takes 4-6 weeks, while complex apps may take 3-6 months.') },
+    { question: t('services_page.development_services.faqs.timeline.q', 'How long does a typical project take?'), answer: t('services_page.development_services.faqs.timeline.a', 'The schedule depends on scope, integrations, content readiness and review requirements. We agree a realistic delivery plan after discovery.') },
     { question: t('services_page.development_services.faqs.tech.q', 'What technologies do you use?'), answer: t('services_page.development_services.faqs.tech.a', 'We use modern tech stacks including React, Node.js, Python, AWS, and more based on project requirements.') },
     { question: t('services_page.development_services.faqs.support.q', 'Do you provide ongoing support?'), answer: t('services_page.development_services.faqs.support.a', 'Yes, we offer maintenance packages and ongoing support for all projects we deliver.') },
-    { question: t('services_page.development_services.faqs.communication.q', 'How do you handle project communication?'), answer: t('services_page.development_services.faqs.communication.a', 'We use Slack, weekly sprints, and regular demos to keep you updated throughout the project.') }
+    { question: t('services_page.development_services.faqs.communication.q', 'How do you handle project communication?'), answer: t('services_page.development_services.faqs.communication.a', 'We agree communication channels, review points and progress updates that suit the project and your team.') }
   ];
 
   const displayFaqs = faqs.length > 0 ? faqs : defaultFaqs;
@@ -108,6 +109,7 @@ export default function DevelopmentServices() {
 
   return (
     <div>
+      <SEOHead pageIdentifier="development-services" />
       {/* Hero */}
       <section className="relative py-24 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 overflow-hidden">
         <div className="absolute inset-0">
@@ -121,20 +123,20 @@ export default function DevelopmentServices() {
             className="text-center max-w-4xl mx-auto"
           >
             <Badge className="bg-white/10 text-blue-300 border-0 mb-6 text-sm py-1.5 px-4">
-              {t('development_services.hero_badge', 'Development Services')}
+              {t('services_page.development_services.hero_badge', 'Development Services')}
             </Badge>
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              {t('development_services.hero_title', 'Build Your Digital')}
+              {t('services_page.development_services.hero_title', 'Build Your Digital')}
               <span className="block bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                {t('development_services.hero_title_highlight', 'Future With Us')}
+                {t('services_page.development_services.hero_title_highlight', 'Future With Us')}
               </span>
             </h1>
             <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
-              {t('development_services.hero_desc', 'From websites to enterprise software, we deliver cutting-edge solutions that drive business growth.')}
+              {t('services_page.development_services.hero_desc', 'From websites to enterprise software, we deliver cutting-edge solutions that drive business growth.')}
             </p>
             <Link to={createPageUrl('Contact?service=custom_software')}>
               <Button size="lg" className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-6 text-lg rounded-full">
-                {t('development_services.start_project', 'Start Your Project')}
+                {t('services_page.development_services.start_project', 'Start Your Project')}
                 <ArrowRight className="w-5 h-5 ml-2 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
               </Button>
             </Link>
@@ -159,10 +161,10 @@ export default function DevelopmentServices() {
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              {t('development_services.services_title', 'Our Development Services')}
+              {t('services_page.development_services.services_title', 'Our Development Services')}
             </h2>
             <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-              {t('development_services.services_desc', 'Comprehensive solutions for all your software development needs')}
+              {t('services_page.development_services.services_desc', 'Comprehensive solutions for all your software development needs')}
             </p>
           </motion.div>
 
@@ -179,8 +181,8 @@ export default function DevelopmentServices() {
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <service.icon className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2">{t(`development_services.services_list.${service.key}.title`)}</h3>
-                <p className="text-slate-600 text-sm mb-4">{t(`development_services.services_list.${service.key}.desc`)}</p>
+                <h3 className="text-lg font-bold text-slate-900 mb-2">{t(`services_page.development_services.services_list.${service.key}.title`)}</h3>
+                <p className="text-slate-600 text-sm mb-4">{t(`services_page.development_services.services_list.${service.key}.desc`)}</p>
                 <ul className="space-y-1">
                   {service.features.map((f) => (
                     <li key={f} className="flex items-center gap-2 text-sm text-slate-500">
@@ -205,7 +207,7 @@ export default function DevelopmentServices() {
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              {t('development_services.process_title', 'Our Development Process')}
+              {t('services_page.development_services.process_title', 'Our Development Process')}
             </h2>
           </motion.div>
 
@@ -222,8 +224,8 @@ export default function DevelopmentServices() {
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-3 text-white font-bold">
                   {i + 1}
                 </div>
-                <h3 className="font-bold text-slate-900 mb-1">{t(`development_services.process_steps.${step.key}.title`)}</h3>
-                <p className="text-sm text-slate-600">{t(`development_services.process_steps.${step.key}.desc`)}</p>
+                <h3 className="font-bold text-slate-900 mb-1">{t(`services_page.development_services.process_steps.${step.key}.title`)}</h3>
+                <p className="text-sm text-slate-600">{t(`services_page.development_services.process_steps.${step.key}.desc`)}</p>
               </motion.div>
             ))}
           </div>
@@ -240,7 +242,7 @@ export default function DevelopmentServices() {
               className="text-center mb-16"
             >
               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-                {t('development_services.pricing_title', 'Pricing Plans')}
+                {t('services_page.development_services.pricing_title', 'Pricing Plans')}
               </h2>
             </motion.div>
 
@@ -277,7 +279,7 @@ export default function DevelopmentServices() {
               ))}
             </div>
           {plans.length === 0 && (
-            <p className="text-center text-slate-500">{t('development_services.pricing_contact', 'Contact us for custom pricing tailored to your project.')}</p>
+            <p className="text-center text-slate-500">{t('services_page.development_services.pricing_contact', 'Contact us for custom pricing tailored to your project.')}</p>
           )}
         </div>
       </section>
@@ -292,7 +294,7 @@ export default function DevelopmentServices() {
               viewport={{ once: true }}
               className="text-center mb-12"
             >
-              <h2 className="text-3xl font-bold text-slate-900 mb-4">{t('development_services.recent_projects', 'Recent Development Projects')}</h2>
+              <h2 className="text-3xl font-bold text-slate-900 mb-4">{t('services_page.development_services.recent_projects', 'Recent Development Projects')}</h2>
             </motion.div>
             <div className="grid md:grid-cols-3 gap-8">
               {portfolios.map((p, i) => (
@@ -312,7 +314,7 @@ export default function DevelopmentServices() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">{t('development_services.faq_title', 'Frequently Asked Questions')}</h2>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">{t('services_page.development_services.faq_title', 'Frequently Asked Questions')}</h2>
           </motion.div>
 
           <div className="space-y-4">
@@ -346,11 +348,11 @@ export default function DevelopmentServices() {
       {/* CTA */}
       <section className="py-24 bg-gradient-to-br from-blue-600 to-cyan-600">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">{t('development_services.cta_title', 'Ready to Build Something Amazing?')}</h2>
-          <p className="text-xl text-blue-100 mb-8">{t('development_services.cta_desc', "Let's discuss your project and create a custom solution.")}</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">{t('services_page.development_services.cta_title', 'Ready to Build Something Amazing?')}</h2>
+          <p className="text-xl text-blue-100 mb-8">{t('services_page.development_services.cta_desc', "Let's discuss your project and create a custom solution.")}</p>
           <Link to={createPageUrl('Contact?service=custom_software')}>
             <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-6 text-lg rounded-full">
-              {t('development_services.get_quote', 'Request a Project Estimate')}
+              {t('services_page.development_services.get_quote', 'Request a Project Estimate')}
               <ArrowRight className="w-5 h-5 ml-2 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
             </Button>
           </Link>

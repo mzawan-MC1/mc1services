@@ -172,7 +172,7 @@
     "service_interest": "What service are you interested in?",
     "tell_us_about_project": "Tell us about your project",
     "thank_you": "Thank You!",
-    "message_received": "We've received your message and will get back to you within 24 hours.",
+    "message_received": "We've received your message. A member of our team will review it and respond as soon as possible.",
     "faq_title": "Frequently Asked Questions",
     "services": {
       "web_development": "Website Development",
@@ -210,7 +210,7 @@
       },
       "timeline": {
         "q": "What is your typical project timeline?",
-        "a": "Timelines vary based on project scope. Simple websites take 4-6 weeks, while complex applications may take 3-6 months. We'll provide a detailed timeline during our consultation."
+        "a": "The timeline depends on scope, integrations, content readiness and review requirements. We will agree a realistic schedule after understanding the project."
       },
       "support": {
         "q": "Do you offer ongoing support?",
@@ -218,7 +218,7 @@
       },
       "payment": {
         "q": "What are your payment terms?",
-        "a": "We typically work with a 50% upfront payment and 50% upon completion. For larger projects, we can arrange milestone-based payments."
+        "a": "Payment terms are agreed in the proposal and can be structured around suitable project milestones."
       }
     }
   },
@@ -518,16 +518,18 @@
         "deployment": { "title": "Deployment", "desc": "Launch and monitor performance" }
       },
       "faqs": {
-        "timeline": { "q": "How long does a typical project take?", "a": "Project timelines vary based on scope. A simple website takes 4-6 weeks, while complex apps may take 3-6 months." },
+        "timeline": { "q": "How long does a typical project take?", "a": "The schedule depends on scope, integrations, content readiness and review requirements. We agree a realistic delivery plan after discovery." },
         "tech": { "q": "What technologies do you use?", "a": "We use modern tech stacks including React, Node.js, Python, AWS, and more based on project requirements." },
         "support": { "q": "Do you provide ongoing support?", "a": "Yes, we offer maintenance packages and ongoing support for all projects we deliver." },
-        "communication": { "q": "How do you handle project communication?", "a": "We use Slack, weekly sprints, and regular demos to keep you updated throughout the project." }
+        "communication": { "q": "How do you handle project communication?", "a": "We agree communication channels, review points and progress updates that suit the project and your team." }
       }
     }
   },
   "tools": {
     "hero_title": "UAE Tools Hub – Free Online Tools",
-    "hero_desc": "30+ free calculators and tools for digital marketers, creative professionals, UAE residents, visitors, and businesses. No registration required.",
+    "hero_desc": "{{count}} free online tools for UAE residents, visitors, marketers and businesses. No registration required.",
+    "hero_desc_loading": "Free online tools for UAE residents, visitors, marketers and businesses. No registration required.",
+    "schema_description": "Practical online calculators and utilities for UAE residents, visitors, marketers and businesses.",
     "categories": {
       "marketing": "Digital Marketing & Ad Tools",
       "creative": "Creative & Productivity Tools",
@@ -547,19 +549,19 @@
     "check_back": "Check back later for useful calculators and utilities.",
     "about": {
       "title": "About Our UAE Tools",
-      "official_sources": "Official Data Sources",
-      "official_sources_desc": "Calculations use rates from UAE Central Bank, GDRFA, RTA, DEWA, and official government sources.",
-      "standard_formulas": "Standard Formulas",
-      "standard_formulas_desc": "Financial tools follow UAE banking standards including 50% DBR cap, gratuity rules, and visa fine structures.",
+      "official_sources": "Planning References",
+      "official_sources_desc": "Tools use configurable inputs and commonly published reference information. Always verify important figures with the relevant official authority.",
+      "standard_formulas": "Planning-oriented Formulas",
+      "standard_formulas_desc": "Financial and everyday tools provide estimates for initial planning and are not professional, legal or financial advice.",
       "save_prefs": "Save Your Preferences",
       "save_prefs_desc": "Click \"Save Defaults\" on any tool to remember your settings locally. Your data stays in your browser."
     },
     "faq": {
       "title": "Frequently Asked Questions",
       "q1": "Are these tools free to use?",
-      "a1": "Yes, all 30+ tools are completely free with no registration or login required. Use them as many times as you need.",
+      "a1": "Yes, the tools shown on this page are free to use and do not require registration or login.",
       "q2": "How accurate are the calculations?",
-      "a2": "Our tools use official UAE government rates and standard financial formulas. Results are estimates for planning - always verify with official sources for legal matters.",
+      "a2": "Results are estimates for planning. Rates and rules can change, so always verify important figures with the relevant official source or a qualified adviser.",
       "q3": "Do you store my data?",
       "a3": "No, all calculations run in your browser. The only data stored is your saved preferences in localStorage, which stays on your device.",
       "q4": "How do I save my default settings?",

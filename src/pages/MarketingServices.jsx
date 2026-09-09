@@ -85,7 +85,7 @@ export default function MarketingServices() {
   });
 
   const defaultFaqs = [
-    { question: 'How long before I see results?', answer: 'SEO takes 3-6 months, while paid ads can show results within days. We provide monthly reports to track progress.' },
+    { question: 'How long before I see results?', answer: 'Timing depends on the channel, starting position, budget, competition and offer. We define measurable goals and a suitable reporting schedule before launch.' },
     { question: 'What platforms do you manage?', answer: 'We manage Meta (Facebook/Instagram), Google, TikTok, Snapchat, LinkedIn, Twitter, and more.' },
     { question: 'Do you handle content creation?', answer: 'Yes, we offer full content creation including copywriting, graphics, photography, and video production.' },
     { question: 'How do you measure success?', answer: 'We track KPIs like traffic, conversions, ROAS, engagement rates, and provide detailed analytics reports.' }

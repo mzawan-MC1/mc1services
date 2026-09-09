@@ -105,9 +105,9 @@ export default function Contact() {
 
   const defaultFaqs = [
     { question: t('contact.faqs.start.q', 'How do I get started?'), answer: t('contact.faqs.start.a', 'Simply fill out our contact form or schedule a consultation call. We\'ll discuss your project requirements and provide a custom proposal.') },
-    { question: t('contact.faqs.timeline.q', 'What is your typical project timeline?'), answer: t('contact.faqs.timeline.a', 'Timelines vary based on project scope. Simple websites take 4-6 weeks, while complex applications may take 3-6 months. We\'ll provide a detailed timeline during our consultation.') },
+    { question: t('contact.faqs.timeline.q', 'What is your typical project timeline?'), answer: t('contact.faqs.timeline.a', 'The timeline depends on scope, integrations, content readiness and review requirements. We will agree a realistic schedule after understanding the project.') },
     { question: t('contact.faqs.support.q', 'Do you offer ongoing support?'), answer: t('contact.faqs.support.a', 'Yes! We offer various maintenance and support packages to keep your digital assets running smoothly after launch.') },
-    { question: t('contact.faqs.payment.q', 'What are your payment terms?'), answer: t('contact.faqs.payment.a', 'We typically work with a 50% upfront payment and 50% upon completion. For larger projects, we can arrange milestone-based payments.') }
+    { question: t('contact.faqs.payment.q', 'What are your payment terms?'), answer: t('contact.faqs.payment.a', 'Payment terms are agreed in the proposal and can be structured around suitable project milestones.') }
   ];
 
   const displayFaqs = faqs.length > 0 ? faqs : defaultFaqs;
@@ -291,7 +291,7 @@ export default function Contact() {
                     <CheckCircle className="w-8 h-8 text-green-600" />
                   </div>
                   <h3 className="text-2xl font-bold text-slate-900 mb-3">{t('contact.thank_you', 'Thank You!')}</h3>
-                  <p className="text-slate-600">{t('contact.message_received', "We've received your message and will get back to you within 24 hours.")}</p>
+                  <p className="text-slate-600">{t('contact.message_received', "We've received your message. A member of our team will review it and respond as soon as possible.")}</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100">

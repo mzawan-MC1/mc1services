@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
 import {
-  Video, Camera, Mic, Film, Play,
+  Video, Camera, Mic, Film,
   ArrowRight
 } from 'lucide-react';
 import SectionHeader from '../components/ui/SectionHeader';
@@ -90,11 +90,7 @@ export default function Production() {
                 alt={t('alt.video_production', 'Video Production')}
                 className="rounded-3xl shadow-2xl"
               />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition">
-                  <Play className="w-8 h-8 text-orange-600 ml-1 rtl:mr-1 rtl:ml-0" />
-                </div>
-              </div>
+
             </motion.div>
           </div>
         </div>

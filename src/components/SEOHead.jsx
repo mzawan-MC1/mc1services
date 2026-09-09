@@ -2,13 +2,28 @@ import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from './dataLayer';
 import { useTranslation } from 'react-i18next';
+import { getSeoDefaults } from '../config/seoDefaults';
+
+const setMeta = (selector, attribute, value) => {
+  let element = document.querySelector(selector);
+  if (!value) {
+    element?.remove();
+    return;
+  }
+  if (!element) {
+    element = document.createElement('meta');
+    const [name, key] = attribute;
+    element.setAttribute(name, key);
+    document.head.appendChild(element);
+  }
+  element.content = value;
+};
 
 export default function SEOHead({ pageIdentifier }) {
   const { i18n } = useTranslation();
-  const { data: seoData } = useQuery({
+  const { data: seoData, isFetched } = useQuery({
     queryKey: ['page-seo', pageIdentifier],
     queryFn: async () => {
-      // Assuming pageIdentifier maps to page_path in our new schema
       const results = await dataLayer.pageSEO.getByPage(pageIdentifier);
       return results[0] || null;
     },
@@ -16,101 +31,43 @@ export default function SEOHead({ pageIdentifier }) {
   });
 
   useEffect(() => {
-    if (!seoData) return;
+    if (!isFetched) return;
 
     const isAr = i18n.language === 'ar';
-
-    // Helper to get localized value with fallback
+    const defaults = getSeoDefaults(pageIdentifier);
     const getVal = (keyAr, keyEn) => {
+      if (!seoData) return undefined;
       if (isAr && seoData[keyAr]) return seoData[keyAr];
       return seoData[keyEn];
     };
 
-    // Set title
-    const title = getVal('meta_title_ar', 'meta_title');
-    if (title) {
-      document.title = title;
-    }
+    const title = getVal('meta_title_ar', 'meta_title') || (isAr ? defaults.titleAr : defaults.title);
+    const description = getVal('meta_description_ar', 'meta_description') || (isAr ? defaults.descriptionAr : defaults.description);
+    const ogTitle = getVal('og_title_ar', 'og_title') || title;
+    const ogDescription = getVal('og_description_ar', 'og_description') || description;
 
-    // Set meta description
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.name = 'description';
-      document.head.appendChild(metaDesc);
-    }
-    const desc = getVal('meta_description_ar', 'meta_description');
-    if (desc) {
-      metaDesc.content = desc;
-    }
+    document.title = title;
+    setMeta('meta[name="description"]', ['name', 'description'], description);
+    setMeta('meta[name="robots"]', ['name', 'robots'], seoData?.robots || 'index, follow');
 
-    // Set meta keywords
     const keywords = getVal('meta_keywords_ar', 'meta_keywords');
-    if (keywords) {
-      let metaKeywords = document.querySelector('meta[name="keywords"]');
-      if (!metaKeywords) {
-        metaKeywords = document.createElement('meta');
-        metaKeywords.name = 'keywords';
-        document.head.appendChild(metaKeywords);
-      }
-      metaKeywords.content = keywords;
-    }
+    setMeta('meta[name="keywords"]', ['name', 'keywords'], keywords || '');
 
-    // Set canonical URL (usually same for both unless specified otherwise, keeping common for now)
-    if (seoData.canonical_url) {
-      let canonical = document.querySelector('link[rel="canonical"]');
-      if (!canonical) {
-        canonical = document.createElement('link');
-        canonical.rel = 'canonical';
-        document.head.appendChild(canonical);
-      }
-      canonical.href = seoData.canonical_url;
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.rel = 'canonical';
+      document.head.appendChild(canonical);
     }
+    canonical.href = seoData?.canonical_url || new URL(window.location.pathname, window.location.origin).href;
 
-    // Set robots
-    if (seoData.robots) {
-      let robots = document.querySelector('meta[name="robots"]');
-      if (!robots) {
-        robots = document.createElement('meta');
-        robots.name = 'robots';
-        document.head.appendChild(robots);
-      }
-      robots.content = seoData.robots;
-    }
-
-    // Set Open Graph tags
-    const ogTitle = getVal('og_title_ar', 'og_title');
-    if (ogTitle) {
-      let ogTitleElem = document.querySelector('meta[property="og:title"]');
-      if (!ogTitleElem) {
-        ogTitleElem = document.createElement('meta');
-        ogTitleElem.setAttribute('property', 'og:title');
-        document.head.appendChild(ogTitleElem);
-      }
-      ogTitleElem.content = ogTitle;
-    }
-
-    const ogDesc = getVal('og_description_ar', 'og_description');
-    if (ogDesc) {
-      let ogDescElem = document.querySelector('meta[property="og:description"]');
-      if (!ogDescElem) {
-        ogDescElem = document.createElement('meta');
-        ogDescElem.setAttribute('property', 'og:description');
-        document.head.appendChild(ogDescElem);
-      }
-      ogDescElem.content = ogDesc;
-    }
-
-    if (seoData.og_image) {
-      let ogImage = document.querySelector('meta[property="og:image"]');
-      if (!ogImage) {
-        ogImage = document.createElement('meta');
-        ogImage.setAttribute('property', 'og:image');
-        document.head.appendChild(ogImage);
-      }
-      ogImage.content = seoData.og_image;
-    }
-  }, [seoData, i18n.language]);
+    setMeta('meta[property="og:title"]', ['property', 'og:title'], ogTitle);
+    setMeta('meta[property="og:description"]', ['property', 'og:description'], ogDescription);
+    setMeta('meta[property="og:url"]', ['property', 'og:url'], canonical.href);
+    setMeta('meta[property="og:image"]', ['property', 'og:image'], seoData?.og_image || '');
+    setMeta('meta[name="twitter:title"]', ['name', 'twitter:title'], ogTitle);
+    setMeta('meta[name="twitter:description"]', ['name', 'twitter:description'], ogDescription);
+  }, [seoData, isFetched, i18n.language, pageIdentifier]);
 
   return null;
 }

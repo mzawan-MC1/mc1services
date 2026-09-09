@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronDown, Phone, Mail, Linkedin, Twitter, Facebook, Instagram, Youtube } from 'lucide-react';
@@ -12,7 +12,9 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function Layout({ children, currentPageName }) {
   const { t, i18n } = useTranslation();
+  const location = useLocation();
   const isRTL = i18n.language === 'ar';
+  const isAdminPage = currentPageName?.startsWith('Admin');
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -28,7 +30,6 @@ export default function Layout({ children, currentPageName }) {
   }, [isRTL, i18n.language]);
 
   useEffect(() => {
-    const isAdminPage = currentPageName?.startsWith('Admin');
     if (!isAdminPage) {
       const checkAdmin = async () => {
         try {
@@ -64,21 +65,29 @@ export default function Layout({ children, currentPageName }) {
             document.getElementsByTagName('head')[0].appendChild(link);
           }
 
-          if (settingsObj.head_tracking_code) {
-            const div = document.createElement('div');
-            div.innerHTML = settingsObj.head_tracking_code;
-            const scripts = div.querySelectorAll('script, meta, link');
-            scripts.forEach(script => {
-              document.head.appendChild(script.cloneNode(true));
-            });
-          }
         } catch (_err) {
           console.error('Failed to load site settings:', _err);
         }
       };
       loadSettings();
     }
-  }, [currentPageName]);
+  }, [isAdminPage]);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setServicesOpen(false);
+  }, [location.pathname, location.search]);
+
+  useEffect(() => {
+    const closeMenus = (event) => {
+      if (event.key === 'Escape') {
+        setMobileMenuOpen(false);
+        setServicesOpen(false);
+      }
+    };
+    window.addEventListener('keydown', closeMenus);
+    return () => window.removeEventListener('keydown', closeMenus);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -143,7 +152,7 @@ export default function Layout({ children, currentPageName }) {
          If the page is an Admin Page (starts with "Admin"), we do NOT render the public header/footer.
          This prevents double wrapping if the Admin pages already have their own layout (AdminLayout).
       */}
-      {currentPageName?.startsWith('Admin') ? (
+      {isAdminPage ? (
         <main className="flex-1">
           {children}
         </main>
@@ -210,7 +219,7 @@ export default function Layout({ children, currentPageName }) {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex justify-between items-center h-20">
                 {/* Logo */}
-                <Link to={createPageUrl('Home')} className="flex items-center gap-3">
+                <Link to={createPageUrl('Home')} className="flex items-center gap-3" aria-label={t('nav.home', 'Home')}>
                   {siteSettings.logo_url ? (
                     <img
                       src={siteSettings.logo_url}
@@ -240,7 +249,7 @@ export default function Layout({ children, currentPageName }) {
                       <div key={link.name} className="relative group">
                         <button
                           type="button"
-                          className="flex items-center gap-1 text-slate-700 hover:text-blue-600 font-medium transition py-2"
+                          className={`flex items-center gap-1 font-medium transition py-2 ${services.some(service => isActive(service.href)) ? 'text-blue-600' : 'text-slate-700 hover:text-blue-600'}`}
                           onClick={() => setServicesOpen(!servicesOpen)}
                           onFocus={() => setServicesOpen(true)}
                           onMouseEnter={() => setServicesOpen(true)}
@@ -331,7 +340,7 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <div className="px-4 py-4 space-y-2">
                     <div className="mb-4 flex justify-between items-center">
-                      <span className="text-sm font-medium text-slate-500">Language</span>
+                      <span className="text-sm font-medium text-slate-500">{t('common.language', 'Language')}</span>
                       <LanguageSwitcher />
                     </div>
                     {navLinks.map((link) => (
