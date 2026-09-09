@@ -423,11 +423,17 @@ export default function Contact() {
                 transition={{ delay: i * 0.05 }}
                 className="bg-white border border-slate-200 rounded-xl overflow-hidden"
               >
-                <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full flex items-center justify-between p-5 text-left">
+                <button
+                  type="button"
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  aria-expanded={openFaq === i}
+                  aria-controls={`faq-answer-${i}`}
+                  className="w-full flex items-center justify-between p-5 text-left"
+                >
                   <span className="font-medium text-slate-900">{getLocalizedFaqQuestion(faq, i18n.language, t)}</span>
-                  <ChevronDown className={`w-5 h-5 text-slate-500 transition-transform ${openFaq === i ? 'rotate-180' : ''}`} />
+                  <ChevronDown aria-hidden="true" className={`w-5 h-5 text-slate-500 transition-transform ${openFaq === i ? 'rotate-180' : ''}`} />
                 </button>
-                {openFaq === i && <div className="px-5 pb-5 text-slate-600">{getLocalizedFaqAnswer(faq, i18n.language, t)}</div>}
+                {openFaq === i && <div id={`faq-answer-${i}`} className="px-5 pb-5 text-slate-600">{getLocalizedFaqAnswer(faq, i18n.language, t)}</div>}
               </motion.div>
             ))}
           </div>

@@ -239,14 +239,21 @@ export default function Layout({ children, currentPageName }) {
                     link.dropdown ? (
                       <div key={link.name} className="relative group">
                         <button
+                          type="button"
                           className="flex items-center gap-1 text-slate-700 hover:text-blue-600 font-medium transition py-2"
+                          onClick={() => setServicesOpen(!servicesOpen)}
+                          onFocus={() => setServicesOpen(true)}
                           onMouseEnter={() => setServicesOpen(true)}
                           onMouseLeave={() => setServicesOpen(false)}
+                          aria-expanded={servicesOpen}
+                          aria-controls="desktop-services-menu"
+                          aria-haspopup="true"
                         >
                           {link.name}
                           <ChevronDown className={`w-4 h-4 transition-transform ${servicesOpen ? 'rotate-180' : ''}`} />
                         </button>
                         <div
+                          id="desktop-services-menu"
                           className={`absolute top-full ${isRTL ? 'right-0' : 'left-0'} pt-2 ${servicesOpen ? 'block' : 'hidden'}`}
                           onMouseEnter={() => setServicesOpen(true)}
                           onMouseLeave={() => setServicesOpen(false)}
@@ -300,7 +307,11 @@ export default function Layout({ children, currentPageName }) {
 
                 {/* Mobile Menu Button */}
                 <button
+                  type="button"
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  aria-expanded={mobileMenuOpen}
+                  aria-controls="mobile-navigation"
+                  aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
                   className="lg:hidden p-2 text-slate-700"
                 >
                   {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -315,6 +326,7 @@ export default function Layout({ children, currentPageName }) {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
+                  id="mobile-navigation"
                   className="lg:hidden bg-white border-t"
                 >
                   <div className="px-4 py-4 space-y-2">
@@ -326,14 +338,17 @@ export default function Layout({ children, currentPageName }) {
                       link.dropdown ? (
                         <div key={link.name}>
                           <button
+                            type="button"
                             onClick={() => setServicesOpen(!servicesOpen)}
+                            aria-expanded={servicesOpen}
+                            aria-controls="mobile-services-menu"
                             className="flex items-center justify-between w-full py-3 text-slate-700 font-medium"
                           >
                             {link.name}
                             <ChevronDown className={`w-4 h-4 transition ${servicesOpen ? 'rotate-180' : ''}`} />
                           </button>
                           {servicesOpen && (
-                            <div className={`space-y-1 ${isRTL ? 'pr-4' : 'pl-4'}`}>
+                            <div id="mobile-services-menu" className={`space-y-1 ${isRTL ? 'pr-4' : 'pl-4'}`}>
                               {services.map((service) => (
                                 <Link
                                   key={service.href}

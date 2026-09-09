@@ -1450,7 +1450,7 @@ function SubtasksTab({ subtasks, users, taskId, onChanged, files }) {
                     {stFiles.slice(0, 4).map(f => (
                       <a key={f.id} href={f.url} target="_blank" rel="noreferrer" className="block group">
                         {isImage(f.url) ? (
-                          <img src={f.url} className="h-14 w-20 object-cover rounded border border-slate-200 group-hover:ring-2 ring-indigo-400 transition shadow-sm" />
+                          <img src={f.url} alt={f.title || getFileName(f.url)} className="h-14 w-20 object-cover rounded border border-slate-200 group-hover:ring-2 ring-indigo-400 transition shadow-sm" />
                         ) : (
                           <div className="h-14 w-20 rounded border border-slate-200 bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center group-hover:ring-2 ring-indigo-400 transition shadow-sm">
                             <Paperclip className="h-4 w-4 text-slate-400" />
@@ -1661,7 +1661,7 @@ function FilesTab({ files, taskAttachTitle, setTaskAttachTitle, onAttachment, on
                   <a href={f.url} target="_blank" rel="noreferrer" className="block">
                     <div className="aspect-video bg-slate-100 relative overflow-hidden">
                       {isImage(f.url) ? (
-                        <img src={f.url} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        <img src={f.url} alt={f.title || getFileName(f.url)} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
                           <FileText className="h-10 w-10 text-slate-400" />
