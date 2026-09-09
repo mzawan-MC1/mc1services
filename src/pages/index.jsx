@@ -1,111 +1,116 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import Layout from "./Layout.jsx";
 
 import Home from "./Home";
 
-import About from "./About";
+const About = lazy(() => import("./About"));
 
-import Contact from "./Contact";
+const Contact = lazy(() => import("./Contact"));
 
-import Portfolio from "./Portfolio";
+const Portfolio = lazy(() => import("./Portfolio"));
 
-import PortfolioDetail from "./PortfolioDetail";
+const PortfolioDetail = lazy(() => import("./PortfolioDetail"));
 
-import WebDevelopment from "./WebDevelopment";
+const WebDevelopment = lazy(() => import("./WebDevelopment"));
 
-import AppDevelopment from "./AppDevelopment";
+const AppDevelopment = lazy(() => import("./AppDevelopment"));
 
-import DigitalMarketing from "./DigitalMarketing";
+const DigitalMarketing = lazy(() => import("./DigitalMarketing"));
 
-import Production from "./Production";
+const Production = lazy(() => import("./Production"));
 
-import ITServices from "./ITServices";
+const ITServices = lazy(() => import("./ITServices"));
 
-import AdminDashboard from "./AdminDashboard";
+const AdminDashboard = lazy(() => import("./AdminDashboard"));
 
-import AdminPortfolio from "./AdminPortfolio";
+const AdminPortfolio = lazy(() => import("./AdminPortfolio"));
 
-import AdminPortfolioEdit from "./AdminPortfolioEdit";
+const AdminPortfolioEdit = lazy(() => import("./AdminPortfolioEdit"));
 
-import AdminTestimonials from "./AdminTestimonials";
+const AdminTestimonials = lazy(() => import("./AdminTestimonials"));
 
-import AdminTestimonialEdit from "./AdminTestimonialEdit";
+const AdminTestimonialEdit = lazy(() => import("./AdminTestimonialEdit"));
 
-import AdminTeam from "./AdminTeam";
+const AdminTeam = lazy(() => import("./AdminTeam"));
 
-import AdminTeamEdit from "./AdminTeamEdit";
+const AdminTeamEdit = lazy(() => import("./AdminTeamEdit"));
 
-import AdminContacts from "./AdminContacts";
+const AdminContacts = lazy(() => import("./AdminContacts"));
 
-import DevelopmentServices from "./DevelopmentServices";
+const DevelopmentServices = lazy(() => import("./DevelopmentServices"));
 
-import MarketingServices from "./MarketingServices";
+const MarketingServices = lazy(() => import("./MarketingServices"));
 
-import AdminPricing from "./AdminPricing";
+const AdminPricing = lazy(() => import("./AdminPricing"));
 
-import AdminPricingEdit from "./AdminPricingEdit";
+const AdminPricingEdit = lazy(() => import("./AdminPricingEdit"));
 
-import AdminFAQs from "./AdminFAQs";
+const AdminFAQs = lazy(() => import("./AdminFAQs"));
 
-import AdminFAQEdit from "./AdminFAQEdit";
+const AdminFAQEdit = lazy(() => import("./AdminFAQEdit"));
 
-import AdminClientLogos from "./AdminClientLogos";
+const AdminClientLogos = lazy(() => import("./AdminClientLogos"));
 
-import AdminServices from "./AdminServices";
+const AdminServices = lazy(() => import("./AdminServices"));
 
-import AdminServiceEdit from "./AdminServiceEdit";
+const AdminServiceEdit = lazy(() => import("./AdminServiceEdit"));
 
-import Automation from "./Automation";
+const Automation = lazy(() => import("./Automation"));
 
-import Tools from "./Tools";
+const Tools = lazy(() => import("./Tools"));
 
-import SalaryLoanCalculator from "./SalaryLoanCalculator";
+const SalaryLoanCalculator = lazy(() => import("./SalaryLoanCalculator"));
 
-import TrafficFinesChecker from "./TrafficFinesChecker";
+const TrafficFinesChecker = lazy(() => import("./TrafficFinesChecker"));
 
-import VisaOverstayCalculator from "./VisaOverstayCalculator";
+const VisaOverstayCalculator = lazy(() => import("./VisaOverstayCalculator"));
 
-import TollEstimator from "./TollEstimator";
+const TollEstimator = lazy(() => import("./TollEstimator"));
 
-import CurrencyConverter from "./CurrencyConverter";
+const CurrencyConverter = lazy(() => import("./CurrencyConverter"));
 
-import AdminSiteSettings from "./AdminSiteSettings";
+const AdminSiteSettings = lazy(() => import("./AdminSiteSettings"));
 
-import AdminSEO from "./AdminSEO";
+const AdminSEO = lazy(() => import("./AdminSEO"));
 
-import AdminAnalytics from "./AdminAnalytics";
+const AdminAnalytics = lazy(() => import("./AdminAnalytics"));
 
-import AdminCMSHome from "./AdminCMSHome";
+const AdminCMSHome = lazy(() => import("./AdminCMSHome"));
 
-import AdminCMSAbout from "./AdminCMSAbout";
+const AdminCMSAbout = lazy(() => import("./AdminCMSAbout"));
 
-import AdminCMSHeaderFooter from "./AdminCMSHeaderFooter";
+const AdminCMSHeaderFooter = lazy(() => import("./AdminCMSHeaderFooter"));
 
-import AdminCMSServices from "./AdminCMSServices";
+const AdminCMSServices = lazy(() => import("./AdminCMSServices"));
 
-import AdminCMSContact from "./AdminCMSContact";
+const AdminCMSContact = lazy(() => import("./AdminCMSContact"));
 
-import AdminCMSTools from "./AdminCMSTools";
+const AdminCMSTools = lazy(() => import("./AdminCMSTools"));
 
-import AdminUsers from "./AdminUsers";
-import AdminRoles from "./AdminRoles";
-import AdminProfile from "./AdminProfile";
+const AdminUsers = lazy(() => import("./AdminUsers"));
 
-import AdminToolsManagement from "./AdminToolsManagement";
+const AdminRoles = lazy(() => import("./AdminRoles"));
 
-import AdminLogin from "./AdminLogin";
+const AdminProfile = lazy(() => import("./AdminProfile"));
 
-import PrivacyPolicy from "./PrivacyPolicy";
+const AdminToolsManagement = lazy(() => import("./AdminToolsManagement"));
 
-import TermsOfService from "./TermsOfService";
+const AdminLogin = lazy(() => import("./AdminLogin"));
 
-import AdminCMSLegal from "./AdminCMSLegal";
+const PrivacyPolicy = lazy(() => import("./PrivacyPolicy"));
+
+const TermsOfService = lazy(() => import("./TermsOfService"));
+
+const AdminCMSLegal = lazy(() => import("./AdminCMSLegal"));
+
 import ScrollToTop from "../components/ScrollToTop";
-import AdminTaskListPage from "./AdminTaskListPage";
-import AdminTaskDetailsPage from "./AdminTaskDetailsPage";
+const AdminTaskListPage = lazy(() => import("./AdminTaskListPage"));
+
+const AdminTaskDetailsPage = lazy(() => import("./AdminTaskDetailsPage"));
+
 import AdminRoute from "../components/AdminRoute";
 
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Link, Route, Routes, useLocation } from 'react-router-dom';
 
 const PAGES = {
     
@@ -247,6 +252,32 @@ function _getCurrentPage(url) {
     return pageName || Object.keys(PAGES)[0];
 }
 
+function PageLoading() {
+    return (
+        <div className="min-h-[40vh] flex items-center justify-center" role="status" aria-live="polite">
+            <div className="flex items-center gap-3 text-slate-600">
+                <span className="h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-blue-600" aria-hidden="true" />
+                <span>Loading page...</span>
+            </div>
+        </div>
+    );
+}
+
+function NotFound() {
+    return (
+        <main className="min-h-[55vh] flex items-center justify-center px-6 py-20 text-center">
+            <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-600">404</p>
+                <h1 className="mt-3 text-3xl font-bold text-slate-900">Page not found</h1>
+                <p className="mt-3 text-slate-600">The page you requested does not exist or may have moved.</p>
+                <Link to="/Home" className="mt-6 inline-flex rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
+                    Return to homepage
+                </Link>
+            </div>
+        </main>
+    );
+}
+
 // Create a wrapper component that uses useLocation inside the Router context
 function PagesContent() {
     const location = useLocation();
@@ -256,6 +287,7 @@ function PagesContent() {
         <>
         <ScrollToTop />
         <Layout currentPageName={currentPage}>
+            <Suspense fallback={<PageLoading />}>
             <Routes>            
                 
                     <Route path="/" element={<Home />} />
@@ -283,7 +315,9 @@ function PagesContent() {
                 {/* New tasks routes */}
                 <Route path="/admin/tasks" element={<AdminRoute><AdminTaskListPage /></AdminRoute>} />
                 <Route path="/admin/tasks/:id" element={<AdminRoute><AdminTaskDetailsPage /></AdminRoute>} />
+                <Route path="*" element={<NotFound />} />
             </Routes>
+            </Suspense>
         </Layout>
         </>
     );

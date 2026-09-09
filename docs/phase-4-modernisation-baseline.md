@@ -2,33 +2,37 @@
 
 Recorded: 2026-09-09
 
-This baseline was recorded before dependency, performance, SEO, accessibility, or visual modernisation changes. No production build, deployment, database change, or live-site change was performed.
+This baseline was recorded before dependency, performance, SEO, accessibility, or visual modernisation changes. The results below were updated after the first local Phase 4 checkpoints. No final production package, deployment, database change, or live-site change was performed.
 
 ## Version-control foundation
 
 - A local Git repository was initialised on branch `main`.
-- No remote is configured.
-- No file has been staged or committed.
+- No remote is configured yet.
+- Local baseline commit: `deb8baa chore: establish secured project baseline`.
+- Local dependency checkpoint: `ae68ea4 fix: update vulnerable production dependencies`.
 - `.env*`, `node_modules/`, `dist/`, `backups/`, `releases/`, and `.vercel/` are ignored.
 - `.env.local` was confirmed ignored without reading or recording secret values.
 
 ## Urgent dependency findings
 
-`npm audit --omit=dev` reported 12 production-tree advisories: 1 critical, 7 high, 3 moderate, and 1 low.
+The initial `npm audit --omit=dev` reported 12 production-tree advisories: 1 critical, 7 high, 3 moderate, and 1 low.
 
 - `jspdf` is directly used by the PDF editor and image-to-PDF tool. The installed 3.0.4 release is affected; the reported fix requires 4.2.1 or newer and therefore needs functional regression testing.
 - `react-router-dom` and `react-router` are directly used throughout public and administrator navigation. The installed 7.10.1 release is affected; 7.18.3 is available within the declared version range.
 - `i18next-http-backend` is a direct dependency but is not imported or used. Translations are bundled locally, so this package can be removed.
 - Vulnerable transitive packages include `dompurify`, `fflate`, `lodash`, `nanoid`, `picomatch`, `postcss-selector-parser`, and `ws`.
-- A dry-run only was performed. No package or lockfile was changed.
+- Targeted dependency updates were completed locally. The unused `i18next-http-backend` package was removed, jsPDF imports were migrated for version 4 compatibility, and `npm audit --omit=dev` now reports zero vulnerabilities.
+- The jsPDF smoke test generated a valid in-memory PDF, and an isolated production build completed successfully. Temporary test output was removed.
 
 ## Performance and maintainability findings
 
-- Every public page, administrator page, business tool, PDF tool, and route is eagerly imported by `src/pages/index.jsx`.
-- The production main JavaScript chunk is approximately 2.48 MB minified and 697 KB gzip.
-- Route-level lazy loading is the highest-value first performance change and should isolate administrator and specialist tool code from ordinary public-page visits.
+- Public and administrator routes are now lazy-loaded from `src/pages/index.jsx`, while the home page and shared layout remain eager for a stable first render.
+- The main JavaScript chunk fell from approximately 2.52 MB minified / 709 KB gzip to 874 KB minified / 259 KB gzip, a reduction of about 65%.
+- An accessible loading state and an explicit 404 page were added.
+- Local runtime checks passed for Home, Contact, Tools, Admin Login, an unknown route, and unauthenticated administrator-route redirection.
+- Targeted lint for `src/pages/index.jsx` passed. The project-wide lint still reports 891 pre-existing issues (881 errors and 10 warnings), mainly unused imports and missing PropTypes; these remain tracked technical debt.
 - `src/pages/AdminTaskDetailsPage.jsx` is approximately 97 KB of source and should be split later for maintainability.
-- The router generates duplicate case variants and has no explicit not-found route.
+- The router retains duplicate case variants for compatibility; the missing not-found route has now been addressed.
 
 ## SEO and link findings
 
@@ -48,9 +52,9 @@ This baseline was recorded before dependency, performance, SEO, accessibility, o
 
 ## Recommended implementation order
 
-1. Create a local baseline Git commit.
-2. Apply targeted dependency security updates and run focused PDF, routing, authentication, admin, and production-build checks.
-3. Introduce route-level lazy loading with a stable accessible loading fallback.
+1. Create a local baseline Git commit. Completed.
+2. Apply targeted dependency security updates and run focused PDF, routing, authentication, admin, and production-build checks. Completed.
+3. Introduce route-level lazy loading with a stable accessible loading fallback. Completed locally; deployment remains separately controlled.
 4. Fix the favicon and add version-controlled static SEO files with safe defaults.
 5. Improve initial metadata behavior and audit canonical/locale handling.
 6. Perform public/admin mobile and accessibility regression checks, then address confirmed issues.
