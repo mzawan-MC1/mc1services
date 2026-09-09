@@ -1,0 +1,601 @@
+{
+  "alt": {
+    "it_services": "IT Services",
+    "app_development": "App Development",
+    "digital_marketing": "Digital Marketing",
+    "video_production": "Video Production",
+    "web_development": "Web Development",
+    "mobile_apps": "Mobile Apps",
+    "it_team": "IT Team"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "portfolio": "Portfolio",
+    "tools": "Tools",
+    "contact": "Contact",
+    "admin": "Admin"
+  },
+  "services_list": {
+    "web_development": "Web Development",
+    "app_development": "App Development",
+    "digital_marketing": "Digital Marketing",
+    "automation": "Automation",
+    "production": "Production",
+    "it_services": "IT & Professional Services"
+  },
+  "footer": {
+    "services": "Services",
+    "quick_links": "Quick Links",
+    "contact_us": "Contact Us",
+    "call_us": "Call Us",
+    "email_us": "Email Us",
+    "visit_us": "Visit Us",
+    "rights_reserved": "All rights reserved.",
+    "privacy_policy": "Privacy Policy",
+    "terms_of_service": "Terms of Service",
+    "footer_text": "Transforming businesses through innovative digital solutions. Your trusted partner for web, app, marketing, and IT services."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "get_started": "Get Started",
+    "read_more": "Read More",
+    "learn_more": "Learn More",
+    "view_all": "View All",
+    "submit": "Submit",
+    "send_message": "Send Message",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "home": {
+    "featured_projects": "Featured Projects",
+    "our_work": "Our Work",
+    "explore_latest_work": "Explore our latest work and see how we've helped businesses achieve their goals",
+    "view_all_projects": "View All Projects",
+    "ready_to_transform": "Ready to Transform Your Business?",
+    "lets_discuss": "Let's discuss how we can help you achieve your digital goals with our comprehensive solutions.",
+    "book_consultation": "Book a Consultation",
+    "explore_services": "Explore Services",
+    "hero_title_default": "We Build Digital Experiences That Drive Growth",
+    "hero_desc_default": "From cutting-edge software solutions to data-driven marketing strategies, we transform your vision into digital success.",
+    "view_work": "View Our Work",
+    "future_ready": "Future-Ready Tech & Marketing Consultancy",
+    "video_section": {
+      "subtitle": "Who We Are",
+      "title": "Your Partner in Digital Transformation",
+      "desc": "MCS Consultancy is a full-service technology and marketing agency dedicated to helping businesses thrive in the digital age. We combine technical expertise with creative excellence to deliver solutions that drive real results.\n\nFrom startups to enterprises, we've helped over 80 clients achieve their digital goals through innovative software development, strategic marketing, and cutting-edge IT solutions.",
+      "features": {
+        "agile": "Agile Methodology",
+        "support": "24/7 Support",
+        "global": "Global Delivery"
+      }
+    },
+    "process": {
+      "subtitle": "Our Process",
+      "title": "How We Work",
+      "desc": "A proven methodology that transforms ideas into successful digital products",
+      "steps": {
+        "discovery": { "title": "Discover", "desc": "We dive deep into your business goals, audience, and challenges to craft the perfect strategy." },
+        "design": { "title": "Design", "desc": "Our creative team designs stunning, user-centered experiences that captivate and convert." },
+        "develop": { "title": "Develop", "desc": "We build robust, scalable solutions using cutting-edge technologies and best practices." },
+        "deliver": { "title": "Deliver", "desc": "Launch with confidence. We ensure smooth deployment and provide ongoing support." }
+      }
+    },
+    "services_highlight": {
+      "subtitle": "What We Do",
+      "title": "Our Core Services",
+      "desc": "End-to-end digital solutions tailored to your business needs",
+      "software": {
+        "title": "Software Development",
+        "desc": "Custom web apps, mobile applications, and enterprise software built with cutting-edge technologies.",
+        "features": { "web": "Web Applications", "mobile": "Mobile Apps", "custom": "Custom Software", "api": "API Development" }
+      },
+      "marketing": {
+        "title": "Digital Marketing",
+        "desc": "Data-driven marketing strategies that amplify your brand and drive measurable growth.",
+        "features": { "seo": "SEO & SEM", "social": "Social Media", "content": "Content Marketing", "paid": "Paid Advertising" }
+      },
+      "automation": {
+        "title": "Automation",
+        "desc": "Streamline your business and marketing with intelligent automation solutions.",
+        "features": { "process": "Business Process", "marketing": "Marketing Automation", "crm": "CRM Workflows", "ai": "AI Integration" }
+      },
+      "it": {
+        "title": "IT Solutions",
+        "desc": "Comprehensive IT infrastructure, cloud services, and managed solutions for your business.",
+        "features": { "cloud": "Cloud Services", "devops": "DevOps", "consulting": "IT Consulting", "security": "Cybersecurity" }
+      }
+    },
+    "stats": {
+      "projects": "Projects Delivered",
+      "clients": "Happy Clients",
+      "technologies": "Technologies",
+      "experience": "Years Experience"
+    },
+    "db_faqs": {
+      "services_provide": "What services does MCS Consultancy provide?",
+      "industries": "Which industries does MCS Consultancy serve?",
+      "custom_software": "Do you build custom software solutions?",
+      "development_process": "How does the development process work?",
+      "maintenance": "Do you provide long-term maintenance and support?",
+      "different": "What makes MCS Consultancy different?",
+      "digital_marketing": "What digital marketing services do you offer?"
+    }
+  },
+  "about": {
+    "about_subtitle": "About MCS Consultancy",
+    "about_title": "Driving Digital Transformation",
+    "about_desc": "We're a team of passionate technologists, creatives, and strategists dedicated to helping businesses thrive in the digital age.",
+    "our_story": "Our Story",
+    "our_story_content": "Founded with a vision to bridge the gap between technology and business success, MCS Consultancy has grown from a small team of developers into a full-service digital agency serving clients worldwide.\n\nOver the years, we've expanded our expertise to encompass web and app development, digital marketing, production services, and comprehensive IT solutions. Our multidisciplinary approach allows us to deliver integrated solutions that drive real business results.\n\nToday, we're proud to be trusted partners for businesses of all sizes, from ambitious startups to established enterprises. Our commitment to quality, innovation, and client success remains at the heart of everything we do.",
+    "built_on_innovation": "Built on a Foundation of Innovation",
+    "our_values": "Our Values",
+    "what_drives_us": "What Drives Us",
+    "values_desc": "Our core values shape every decision we make and every project we undertake.",
+    "meet_experts": "Meet the Experts",
+    "our_team": "Our Team",
+    "team_desc": "A talented team of professionals dedicated to bringing your vision to life.",
+    "ready_to_work": "Ready to Work With Us?",
+    "lets_discuss_vision": "Let's discuss how we can help bring your vision to life.",
+    "get_in_touch": "Get In Touch",
+    "years_experience": "Years of Experience",
+    "projects_delivered": "Projects Delivered",
+    "happy_clients": "Happy Clients",
+    "team_members": "Team Members",
+    "excellence": "Excellence",
+    "excellence_desc": "We strive for excellence in every project, delivering solutions that exceed expectations.",
+    "innovation": "Innovation",
+    "innovation_desc": "We embrace new technologies and creative approaches to solve complex challenges.",
+    "integrity": "Integrity",
+    "integrity_desc": "We build lasting relationships through transparency, honesty, and ethical practices.",
+    "collaboration": "Collaboration",
+    "collaboration_desc": "We work closely with our clients as true partners, ensuring their vision comes to life."
+  },
+  "contact": {
+    "get_in_touch_hero": "Get In Touch",
+    "lets_build_amazing": "Let's Build Something Amazing Together",
+    "ready_to_start": "Ready to start your project? Schedule a free consultation or send us a message.",
+    "contact_info": "Contact Information",
+    "have_project": "Have a project in mind? Let's discuss how we can help bring your vision to life.",
+    "chat_whatsapp": "Chat on WhatsApp",
+    "send_message_title": "Send Us a Message",
+    "full_name": "Full Name",
+    "email_address": "Email Address",
+    "phone_number": "Phone Number",
+    "company_name": "Company Name",
+    "service_interest": "What service are you interested in?",
+    "tell_us_about_project": "Tell us about your project",
+    "thank_you": "Thank You!",
+    "message_received": "We've received your message and will get back to you within 24 hours.",
+    "faq_title": "Frequently Asked Questions",
+    "services": {
+      "web_development": "Website Development",
+      "app_development": "Mobile App Development",
+      "custom_software": "Custom Software",
+      "digital_marketing": "Digital Marketing",
+      "branding": "Branding & Design",
+      "seo": "SEO & SEM",
+      "social_media": "Social Media Marketing",
+      "it_consulting": "IT Consulting",
+      "other": "Other"
+    },
+    "placeholders": {
+      "name": "John Doe",
+      "company": "Your Company",
+      "select_service": "Select a service",
+      "message": "Describe your project, goals, and any specific requirements..."
+    },
+    "validation": {
+      "name_required": "Name is required",
+      "name_min": "Name must be at least 2 characters",
+      "email_required": "Email is required",
+      "email_invalid": "Invalid email address",
+      "phone_invalid": "Invalid phone number",
+      "message_required": "Message is required",
+      "message_min": "Message must be at least 10 characters"
+    },
+    "faqs": {
+      "start": {
+        "q": "How do I get started?",
+        "a": "Simply fill out our contact form or schedule a consultation call. We'll discuss your project requirements and provide a custom proposal."
+      },
+      "timeline": {
+        "q": "What is your typical project timeline?",
+        "a": "Timelines vary based on project scope. Simple websites take 4-6 weeks, while complex applications may take 3-6 months. We'll provide a detailed timeline during our consultation."
+      },
+      "support": {
+        "q": "Do you offer ongoing support?",
+        "a": "Yes! We offer various maintenance and support packages to keep your digital assets running smoothly after launch."
+      },
+      "payment": {
+        "q": "What are your payment terms?",
+        "a": "We typically work with a 50% upfront payment and 50% upon completion. For larger projects, we can arrange milestone-based payments."
+      }
+    }
+  },
+  "portfolio": {
+    "hero": {
+      "subtitle": "Our Portfolio",
+      "title": "Our Work Speaks for Itself",
+      "desc": "Explore our diverse portfolio of successful projects across development, marketing, and creative services."
+    },
+    "categories": {
+      "all": "All Projects",
+      "web_development": "Web Development",
+      "app_development": "App Development",
+      "digital_marketing": "Digital Marketing",
+      "automation": "Automation",
+      "production": "Production",
+      "it_services": "IT Services",
+      "custom_software": "Custom Software",
+      "ui_ux_design": "UI/UX Design",
+      "it_consulting": "IT Consulting",
+      "computer_applications": "Computer Applications",
+      "api_integrations": "API Integrations",
+      "devops_cloud": "DevOps & Cloud",
+      "backend_frontend": "Backend & Frontend",
+      "development": "Development",
+      "apps": "Apps",
+      "marketing": "Marketing",
+      "branding": "Branding",
+      "creative": "Creative"
+    },
+    "client": "Client",
+    "empty": "No projects found in this category.",
+    "detail": {
+      "project_not_found": "Project Not Found",
+      "back_to_portfolio": "Back to Portfolio",
+      "project_overview": "Project Overview",
+      "detailed_description": "Detailed Description",
+      "challenges": "Challenges",
+      "solutions": "Solutions",
+      "results": "Results",
+      "tech_stack": "Tech Stack",
+      "view_live_project": "View Live Project",
+      "screenshots": "Screenshots",
+      "completed": "Completed"
+    }
+  },
+  "services_page": {
+    "hero": {
+      "cta": "Start Your Project"
+    },
+    "sections": {
+      "what_we_offer": "What We Offer",
+      "process": "Our Process",
+      "how_we_work": "How We Work",
+      "process_desc": "A proven methodology that ensures your project is delivered on time and exceeds expectations.",
+      "our_work": "Our Work",
+      "recent_work": "See some of our recent work."
+    },
+    "cta": {
+      "ready_to_build": "Ready to Build Your Website?",
+      "ready_generic": "Ready to Start?",
+      "lets_create": "Let's create something amazing together.",
+      "get_in_touch": "Get In Touch"
+    },
+    "web_development": {
+      "title": "Web Development",
+      "description": "We create stunning, high-performance websites and web applications that help your business stand out and succeed online.",
+      "comprehensive_solutions": "Comprehensive Web Solutions",
+      "solutions_desc": "From simple landing pages to complex web applications, we have the expertise to bring your vision to life.",
+      "features": {
+        "custom_dev": { "title": "Custom Development", "desc": "Tailored solutions built from scratch to match your unique requirements." },
+        "ui_ux": { "title": "UI/UX Design", "desc": "Beautiful, intuitive interfaces that delight users and drive conversions." },
+        "responsive": { "title": "Responsive Design", "desc": "Seamless experience across all devices, from desktop to mobile." },
+        "performance": { "title": "Performance", "desc": "Lightning-fast load times and optimized performance for better rankings." },
+        "security": { "title": "Security", "desc": "Enterprise-grade security measures to protect your data and users." },
+        "cms": { "title": "CMS Integration", "desc": "Easy content management with popular platforms like WordPress." }
+      },
+      "process": {
+        "discovery": { "title": "Discovery", "desc": "Understanding your goals, audience, and requirements." },
+        "design": { "title": "Design", "desc": "Creating wireframes and visual designs for approval." },
+        "development": { "title": "Development", "desc": "Building your website with clean, maintainable code." },
+        "launch": { "title": "Launch", "desc": "Testing, optimization, and deployment to production." }
+      },
+      "cta_title": "Ready to Build Your Website?"
+    },
+    "marketing_services": {
+      "hero_badge": "Marketing Services",
+      "hero_title": "Grow Your Brand",
+      "hero_title_highlight": "With Data-Driven Marketing",
+      "hero_desc": "Strategic marketing campaigns that amplify your brand, engage your audience, and drive measurable growth.",
+      "cta_button": "Get Your Marketing Plan",
+      "services_title": "Our Marketing Services",
+      "services_desc": "Full-spectrum marketing solutions to grow your business",
+      "services": {
+        "seo": { "title": "SEO Optimization", "desc": "Rank higher on search engines and drive organic traffic.", "features": ["On-Page SEO", "Technical SEO", "Keyword Research", "Link Building"] },
+        "social": { "title": "Social Media", "desc": "Engage your audience across all major social platforms.", "features": ["Content Strategy", "Community Management", "Paid Advertising", "Influencer Marketing"] },
+        "ppc": { "title": "PPC Advertising", "desc": "Targeted campaigns that deliver immediate results.", "features": ["Google Ads", "Facebook Ads", "LinkedIn Ads", "Retargeting"] },
+        "email": { "title": "Email Marketing", "desc": "Nurture leads and drive conversions with personalized campaigns.", "features": ["Campaign Management", "Automation", "List Building", "Analytics"] },
+        "content": { "title": "Content Marketing", "desc": "Valuable content that attracts and retains customers.", "features": ["Blog Writing", "Video Content", "Infographics", "E-books"] },
+        "analytics": { "title": "Analytics & Reporting", "desc": "Data-driven insights to optimize your marketing ROI.", "features": ["Custom Dashboards", "Performance Tracking", "Conversion Analysis", "Competitor Analysis"] }
+      },
+      "case_studies_title": "Real Results, Real Growth",
+      "case_studies_desc": "Average results from our marketing campaigns",
+      "results": {
+        "traffic": "Increase in Traffic",
+        "conversion": "Conversion Rate",
+        "revenue": "Revenue Growth",
+        "before": "Before",
+        "after": "After"
+      },
+      "pricing_title": "Marketing Packages",
+      "portfolio_title": "Marketing Case Studies",
+      "faq_title": "Frequently Asked Questions",
+      "cta_title": "Ready to Grow Your Business?",
+      "cta_desc": "Let's create a marketing strategy that drives results.",
+      "cta_final_button": "Get a Free Consultation"
+    },
+    "app_development": {
+      "title": "App Development",
+      "description": "Transform your ideas into powerful mobile applications that users love. Native and cross-platform solutions for iOS and Android.",
+      "cta": "Start Your App",
+      "services_title": "Mobile App Solutions",
+      "services_desc": "End-to-end mobile app development services for startups and enterprises.",
+      "services": {
+        "ios": { "title": "iOS Development", "desc": "Native iOS apps with Swift for iPhone and iPad." },
+        "android": { "title": "Android Development", "desc": "Native Android apps with Kotlin for all devices." },
+        "cross_platform": { "title": "Cross-Platform", "desc": "React Native & Flutter for cost-effective multi-platform apps." },
+        "backend": { "title": "Backend & APIs", "desc": "Scalable backend systems to power your mobile app." },
+        "security": { "title": "App Security", "desc": "Enterprise-grade security for sensitive data." },
+        "launch": { "title": "App Store Launch", "desc": "Complete submission and launch support." }
+      },
+      "why_mobile": {
+        "title": "Reach Your Customers Anywhere",
+        "list": [
+          "Over 6 billion smartphone users worldwide",
+          "Users spend 90% of mobile time in apps",
+          "Higher engagement than mobile websites",
+          "Push notifications for direct communication",
+          "Offline functionality capabilities"
+        ]
+      },
+      "cta_title": "Ready to Build Your App?",
+      "cta_desc": "Let's turn your idea into reality.",
+      "cta_button": "Get In Touch"
+    },
+    "automation": {
+      "hero_badge": "Automation Services",
+      "hero_title": "Automate Your Business &",
+      "hero_title_highlight": "Marketing Operations",
+      "hero_desc": "Save time, reduce costs, and scale your operations with intelligent automation solutions.",
+      "cta": "Get Started",
+      "benefits": {
+        "time_saved": "Time Saved",
+        "productivity_boost": "Productivity Boost",
+        "cost_reduction": "Cost Reduction",
+        "operation_24_7": "Operation"
+      },
+      "services_title": "Automation Solutions",
+      "services_desc": "Comprehensive automation services for business and marketing",
+      "services": {
+        "process": { "title": "Business Process Automation", "desc": "Automate repetitive tasks and streamline your operations.", "features": ["Workflow Automation", "Document Processing", "Data Entry Automation", "Approval Workflows"] },
+        "email": { "title": "Email Marketing Automation", "desc": "Automated email campaigns that nurture leads and drive conversions.", "features": ["Drip Campaigns", "Behavioral Triggers", "A/B Testing", "Personalization"] },
+        "crm": { "title": "CRM Automation", "desc": "Automate your customer relationship management for better engagement.", "features": ["Lead Scoring", "Contact Management", "Sales Pipeline", "Follow-up Automation"] },
+        "analytics": { "title": "Marketing Analytics", "desc": "Automated reporting and insights for data-driven decisions.", "features": ["Automated Reports", "Dashboard Creation", "ROI Tracking", "Performance Alerts"] },
+        "ai": { "title": "AI & Chatbots", "desc": "Intelligent automation powered by artificial intelligence.", "features": ["Customer Support Bots", "Lead Qualification", "FAQ Automation", "24/7 Availability"] },
+        "social": { "title": "Social Media Automation", "desc": "Schedule and automate your social media presence.", "features": ["Post Scheduling", "Content Calendar", "Auto-responses", "Analytics Integration"] },
+        "task": { "title": "Task & Project Automation", "desc": "Automate project workflows and team collaboration.", "features": ["Task Assignment", "Deadline Reminders", "Status Updates", "Team Notifications"] },
+        "integration": { "title": "Integration Automation", "desc": "Connect your tools and automate data flow between systems.", "features": ["Zapier/Make", "API Integrations", "Data Sync", "Multi-platform"] }
+      },
+      "how_it_works": {
+        "title": "How We Implement Automation",
+        "steps": {
+          "audit": { "title": "Audit", "desc": "Analyze your current workflows and identify automation opportunities" },
+          "strategy": { "title": "Strategy", "desc": "Design automation workflows tailored to your business goals" },
+          "implement": { "title": "Implement", "desc": "Build and deploy automation solutions with your existing tools" },
+          "optimize": { "title": "Optimize", "desc": "Monitor, measure, and continuously improve performance" }
+        }
+      },
+      "faq_title": "Frequently Asked Questions",
+      "faqs": {
+        "what": { "q": "What can be automated in my business?", "a": "Almost any repetitive task can be automated - from email responses and data entry to lead nurturing and social media posting. We analyze your workflows to identify the best automation opportunities." },
+        "time": { "q": "How long does it take to implement automation?", "a": "Simple automations can be set up in days, while complex business process automation may take 4-8 weeks. We provide a detailed timeline during our consultation." },
+        "employees": { "q": "Will automation replace my employees?", "a": "No, automation is designed to augment your team, not replace them. It handles repetitive tasks so your team can focus on strategic, high-value work." },
+        "tools": { "q": "What tools do you use for automation?", "a": "We work with leading platforms like HubSpot, Salesforce, Zapier, Make, and custom solutions depending on your needs and existing tech stack." }
+      },
+      "cta_title": "Ready to Automate Your Business?",
+      "cta_desc": "Get a free automation audit and discover how much time you can save.",
+      "cta_button": "Book Free Consultation"
+    },
+    "digital_marketing": {
+      "hero_title": "Digital Marketing",
+      "hero_desc": "Data-driven marketing strategies that amplify your brand, attract qualified leads, and maximize your ROI.",
+      "cta": "Grow Your Business",
+      "stats": {
+        "roi": "Average ROI Increase",
+        "traffic": "Traffic Growth",
+        "leads": "Lead Generation Boost"
+      },
+      "services_title": "Complete Marketing Solutions",
+      "services_desc": "Full-funnel marketing strategies tailored to your business goals.",
+      "services": {
+        "seo": { "title": "SEO Optimization", "desc": "Rank higher on search engines and drive organic traffic." },
+        "social": { "title": "Social Media", "desc": "Engage your audience across all major social platforms." },
+        "ppc": { "title": "PPC Advertising", "desc": "Targeted campaigns that deliver immediate results." },
+        "email": { "title": "Email Marketing", "desc": "Nurture leads and drive conversions with personalized campaigns." },
+        "content": { "title": "Content Marketing", "desc": "Valuable content that attracts and retains customers." },
+        "analytics": { "title": "Analytics & Reporting", "desc": "Data-driven insights to optimize your marketing ROI." }
+      },
+      "case_studies_title": "Marketing Success Stories",
+      "cta_title": "Ready to Grow Your Business?",
+      "cta_desc": "Let's create a marketing strategy that delivers results.",
+      "cta_button": "Get Started"
+    },
+    "it_services": {
+      "hero_title": "IT & Professional Services",
+      "hero_desc": "Comprehensive IT solutions to streamline your operations, enhance security, and drive business growth.",
+      "cta": "Get IT Support",
+      "services_title": "Enterprise IT Solutions",
+      "services_desc": "End-to-end IT services tailored to your business needs.",
+      "services": {
+        "cloud": { "title": "Cloud Services", "desc": "AWS, Azure, and Google Cloud solutions and migration." },
+        "security": { "title": "Cybersecurity", "desc": "Protect your business with comprehensive security solutions." },
+        "infrastructure": { "title": "Infrastructure", "desc": "Network design, implementation, and management." },
+        "support": { "title": "IT Support", "desc": "24/7 technical support and helpdesk services." },
+        "managed": { "title": "Managed Services", "desc": "Complete IT management so you can focus on business." },
+        "consulting": { "title": "IT Consulting", "desc": "Strategic technology planning and guidance." }
+      },
+      "why_choose_title": "Partner With IT Experts",
+      "benefits": [
+        "Reduce operational costs by up to 40%",
+        "24/7 monitoring and support",
+        "Enterprise-grade security",
+        "Scalable infrastructure",
+        "Dedicated account management",
+        "Industry compliance expertise"
+      ],
+      "case_studies_title": "IT Project Success Stories",
+      "cta_title": "Need IT Support?",
+      "cta_desc": "Let's optimize your IT infrastructure together.",
+      "cta_button": "Contact Us"
+    },
+    "production": {
+      "hero_title": "Production Services",
+      "hero_desc": "Bring your stories to life with professional video, photography, and audio production services.",
+      "cta": "Start Your Project",
+      "services_title": "Creative Production",
+      "services_desc": "Full-service production capabilities for all your creative needs.",
+      "services": {
+        "video": { "title": "Video Production", "desc": "High-quality corporate videos, commercials, and social content.", "features": ["Commercials", "Corporate Videos", "Event Coverage", "Drone Footage"] },
+        "photography": { "title": "Professional Photography", "desc": "Stunning photography for products, events, and corporate needs.", "features": ["Product Photography", "Corporate Headshots", "Event Photography", "Architecture"] },
+        "audio": { "title": "Audio Production", "desc": "Crystal clear audio for podcasts, voiceovers, and sound design.", "features": ["Podcast Production", "Voiceovers", "Sound Design", "Mixing & Mastering"] },
+        "animation": { "title": "Animation & Motion", "desc": "Engaging 2D/3D animation and motion graphics.", "features": ["2D Animation", "3D Modeling", "Motion Graphics", "Explainer Videos"] }
+      },
+      "portfolio_title": "Production Portfolio",
+      "cta_title": "Ready to Tell Your Story?",
+      "cta_desc": "Let's create compelling content together.",
+      "cta_button": "Get In Touch"
+    },
+    "development_services": {
+      "hero_badge": "Development Services",
+      "hero_title": "Build Your Digital",
+      "hero_title_highlight": "Future With Us",
+      "hero_desc": "From websites to enterprise software, we deliver cutting-edge solutions that drive business growth.",
+      "services_title": "Our Development Services",
+      "services_desc": "Comprehensive solutions for all your software development needs",
+      "process_title": "Our Development Process",
+      "pricing_title": "Pricing Plans",
+      "pricing_contact": "Contact us for custom pricing tailored to your project.",
+      "recent_projects": "Recent Development Projects",
+      "faq_title": "Frequently Asked Questions",
+      "cta_title": "Ready to Build Something Amazing?",
+      "cta_desc": "Let's discuss your project and create a custom solution.",
+      "get_quote": "Get a Free Quote",
+      "start_project": "Start Your Project",
+      "services_list": {
+        "website_development": { "title": "Website Development", "desc": "Custom websites that are fast, secure, and optimized for conversions.", "features": ["Responsive Design", "CMS Integration", "E-commerce", "Performance Optimization"] },
+        "mobile_app_development": { "title": "Mobile App Development", "desc": "Native and cross-platform apps for iOS and Android.", "features": ["iOS Development", "Android Development", "React Native", "Flutter"] },
+        "custom_software": { "title": "Custom Software", "desc": "Tailored software solutions for your unique business needs.", "features": ["Enterprise Solutions", "SaaS Products", "Process Automation", "Legacy Modernization"] },
+        "computer_applications": { "title": "Computer Applications", "desc": "Desktop applications for Windows, macOS, and Linux.", "features": ["Cross-Platform", "Electron Apps", "Native Desktop", "Productivity Tools"] },
+        "api_integrations": { "title": "API Integrations", "desc": "Connect your systems with third-party services and APIs.", "features": ["RESTful APIs", "GraphQL", "Payment Gateways", "CRM Integration"] },
+        "ui_ux_design": { "title": "UI/UX Design", "desc": "Beautiful, intuitive interfaces that users love.", "features": ["User Research", "Wireframing", "Prototyping", "Design Systems"] },
+        "devops_cloud": { "title": "DevOps & Cloud", "desc": "Scalable infrastructure and continuous deployment.", "features": ["AWS/Azure/GCP", "CI/CD Pipelines", "Docker/Kubernetes", "Monitoring"] },
+        "backend_frontend": { "title": "Backend & Frontend", "desc": "Full-stack development with modern technologies.", "features": ["React/Vue/Angular", "Node.js/Python", "PostgreSQL/MongoDB", "Microservices"] }
+      },
+      "process_steps": {
+        "discovery": { "title": "Discovery", "desc": "Understand your requirements and goals" },
+        "planning": { "title": "Planning", "desc": "Create detailed technical specifications" },
+        "design": { "title": "Design", "desc": "Design UI/UX and system architecture" },
+        "development": { "title": "Development", "desc": "Build with agile methodology" },
+        "testing": { "title": "Testing", "desc": "Rigorous QA and user testing" },
+        "deployment": { "title": "Deployment", "desc": "Launch and monitor performance" }
+      },
+      "faqs": {
+        "timeline": { "q": "How long does a typical project take?", "a": "Project timelines vary based on scope. A simple website takes 4-6 weeks, while complex apps may take 3-6 months." },
+        "tech": { "q": "What technologies do you use?", "a": "We use modern tech stacks including React, Node.js, Python, AWS, and more based on project requirements." },
+        "support": { "q": "Do you provide ongoing support?", "a": "Yes, we offer maintenance packages and ongoing support for all projects we deliver." },
+        "communication": { "q": "How do you handle project communication?", "a": "We use Slack, weekly sprints, and regular demos to keep you updated throughout the project." }
+      }
+    }
+  },
+  "tools": {
+    "hero_title": "UAE Tools Hub – Free Online Tools",
+    "hero_desc": "30+ free calculators and tools for digital marketers, creative professionals, UAE residents, visitors, and businesses. No registration required.",
+    "categories": {
+      "marketing": "Digital Marketing & Ad Tools",
+      "creative": "Creative & Productivity Tools",
+      "finance": "UAE Life & Finance Tools",
+      "uae": "UAE Residents Tools",
+      "visitor": "Dubai & Abu Dhabi Visitor Tools"
+    },
+    "category_desc": {
+      "marketing": "Professional tools for advertisers and agencies to optimize campaigns.",
+      "creative": "Image editing, PDF tools, and creative utilities for content creation.",
+      "finance": "Daily life calculators and financial tools based on UAE regulations.",
+      "uae": "Salik tolls, telecom bills, holidays and more for UAE residents.",
+      "visitor": "Planning tools for tourists visiting Dubai and Abu Dhabi."
+    },
+    "open_tool": "Open Tool",
+    "coming_soon": "Tools will be available soon",
+    "check_back": "Check back later for useful calculators and utilities.",
+    "about": {
+      "title": "About Our UAE Tools",
+      "official_sources": "Official Data Sources",
+      "official_sources_desc": "Calculations use rates from UAE Central Bank, GDRFA, RTA, DEWA, and official government sources.",
+      "standard_formulas": "Standard Formulas",
+      "standard_formulas_desc": "Financial tools follow UAE banking standards including 50% DBR cap, gratuity rules, and visa fine structures.",
+      "save_prefs": "Save Your Preferences",
+      "save_prefs_desc": "Click \"Save Defaults\" on any tool to remember your settings locally. Your data stays in your browser."
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "q1": "Are these tools free to use?",
+      "a1": "Yes, all 30+ tools are completely free with no registration or login required. Use them as many times as you need.",
+      "q2": "How accurate are the calculations?",
+      "a2": "Our tools use official UAE government rates and standard financial formulas. Results are estimates for planning - always verify with official sources for legal matters.",
+      "q3": "Do you store my data?",
+      "a3": "No, all calculations run in your browser. The only data stored is your saved preferences in localStorage, which stays on your device.",
+      "q4": "How do I save my default settings?",
+      "a4": "Click the \"Save Defaults\" button on any tool to save your frequently used inputs (like salary, preferred currency, trip duration). These are stored locally in your browser.",
+      "q5": "Are the exchange rates live?",
+      "a5": "The currency converter fetches live rates from ExchangeRate-API. If the API is unavailable, it falls back to recent static rates.",
+      "q6": "Can I copy the results?",
+      "a6": "Yes! Hover over any result card to see a copy button, or use the \"Copy Results\" button to copy all calculated values at once.",
+      "q7": "Can I share tools or results?",
+      "a7": "Yes! Each tool has share buttons (WhatsApp, Facebook, Twitter, Email) that let you share a link with pre-filled inputs or copy results to share with others."
+    },
+    "list": {
+      "budget_split": { "title": "Marketing Budget Split Calculator", "desc": "Allocate testing vs always-on budget across channels" },
+      "roas": { "title": "ROAS & Profit Calculator", "desc": "Calculate return on ad spend and profit margins" },
+      "cpm_cpc": { "title": "CPM/CPC/CTR/CPA Calculator", "desc": "Convert between key advertising metrics" },
+      "engagement": { "title": "Social Media Engagement Rate", "desc": "Calculate engagement rates for social posts" },
+      "utm": { "title": "UTM Link Builder", "desc": "Create trackable campaign URLs" },
+      "ad_sizes": { "title": "Ad Size Guide", "desc": "Image & video sizes for all platforms" },
+      "photo_editor": { "title": "Photo Editor", "desc": "Apply filters and adjust brightness/contrast" },
+      "bg_remove": { "title": "Background Removal", "desc": "Remove backgrounds using color or auto detection" },
+      "color_palette": { "title": "Color Palette Generator", "desc": "Extract dominant colors from images" },
+      "gif_creator": { "title": "GIF Creator", "desc": "Create animated GIFs from images" },
+      "image_resize": { "title": "Image Resizer", "desc": "Resize images to any dimension" },
+      "image_convert": { "title": "Image Format Converter", "desc": "Convert between JPG and PNG" },
+      "image_to_pdf": { "title": "Image to PDF", "desc": "Combine images into a PDF" },
+      "pdf_edit": { "title": "PDF Editor", "desc": "Add text, forms, signatures to PDFs" },
+      "qr_code": { "title": "QR Code Generator", "desc": "Generate QR codes with logo & custom colors" },
+      "thumbnail": { "title": "Thumbnail Creator", "desc": "Create thumbnails with movable elements" },
+      "utility": { "title": "Electricity & Water Bill Estimator", "desc": "Estimate your monthly DEWA/SEWA bill" },
+      "living": { "title": "Cost of Living Calculator", "desc": "Plan your monthly budget in UAE" },
+      "rent": { "title": "Rent Affordability Calculator", "desc": "Check if rent fits your salary" },
+      "transport": { "title": "Taxi vs Own Car Comparison", "desc": "Compare transportation costs" },
+      "petrol": { "title": "Petrol Cost Calculator", "desc": "Estimate monthly fuel expenses" },
+      "gratuity": { "title": "UAE Gratuity Calculator", "desc": "Calculate end-of-service benefits" },
+      "mortgage": { "title": "Mortgage Affordability Calculator", "desc": "Check how much home you can afford" },
+      "loan": { "title": "Personal Loan Calculator", "desc": "Calculate loan eligibility and EMI" },
+      "visa": { "title": "Visa Overstay Fine Estimator", "desc": "Calculate overstay penalties" },
+      "currency": { "title": "AED Currency Converter", "desc": "Convert AED to other currencies" },
+      "salik": { "title": "Salik Toll Calculator", "desc": "Calculate Dubai toll gate costs" },
+      "telecom": { "title": "Etisalat/du Bill Estimator", "desc": "Estimate mobile bill based on usage" },
+      "holidays": { "title": "UAE Public Holidays 2025", "desc": "Complete holiday calendar with types" },
+      "itinerary": { "title": "Trip Itinerary Generator", "desc": "Plan your Dubai/Abu Dhabi trip" },
+      "tickets": { "title": "Attractions Budget Estimator", "desc": "Calculate ticket costs for attractions" },
+      "transit": { "title": "Transport Cost Estimator", "desc": "Metro vs Taxi cost comparison" },
+      "timing": { "title": "Best Time to Visit", "desc": "Find ideal months for your activities" },
+      "packing": { "title": "Packing Checklist Generator", "desc": "Get a customized packing list" }
+    }
+  }
+}
