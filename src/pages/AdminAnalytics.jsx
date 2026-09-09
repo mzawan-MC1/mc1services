@@ -1,13 +1,8 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '../utils';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { ArrowLeft, Loader2, BarChart2, Users, Eye, MousePointer } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Loader2, Users, Eye, MousePointer } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import AdminLayout from '../components/admin/AdminLayout';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function AdminAnalytics() {
   const { data: events = [], isLoading } = useQuery({
@@ -15,21 +10,22 @@ export default function AdminAnalytics() {
     queryFn: () => dataLayer.analytics.getAll()
   });
 
-  // Calculate stats
-  const totalViews = events.filter(e => e.event_type === 'page_view').length;
-  const uniqueVisitors = new Set(events.map(e => e.session_id)).size;
-  const totalClicks = events.filter(e => e.event_type === 'click').length;
+  const totalViews = events.filter(event => event.event_type === 'page_view').length;
+  const uniqueVisitors = new Set(events.map(event => event.session_id)).size;
+  const totalClicks = events.filter(event => event.event_type === 'click').length;
 
-  // Prepare chart data (views per page)
   const viewsByPage = events
-    .filter(e => e.event_type === 'page_view')
-    .reduce((acc, curr) => {
-      const page = curr.page_path || 'unknown';
-      acc[page] = (acc[page] || 0) + 1;
-      return acc;
+    .filter(event => event.event_type === 'page_view')
+    .reduce((pages, event) => {
+      const page = event.page_path || 'unknown';
+      pages[page] = (pages[page] || 0) + 1;
+      return pages;
     }, {});
 
-  const chartData = Object.entries(viewsByPage).map(([name, views]) => ({ name, views }));
+  const chartData = Object.entries(viewsByPage)
+    .map(([name, views]) => ({ name, views }))
+    .sort((a, b) => b.views - a.views);
+  const highestViewCount = Math.max(1, ...chartData.map(item => item.views));
 
   return (
     <AdminLayout>
@@ -39,37 +35,16 @@ export default function AdminAnalytics() {
         </div>
 
         {isLoading ? (
-          <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin" /></div>
+          <div className="flex justify-center py-12" role="status" aria-live="polite">
+            <Loader2 className="h-8 w-8 animate-spin" aria-hidden="true" />
+            <span className="sr-only">Loading analytics</span>
+          </div>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Page Views</CardTitle>
-                  <Eye className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{totalViews}</div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Unique Visitors</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{uniqueVisitors}</div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Interactions</CardTitle>
-                  <MousePointer className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{totalClicks}</div>
-                </CardContent>
-              </Card>
+              <MetricCard title="Total Page Views" value={totalViews} icon={Eye} />
+              <MetricCard title="Unique Visitors" value={uniqueVisitors} icon={Users} />
+              <MetricCard title="Total Interactions" value={totalClicks} icon={MousePointer} />
             </div>
 
             <Card className="mb-8">
@@ -77,22 +52,47 @@ export default function AdminAnalytics() {
                 <CardTitle>Page Views Overview</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="views" fill="#8884d8" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
+                {chartData.length === 0 ? (
+                  <p className="py-12 text-center text-slate-500">No page-view data is available yet.</p>
+                ) : (
+                  <div className="space-y-4" role="img" aria-label="Page views by page">
+                    {chartData.map(item => (
+                      <div key={item.name}>
+                        <div className="mb-1.5 flex items-center justify-between gap-4 text-sm">
+                          <span className="truncate font-medium text-slate-700" title={item.name}>{item.name}</span>
+                          <span className="shrink-0 tabular-nums text-slate-500">{item.views}</span>
+                        </div>
+                        <div className="h-3 overflow-hidden rounded-full bg-slate-100">
+                          <div
+                            className="h-full rounded-full bg-gradient-to-r from-blue-600 to-purple-600"
+                            style={{ width: `${Math.max(2, (item.views / highestViewCount) * 100)}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </>
         )}
       </div>
     </AdminLayout>
+  );
+}
+
+// Runtime PropTypes are not used in this JavaScript project.
+// eslint-disable-next-line react/prop-types
+function MetricCard({ title, value, icon: Icon }) {
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{value}</div>
+      </CardContent>
+    </Card>
   );
 }

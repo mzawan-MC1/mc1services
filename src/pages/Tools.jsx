@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { Suspense, lazy, useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { motion } from 'framer-motion';
@@ -7,24 +7,31 @@ import { dataLayer } from '../components/dataLayer';
 import { useTranslation } from 'react-i18next';
 import { 
   Calculator, Car, Plane, CreditCard, DollarSign, Megaphone, Home as HomeIcon, Users, Briefcase,
-  ArrowRight, ChevronRight, ChevronDown, TrendingUp, Link2, Percent, BarChart3,
+  ChevronRight, ChevronDown, TrendingUp, Link2, Percent, BarChart3,
   Zap, Droplets, Wallet, Building, Fuel, Map, Ticket, Bus, Sun, Luggage,
   Award, Landmark, FileText, Globe, HelpCircle, CheckCircle, Image, Palette, QrCode,
-  FileImage, Scissors, Maximize2, RefreshCw, FileText as FilePdf, PenTool, Layout,
+  Scissors, Maximize2, RefreshCw, FileText as FilePdf, PenTool, Layout,
   Sparkles, Film, Paintbrush, Phone, Calendar, Wifi, MapPin, Loader2
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import SEOHead from '../components/SEOHead';
 
-// Import tool components
-import MarketingTools from '../components/tools/MarketingTools';
-import CreativeTools from '../components/tools/CreativeTools';
-import DailyLifeTools from '../components/tools/DailyLifeTools';
-import VisitorTools from '../components/tools/VisitorTools';
-import BusinessTools from '../components/tools/BusinessTools';
-import UAETools from '../components/tools/UAETools';
-import { PhotoEditor, GifCreator, ColorPaletteGenerator, QRCodeEnhanced, ThumbnailCreatorEnhanced, ImageToPDF, BackgroundRemovalEnhanced } from '../components/tools/CreativeToolsEnhanced';
-import PDFEditor from '../components/tools/PDFEditor';
+// Tool implementations load only when a visitor opens one.
+const MarketingTools = lazy(() => import('../components/tools/MarketingTools'));
+const CreativeTools = lazy(() => import('../components/tools/CreativeTools'));
+const DailyLifeTools = lazy(() => import('../components/tools/DailyLifeTools'));
+const VisitorTools = lazy(() => import('../components/tools/VisitorTools'));
+const BusinessTools = lazy(() => import('../components/tools/BusinessTools'));
+const UAETools = lazy(() => import('../components/tools/UAETools'));
+const PDFEditor = lazy(() => import('../components/tools/PDFEditor'));
+const creativeToolsModule = () => import('../components/tools/CreativeToolsEnhanced');
+const lazyCreativeTool = (exportName) => lazy(() => creativeToolsModule().then(module => ({ default: module[exportName] })));
+const PhotoEditor = lazyCreativeTool('PhotoEditor');
+const GifCreator = lazyCreativeTool('GifCreator');
+const ColorPaletteGenerator = lazyCreativeTool('ColorPaletteGenerator');
+const QRCodeEnhanced = lazyCreativeTool('QRCodeEnhanced');
+const ThumbnailCreatorEnhanced = lazyCreativeTool('ThumbnailCreatorEnhanced');
+const ImageToPDF = lazyCreativeTool('ImageToPDF');
+const BackgroundRemovalEnhanced = lazyCreativeTool('BackgroundRemovalEnhanced');
 
 // Icon mapping
 const iconMap = {
@@ -34,8 +41,17 @@ const iconMap = {
   FilePdf, PenTool, Layout, Sparkles, Film, Paintbrush, Phone, Calendar, Wifi
 };
 
+function ToolLoading() {
+  return (
+    <div className="flex items-center justify-center gap-3 py-12 text-slate-600" role="status" aria-live="polite">
+      <Loader2 className="h-6 w-6 animate-spin text-blue-600" aria-hidden="true" />
+      <span>Loading tool...</span>
+    </div>
+  );
+}
+
 export default function Tools() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState('marketing');
   const [activeTool, setActiveTool] = useState(null);
   const toolRef = useRef(null);
@@ -240,25 +256,27 @@ export default function Tools() {
                       animate={{ opacity: 1, height: 'auto' }}
                       className="mt-6 bg-white rounded-2xl border border-slate-200 shadow-lg p-6 md:p-8"
                     >
-                      {category.id === 'marketing' && <MarketingTools activeTool={activeTool} />}
-                      {category.id === 'creative' && (
-                        activeTool === 'photo-editor' ? <PhotoEditor /> :
-                        activeTool === 'gif-creator' ? <GifCreator /> :
-                        activeTool === 'color-palette' ? <ColorPaletteGenerator /> :
-                        activeTool === 'qr-code' ? <QRCodeEnhanced /> :
-                        activeTool === 'thumbnail' ? <ThumbnailCreatorEnhanced /> :
-                        activeTool === 'image-to-pdf' ? <ImageToPDF /> :
-                        activeTool === 'bg-remove' ? <BackgroundRemovalEnhanced /> :
-                        activeTool === 'pdf-edit' ? <PDFEditor /> :
-                        <CreativeTools activeTool={activeTool} />
-                      )}
-                      {category.id === 'finance' && (
-                        ['utility', 'living', 'rent', 'transport', 'petrol'].includes(activeTool) 
-                          ? <DailyLifeTools activeTool={activeTool} />
-                          : <BusinessTools activeTool={activeTool} />
-                      )}
-                      {category.id === 'uae' && <UAETools activeTool={activeTool} />}
-                      {category.id === 'visitor' && <VisitorTools activeTool={activeTool} />}
+                      <Suspense fallback={<ToolLoading />}>
+                        {category.id === 'marketing' && <MarketingTools activeTool={activeTool} />}
+                        {category.id === 'creative' && (
+                          activeTool === 'photo-editor' ? <PhotoEditor /> :
+                          activeTool === 'gif-creator' ? <GifCreator /> :
+                          activeTool === 'color-palette' ? <ColorPaletteGenerator /> :
+                          activeTool === 'qr-code' ? <QRCodeEnhanced /> :
+                          activeTool === 'thumbnail' ? <ThumbnailCreatorEnhanced /> :
+                          activeTool === 'image-to-pdf' ? <ImageToPDF /> :
+                          activeTool === 'bg-remove' ? <BackgroundRemovalEnhanced /> :
+                          activeTool === 'pdf-edit' ? <PDFEditor /> :
+                          <CreativeTools activeTool={activeTool} />
+                        )}
+                        {category.id === 'finance' && (
+                          ['utility', 'living', 'rent', 'transport', 'petrol'].includes(activeTool)
+                            ? <DailyLifeTools activeTool={activeTool} />
+                            : <BusinessTools activeTool={activeTool} />
+                        )}
+                        {category.id === 'uae' && <UAETools activeTool={activeTool} />}
+                        {category.id === 'visitor' && <VisitorTools activeTool={activeTool} />}
+                      </Suspense>
                     </motion.div>
                   )}
                 </section>
