@@ -7,7 +7,8 @@ This baseline was recorded before dependency, performance, SEO, accessibility, o
 ## Version-control foundation
 
 - A local Git repository was initialised on branch `main`.
-- No remote is configured yet.
+- Private GitHub remote: `https://github.com/mzawan-MC1/mc1services.git`
+- Local `main` tracks `origin/main`; the initial remote commit was verified to match the local commit.
 - Local baseline commit: `deb8baa chore: establish secured project baseline`.
 - Local dependency checkpoint: `ae68ea4 fix: update vulnerable production dependencies`.
 - `.env*`, `node_modules/`, `dist/`, `backups/`, `releases/`, and `.vercel/` are ignored.
@@ -43,6 +44,14 @@ The initial `npm audit --omit=dev` reported 12 production-tree advisories: 1 cri
 - The administrator SEO screen downloads `robots.txt` and `sitemap.xml` to the browser but does not publish them to the static hosting folder.
 - Several example URLs exist as administrator field placeholders or demo-tool inputs; these should not be treated as confirmed public broken links without runtime content inspection.
 
+### SEO foundation completed locally
+
+- Replaced the broken `/vite.svg` reference with a version-controlled brand favicon.
+- Added safe initial HTML description, robots, Open Graph, and Twitter-card metadata. Database-managed page SEO remains authoritative after the application loads.
+- Added route-aware canonical URLs and `noindex, nofollow` defaults for administrator routes.
+- Added version-controlled `robots.txt` and a valid `sitemap.xml` containing 18 confirmed public routes.
+- Local HTTP and isolated production-build checks passed.
+
 ## Accessibility and mobile findings
 
 - Static inspection found image elements without explicit alternative text in administrator task attachments and several multiline image components that require runtime verification.
@@ -50,12 +59,20 @@ The initial `npm audit --omit=dev` reported 12 production-tree advisories: 1 cri
 - Heading use is extensive and should be checked page-by-page for one clear primary heading and logical nesting.
 - A proper not-found page and loading fallback will improve keyboard and screen-reader orientation when route lazy loading is introduced.
 
+### Accessibility foundation completed locally
+
+- Added missing alternative text to administrator attachment images.
+- Added expanded-state and controlled-region relationships to contact FAQ buttons.
+- Added accessible names and expanded-state relationships to desktop and mobile navigation controls.
+- Source assertions report zero image elements missing an `alt` attribute, and the isolated production build passes.
+- A full visual small-screen regression remains required before deploying the Phase 4 package.
+
 ## Recommended implementation order
 
 1. Create a local baseline Git commit. Completed.
 2. Apply targeted dependency security updates and run focused PDF, routing, authentication, admin, and production-build checks. Completed.
 3. Introduce route-level lazy loading with a stable accessible loading fallback. Completed locally; deployment remains separately controlled.
-4. Fix the favicon and add version-controlled static SEO files with safe defaults.
-5. Improve initial metadata behavior and audit canonical/locale handling.
-6. Perform public/admin mobile and accessibility regression checks, then address confirmed issues.
+4. Fix the favicon and add version-controlled static SEO files with safe defaults. Completed locally.
+5. Improve initial metadata behavior and audit canonical/locale handling. Initial defaults completed; locale-specific review remains.
+6. Perform public/admin mobile and accessibility regression checks, then address confirmed issues. Confirmed source issues corrected; visual small-screen regression remains.
 7. Begin visual and business-content modernisation only after the technical foundation is stable.
