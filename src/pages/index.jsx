@@ -109,8 +109,9 @@ const AdminTaskListPage = lazy(() => import("./AdminTaskListPage"));
 const AdminTaskDetailsPage = lazy(() => import("./AdminTaskDetailsPage"));
 
 import AdminRoute from "../components/AdminRoute";
+import AdminLayout from "../components/admin/AdminLayout";
 
-import { BrowserRouter as Router, Link, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Link, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 
 const PAGES = {
     
@@ -316,33 +317,42 @@ function PagesContent() {
         <RouteMetaDefaults />
         <Layout currentPageName={currentPage}>
             <Suspense fallback={<PageLoading />}>
-            <Routes>            
-                
-                    <Route path="/" element={<Home />} />
-                
-                {/* Generated Routes */}
-                {Object.keys(PAGES).map(pageName => {
-                    const Component = PAGES[pageName];
-                    const element = pageName.startsWith('Admin') && pageName !== 'AdminLogin'
-                        ? <AdminRoute><Component /></AdminRoute>
-                        : <Component />;
-                    return (
-                        <React.Fragment key={pageName}>
-                            {/* Standard case-sensitive route */}
-                            <Route path={`/${pageName}`} element={element} />
-                            {/* Lowercase fallback route for user typing */}
-                            <Route path={`/${pageName.toLowerCase()}`} element={element} />
-                        </React.Fragment>
-                    );
-                })}
-                {/* Admin simple routes */}
-                {Object.entries(ALT_ROUTE_MAP).map(([path, pageName]) => {
-                    const Component = PAGES[pageName];
-                    return <Route key={path} path={path} element={<AdminRoute><Component /></AdminRoute>} />;
-                })}
-                {/* New tasks routes */}
-                <Route path="/admin/tasks" element={<AdminRoute><AdminTaskListPage /></AdminRoute>} />
-                <Route path="/admin/tasks/:id" element={<AdminRoute><AdminTaskDetailsPage /></AdminRoute>} />
+            <Routes>
+                <Route path="/" element={<Home />} />
+
+                {/* Public pages retain their existing canonical and lowercase URLs. */}
+                {Object.keys(PAGES)
+                    .filter(pageName => !pageName.startsWith('Admin') || pageName === 'AdminLogin')
+                    .map(pageName => {
+                        const Component = PAGES[pageName];
+                        return (
+                            <React.Fragment key={pageName}>
+                                <Route path={`/${pageName}`} element={<Component />} />
+                                <Route path={`/${pageName.toLowerCase()}`} element={<Component />} />
+                            </React.Fragment>
+                        );
+                    })}
+
+                {/* One persistent protected shell keeps the admin sidebar mounted between pages. */}
+                <Route element={<AdminRoute><AdminLayout><Outlet /></AdminLayout></AdminRoute>}>
+                    {Object.keys(PAGES)
+                        .filter(pageName => pageName.startsWith('Admin') && pageName !== 'AdminLogin')
+                        .map(pageName => {
+                            const Component = PAGES[pageName];
+                            return (
+                                <React.Fragment key={pageName}>
+                                    <Route path={`/${pageName}`} element={<Component />} />
+                                    <Route path={`/${pageName.toLowerCase()}`} element={<Component />} />
+                                </React.Fragment>
+                            );
+                        })}
+                    {Object.entries(ALT_ROUTE_MAP).map(([path, pageName]) => {
+                        const Component = PAGES[pageName];
+                        return <Route key={path} path={path} element={<Component />} />;
+                    })}
+                    <Route path="/admin/tasks/:id" element={<AdminTaskDetailsPage />} />
+                </Route>
+
                 <Route path="*" element={<NotFound />} />
             </Routes>
             </Suspense>

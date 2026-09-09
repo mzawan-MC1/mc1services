@@ -1,17 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { createPageUrl } from '../../utils';
 import { 
   LayoutDashboard, FileText, Settings, Search, Image, Users, Mail,
-  ChevronDown, ChevronRight, Menu, X, Eye, LogOut
+  Menu, X, Eye, LogOut
 } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import { Button } from '@/components/ui/button';
-import { dataLayer } from '../dataLayer';
 
-export default function AdminLayout({ children, currentPage }) {
+const AdminLayoutContext = createContext(false);
+
+// eslint-disable-next-line react/prop-types
+export default function AdminLayout({ children }) {
+  const alreadyInsideLayout = useContext(AdminLayoutContext);
+
+  if (alreadyInsideLayout) {
+    return children;
+  }
+
+  return <AdminShell>{children}</AdminShell>;
+}
+
+// eslint-disable-next-line react/prop-types
+function AdminShell({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [cmsOpen, setCmsOpen] = useState(false);
   const [profile, setProfile] = useState({ name: '', avatar: '' });
   const navigate = useNavigate();
   const location = useLocation();
@@ -50,17 +62,23 @@ export default function AdminLayout({ children, currentPage }) {
         const name = prof?.full_name || user.email || 'User';
         const avatar = prof?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}`;
         setProfile({ name, avatar });
-      } catch {}
+      } catch {
+        // Keep the local fallback profile when profile metadata is unavailable.
+      }
     };
     loadProfile();
     const onStorage = (e) => { if (e.key === 'profile_updated') loadProfile(); };
     const onEvent = () => loadProfile();
     window.addEventListener('storage', onStorage);
     window.addEventListener('profile-updated', onEvent);
-    return () => window.removeEventListener('storage', onStorage);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('profile-updated', onEvent);
+    };
   }, []);
 
   return (
+    <AdminLayoutContext.Provider value={true}>
     <div className="min-h-screen bg-slate-50 flex">
       {/* Sidebar */}
       <aside className={`bg-white border-r border-slate-200 transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-0 lg:w-20'} flex-shrink-0`}>
@@ -147,5 +165,6 @@ export default function AdminLayout({ children, currentPage }) {
         />
       )}
     </div>
+    </AdminLayoutContext.Provider>
   );
 }
