@@ -25,7 +25,8 @@ export default function AdminServiceEdit() {
 
   const [formData, setFormData] = useState({
     title: '', description: '', full_description: '', category: 'development',
-    icon: '', features: [], image_url: '', order: 0, is_active: true
+    slug: '', parent_id: '', service_group: '', page_url: '', menu_description: '', menu_image_url: '',
+    icon: '', features: [], image_url: '', order: 0, is_active: true, is_featured: false
   });
   const [newFeature, setNewFeature] = useState('');
 
@@ -35,23 +36,37 @@ export default function AdminServiceEdit() {
     enabled: !!isEditing
   });
 
+  const { data: allServices = [] } = useQuery({
+    queryKey: ['admin-services'],
+    queryFn: () => dataLayer.services.getAll()
+  });
+
   useEffect(() => {
     if (service) {
       setFormData({
         title: service.title || '', description: service.description || '',
         full_description: service.full_description || '', category: service.category || 'development',
+        slug: service.slug || '', parent_id: service.parent_id || '', service_group: service.service_group || '',
+        page_url: service.page_url || '',
+        menu_description: service.menu_description || '', menu_image_url: service.menu_image_url || '',
         icon: service.icon || '', features: service.features || [],
-        image_url: service.image_url || '', order: service.order || 0, is_active: service.is_active !== false
+        image_url: service.image_url || '', order: service.order || 0, is_active: service.is_active !== false,
+        is_featured: Boolean(service.is_featured)
       });
     }
   }, [service]);
 
   const saveMutation = useMutation({
     mutationFn: async (data) => {
+      const payload = {
+        ...data,
+        parent_id: data.parent_id || null,
+        slug: (data.slug || data.title).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+      };
       if (isEditing) {
-        await dataLayer.services.update(id, data);
+        await dataLayer.services.update(id, payload);
       } else {
-        await dataLayer.services.create(data);
+        await dataLayer.services.create(payload);
       }
     },
     onSuccess: () => {
@@ -88,6 +103,11 @@ export default function AdminServiceEdit() {
             <CardHeader><CardTitle>Service Details</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div><Label>Title *</Label><Input value={formData.title} onChange={(e) => setFormData(p => ({ ...p, title: e.target.value }))} required className="mt-1" /></div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div><Label>SEO Slug</Label><Input value={formData.slug} onChange={(e) => setFormData(p => ({ ...p, slug: e.target.value }))} placeholder="ai-automation" className="mt-1" /></div>
+                <div><Label>Service Group</Label><Input value={formData.service_group} onChange={(e) => setFormData(p => ({ ...p, service_group: e.target.value }))} placeholder="AI & Automation" className="mt-1" /></div>
+              </div>
+              <div><Label>Public Page Link</Label><Input value={formData.page_url} onChange={(e) => setFormData(p => ({ ...p, page_url: e.target.value }))} placeholder="/Automation" className="mt-1" /></div>
               <div><Label>Category *</Label>
                 <Select value={formData.category} onValueChange={(v) => setFormData(p => ({ ...p, category: v }))}>
                   <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
@@ -97,15 +117,23 @@ export default function AdminServiceEdit() {
                   </SelectContent>
                 </Select>
               </div>
+              <div><Label>Parent Service</Label>
+                <select value={formData.parent_id} onChange={(e) => setFormData(p => ({ ...p, parent_id: e.target.value }))} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2">
+                  <option value="">Top-level service</option>
+                  {allServices.filter((item) => item.id !== id).map((item) => <option key={item.id} value={item.id}>{item.title}</option>)}
+                </select>
+              </div>
               <div><Label>Short Description</Label><Textarea value={formData.description} onChange={(e) => setFormData(p => ({ ...p, description: e.target.value }))} className="mt-1" rows={2} /></div>
               <div><Label>Full Description</Label><Textarea value={formData.full_description} onChange={(e) => setFormData(p => ({ ...p, full_description: e.target.value }))} className="mt-1" rows={4} /></div>
+              <div><Label>Mega-Menu Description</Label><Textarea value={formData.menu_description} onChange={(e) => setFormData(p => ({ ...p, menu_description: e.target.value }))} className="mt-1" rows={2} /></div>
               <div><Label>Icon Name (Lucide)</Label><Input value={formData.icon} onChange={(e) => setFormData(p => ({ ...p, icon: e.target.value }))} className="mt-1" placeholder="e.g., Globe, Smartphone" /></div>
               <div>
                 <Label>Image</Label>
                 <div className="mt-2">
-                  <FileUpload onUploadComplete={handleUpload} currentFile={formData.image_url} />
+                  <FileUpload onUploadComplete={handleUpload} currentFile={formData.image_url} storagePath="services" validation={{ width: 1600, height: 1000, aspectRatio: 1.6, aspectLabel: '8:5', maxImageMB: 1.5, note: 'WebP or AVIF is preferred.' }} />
                 </div>
               </div>
+              <FileUpload label="Mega-Menu Card Image" value={formData.menu_image_url} onChange={(url) => setFormData(p => ({ ...p, menu_image_url: url }))} storagePath="navigation/services" validation={{ width: 1200, height: 750, aspectRatio: 1.6, aspectLabel: '8:5', maxImageMB: 1 }} />
             </CardContent>
           </Card>
 
@@ -129,6 +157,10 @@ export default function AdminServiceEdit() {
               <div className="flex items-center justify-between">
                 <div><Label>Active</Label><p className="text-sm text-slate-500">Show this service on the website</p></div>
                 <Switch checked={formData.is_active} onCheckedChange={(v) => setFormData(p => ({ ...p, is_active: v }))} />
+              </div>
+              <div className="flex items-center justify-between">
+                <div><Label>Featured</Label><p className="text-sm text-slate-500">Allow this service in homepage and mega-menu highlights</p></div>
+                <Switch checked={formData.is_featured} onCheckedChange={(v) => setFormData(p => ({ ...p, is_featured: v }))} />
               </div>
               <div><Label>Display Order</Label><Input type="number" value={formData.order} onChange={(e) => setFormData(p => ({ ...p, order: parseInt(e.target.value) || 0 }))} className="mt-1 w-24" /></div>
             </CardContent>

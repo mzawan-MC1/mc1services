@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { createPageUrl } from '../../utils';
 import {
   LayoutDashboard, FileText, Settings, Search, Image, Users, Mail,
-  Menu, X, Eye, LogOut
+  Menu, X, Eye, LogOut, PanelsTopLeft, Building2
 } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import { Button } from '@/components/ui/button';
@@ -42,6 +42,8 @@ function AdminShell({ children }) {
     { id: 'media', label: 'Media Manager', icon: Image, to: '/admin/media' },
     { id: 'tasks', label: 'Tasks', icon: FileText, to: '/admin/tasks' },
     { id: 'portfolio', label: 'Portfolio', icon: FileText, to: '/admin/portfolio' },
+    { id: 'industries', label: 'Industries', icon: Building2, to: '/admin/industries' },
+    { id: 'navigation', label: 'Navigation', icon: PanelsTopLeft, to: '/admin/navigation' },
     { id: 'faq', label: 'FAQ', icon: FileText, to: '/admin/faq' },
     { id: 'team', label: 'Team Members', icon: Users, to: '/admin/team' },
     { id: 'inquiries', label: 'Inquiries', icon: Mail, to: '/admin/inquiries' },

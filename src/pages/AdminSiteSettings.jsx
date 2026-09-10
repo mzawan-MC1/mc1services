@@ -175,6 +175,8 @@ export default function AdminSiteSettings() {
                   value={formData.who_we_are_media_url || ''}
                   onChange={(url) => handleChange('who_we_are_media_url', url)}
                   accept="image/*,video/*"
+                  storagePath="site/who-we-are"
+                  validation={{ width: 1920, height: 1080, aspectRatio: 16 / 9, aspectLabel: '16:9', maxImageMB: 2, maxVideoMB: 20, note: 'WebP/AVIF for images or MP4/WebM for video.' }}
                 />
                 <p className="text-xs text-slate-500 mt-1">Drag & drop supported. Accepts images or MP4/WebM videos.</p>
               </div>
@@ -207,6 +209,8 @@ export default function AdminSiteSettings() {
                   label="Main Logo"
                   value={formData.logo_url || ''}
                   onChange={(url) => handleChange('logo_url', url)}
+                  storagePath="branding"
+                  validation={{ width: 1200, height: 360, aspectRatio: 10 / 3, aspectLabel: '10:3', maxImageMB: 2, note: 'Use a transparent PNG or WebP.' }}
                 />
               </div>
               <div>
@@ -214,8 +218,9 @@ export default function AdminSiteSettings() {
                   label="Favicon"
                   value={formData.favicon_url || ''}
                   onChange={(url) => handleChange('favicon_url', url)}
+                  storagePath="branding"
+                  validation={{ width: 512, height: 512, aspectRatio: 1, aspectLabel: '1:1 square', maxImageMB: 0.5, note: 'Upload a 512×512 PNG/WebP master; browsers scale it automatically.' }}
                 />
-                <p className="text-xs text-slate-500 mt-2">Recommended: 32x32px or 64x64px .ico or .png</p>
               </div>
               <Button onClick={() => handleSave('branding')} disabled={updateMutation.isPending} className="bg-blue-600 hover:bg-blue-700 text-white">
                 {updateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}

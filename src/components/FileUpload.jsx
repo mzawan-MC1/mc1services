@@ -4,9 +4,25 @@ import { supabaseHelpers } from './supabaseClient';
 import { Upload, X, Loader2, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { sanitizeStoragePath, validateUploadFile } from '../utils/uploadValidation';
+import {
+  inspectMediaFile,
+  sanitizeStoragePath,
+  validateMediaRequirements,
+  validateUploadFile
+} from '../utils/uploadValidation';
 
-export default function FileUpload({ value, onChange, currentFile, onUploadComplete, label, accept = "image/*", validation, compact = false }) {
+export default function FileUpload({
+  value,
+  onChange,
+  currentFile,
+  onUploadComplete,
+  onMetadata,
+  label,
+  accept = "image/*",
+  validation,
+  compact = false,
+  storagePath = 'cms'
+}) {
   const [uploading, setUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
 
@@ -15,60 +31,27 @@ export default function FileUpload({ value, onChange, currentFile, onUploadCompl
   const updateValue = onChange || onUploadComplete;
   const allowsVideo = accept.includes('video/');
 
-  const validateImage = (file) => {
-    if (!validation) return Promise.resolve(true);
-    
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-      img.onload = () => {
-        URL.revokeObjectURL(img.src);
-        const { width, height } = img;
-        
-        // Allow 10% variance
-        const tolerance = 0.1;
-        
-        if (validation.width) {
-          const minW = validation.width * (1 - tolerance);
-          const maxW = validation.width * (1 + tolerance);
-          if (width < minW || width > maxW) {
-            reject(new Error(`Image width must be approx ${validation.width}px (got ${width}px)`));
-            return;
-          }
-        }
-        
-        if (validation.height) {
-          const minH = validation.height * (1 - tolerance);
-          const maxH = validation.height * (1 + tolerance);
-          if (height < minH || height > maxH) {
-            reject(new Error(`Image height must be approx ${validation.height}px (got ${height}px)`));
-            return;
-          }
-        }
-        
-        resolve(true);
-      };
-      img.onerror = () => reject(new Error('Invalid image file'));
-    });
-  };
-
   const handleFile = async (file) => {
     if (!file) return;
 
     try {
-      validateUploadFile(file, { accept });
-      if (validation) {
-        await validateImage(file);
-      }
+      validateUploadFile(file, {
+        accept,
+        maxImageMB: validation?.maxImageMB,
+        maxVideoMB: validation?.maxVideoMB
+      });
+      const metadata = await inspectMediaFile(file);
+      validateMediaRequirements(metadata, validation);
 
       setUploading(true);
       const timestamp = Date.now();
-      const filename = sanitizeStoragePath(`${timestamp}_${file.name}`);
+      const filename = sanitizeStoragePath(`${storagePath}/${timestamp}_${file.name}`);
       const { file_url } = await supabaseHelpers.uploadFile(file, filename);
       
       if (updateValue) {
         updateValue(file_url);
       }
+      onMetadata?.(metadata);
       toast.success('File uploaded successfully!');
     } catch (error) {
       toast.error('Upload failed: ' + error.message);
@@ -96,6 +79,14 @@ export default function FileUpload({ value, onChange, currentFile, onUploadCompl
   };
 
   const inputId = `file-upload-${label || Math.random().toString(36).slice(2)}`;
+  const sizeText = allowsVideo
+    ? `Images up to ${validation?.maxImageMB || 10}MB; MP4, WebM or OGG up to ${validation?.maxVideoMB || 25}MB`
+    : `JPG, PNG, WebP, GIF, AVIF or ICO up to ${validation?.maxImageMB || 10}MB`;
+  const dimensionText = validation?.width && validation?.height
+    ? `${validation.width} × ${validation.height}px${validation.aspectLabel ? ` (${validation.aspectLabel})` : ''}`
+    : validation?.minWidth && validation?.minHeight
+      ? `Minimum ${validation.minWidth} × ${validation.minHeight}px${validation.aspectLabel ? ` (${validation.aspectLabel})` : ''}`
+      : null;
   if (compact) {
     return (
       <div className="flex items-center gap-2">
@@ -153,8 +144,9 @@ export default function FileUpload({ value, onChange, currentFile, onUploadCompl
             {uploading ? (<Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-2" />) : (<ImageIcon className="w-8 h-8 text-slate-400 mx-auto mb-2" />)}
             <p className="text-sm text-slate-600 mb-1">{uploading ? 'Uploading...' : 'Drag & drop or click to upload'}</p>
             <p className="text-xs text-slate-500">
-              {allowsVideo ? 'Images up to 10MB; MP4, WebM or OGG up to 25MB' : 'JPG, PNG, WebP, GIF, AVIF or ICO up to 10MB'}
+              {dimensionText ? `Recommended: ${dimensionText}. ` : ''}{sizeText}
             </p>
+            {validation?.note && <p className="mt-1 text-xs text-slate-500">{validation.note}</p>}
           </label>
         </div>
       )}
@@ -167,11 +159,22 @@ FileUpload.propTypes = {
   onChange: PropTypes.func,
   currentFile: PropTypes.string,
   onUploadComplete: PropTypes.func,
+  onMetadata: PropTypes.func,
   label: PropTypes.string,
   accept: PropTypes.string,
   validation: PropTypes.shape({
     width: PropTypes.number,
-    height: PropTypes.number
+    height: PropTypes.number,
+    minWidth: PropTypes.number,
+    minHeight: PropTypes.number,
+    aspectRatio: PropTypes.number,
+    aspectLabel: PropTypes.string,
+    tolerance: PropTypes.number,
+    maxImageMB: PropTypes.number,
+    maxVideoMB: PropTypes.number,
+    maxDurationSeconds: PropTypes.number,
+    note: PropTypes.string
   }),
-  compact: PropTypes.bool
+  compact: PropTypes.bool,
+  storagePath: PropTypes.string
 };

@@ -18,11 +18,12 @@ export default function Layout({ children, currentPageName }) {
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [siteSettings, setSiteSettings] = useState({});
   const [headerSettings, setHeaderSettings] = useState(null);
   const [footerSettings, setFooterSettings] = useState(null);
+  const [menuSources, setMenuSources] = useState({ services: [], industries: [], projects: [] });
 
   useEffect(() => {
     document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
@@ -56,6 +57,16 @@ export default function Layout({ children, currentPageName }) {
           const footer = headerFooter.find(s => s.setting_key === 'footer');
           setHeaderSettings(header);
           setFooterSettings(footer);
+          try {
+            const [managedServices, managedIndustries, managedProjects] = await Promise.all([
+              dataLayer.services.getActive(),
+              dataLayer.industries.getActive(),
+              dataLayer.portfolio.getPublished()
+            ]);
+            setMenuSources({ services: managedServices, industries: managedIndustries, projects: managedProjects });
+          } catch (sourceError) {
+            console.error('Failed to load managed menu sources:', sourceError);
+          }
         }
 
         if (settingsObj.favicon_url) {
@@ -75,14 +86,14 @@ export default function Layout({ children, currentPageName }) {
 
   useEffect(() => {
     setMobileMenuOpen(false);
-    setServicesOpen(false);
+    setOpenMenu(null);
   }, [location.pathname, location.search]);
 
   useEffect(() => {
     const closeMenus = (event) => {
       if (event.key === 'Escape') {
         setMobileMenuOpen(false);
-        setServicesOpen(false);
+        setOpenMenu(null);
       }
     };
     window.addEventListener('keydown', closeMenus);
@@ -100,7 +111,7 @@ export default function Layout({ children, currentPageName }) {
     return isRTL ? (obj[`${key}_ar`] || obj[key]) : obj[key];
   };
 
-  const services = [
+  const fallbackServices = [
     { name: t('services_list.web_development', 'Web Development'), href: 'WebDevelopment' },
     { name: t('services_list.app_development', 'App Development'), href: 'AppDevelopment' },
     { name: t('services_list.digital_marketing', 'Digital Marketing'), href: 'DigitalMarketing' },
@@ -109,14 +120,59 @@ export default function Layout({ children, currentPageName }) {
     { name: t('services_list.it_services', 'IT & Professional Services'), href: 'ITServices' },
   ];
 
-  const navLinks = [
+  const fallbackNavLinks = [
     { name: t('nav.home', 'Home'), href: 'Home' },
     { name: t('nav.about', 'About'), href: 'About' },
-    { name: t('nav.services', 'Services'), href: null, dropdown: true },
+    { name: t('nav.services', 'Services'), href: null, menu_type: 'mega', children: fallbackServices },
     { name: t('nav.portfolio', 'Portfolio'), href: 'Portfolio' },
     { name: t('nav.tools', 'Tools'), href: 'Tools' },
     { name: t('nav.contact', 'Contact'), href: 'Contact' },
   ];
+
+  const resolveReferencedChild = (child) => {
+    if (!child?.source_type || child.source_type === 'custom' || !child.source_id) return child;
+    if (child.source_type === 'service') {
+      const service = menuSources.services.find((item) => item.id === child.source_id);
+      return service ? { ...child, label: service.title, label_ar: service.title_ar, description: service.menu_description || service.description, description_ar: service.menu_description_ar || service.description_ar, image_url: service.menu_image_url || service.image_url, href: service.page_url || child.href } : child;
+    }
+    if (child.source_type === 'industry') {
+      const industry = menuSources.industries.find((item) => item.id === child.source_id);
+      return industry ? { ...child, label: industry.name, label_ar: industry.name_ar, description: industry.short_description, description_ar: industry.short_description_ar, image_url: industry.image_url, href: `/Portfolio?industry=${industry.slug}` } : child;
+    }
+    if (child.source_type === 'project') {
+      const project = menuSources.projects.find((item) => item.id === child.source_id);
+      return project ? { ...child, label: project.title, label_ar: project.title_ar, description: project.headline || project.short_description, description_ar: project.headline_ar || project.short_description_ar, image_url: project.main_image_url || project.image_url, href: `/PortfolioDetail?id=${project.id}` } : child;
+    }
+    return child;
+  };
+
+  const configuredNavLinks = Array.isArray(headerSettings?.menu_items)
+    ? headerSettings.menu_items
+      .filter((item) => item?.is_visible !== false)
+      .map((item, index) => ({
+        ...item,
+        id: item.id || `menu-${index}`,
+        name: getLocalized(item, 'label') || item.label,
+        children: Array.isArray(item.children)
+          ? item.children.map(resolveReferencedChild).map((child) => ({ ...child, name: getLocalized(child, 'label') || child.label }))
+          : []
+      }))
+    : [];
+  const navLinks = configuredNavLinks.length ? configuredNavLinks : fallbackNavLinks;
+  const footerServices = (navLinks.find((item) => item.id === 'solutions' || item.name === t('nav.services', 'Services'))?.children || fallbackServices).slice(0, 6);
+
+  const resolveMenuHref = (href) => {
+    if (!href) return '#';
+    if (/^https?:\/\//i.test(href) || href.startsWith('/')) return href;
+    return createPageUrl(href);
+  };
+
+  const isExternalHref = (href) => /^https?:\/\//i.test(href || '');
+  const groupMenuChildren = (children = []) => Object.entries(children.reduce((groups, child) => {
+    const group = child.group || t('nav.explore', 'Explore');
+    groups[group] = [...(groups[group] || []), child];
+    return groups;
+  }, {}));
 
   const isActive = (href) => currentPageName === href;
 
@@ -244,56 +300,63 @@ export default function Layout({ children, currentPageName }) {
 
                 {/* Desktop Navigation */}
                 <div className="hidden lg:flex items-center gap-8">
-                  {navLinks.map((link) => (
-                    link.dropdown ? (
-                      <div key={link.name} className="relative group">
+                  {navLinks.map((link, linkIndex) => {
+                    const menuId = link.id || link.name || `menu-${linkIndex}`;
+                    const hasMenu = link.menu_type === 'mega' || link.children?.length > 0;
+                    const isOpen = openMenu === menuId;
+                    return hasMenu ? (
+                      <div key={menuId} className="relative">
                         <button
                           type="button"
-                          className={`flex items-center gap-1 font-medium transition py-2 ${services.some(service => isActive(service.href)) ? 'text-blue-600' : 'text-slate-700 hover:text-blue-600'}`}
-                          onClick={() => setServicesOpen(!servicesOpen)}
-                          onFocus={() => setServicesOpen(true)}
-                          onMouseEnter={() => setServicesOpen(true)}
-                          onMouseLeave={() => setServicesOpen(false)}
-                          aria-expanded={servicesOpen}
-                          aria-controls="desktop-services-menu"
+                          className="flex items-center gap-1 py-2 font-medium text-slate-700 transition hover:text-blue-600"
+                          onClick={() => setOpenMenu(isOpen ? null : menuId)}
+                          onFocus={() => setOpenMenu(menuId)}
+                          onMouseEnter={() => setOpenMenu(menuId)}
+                          aria-expanded={isOpen}
+                          aria-controls={`desktop-menu-${menuId}`}
                           aria-haspopup="true"
                         >
                           {link.name}
-                          <ChevronDown className={`w-4 h-4 transition-transform ${servicesOpen ? 'rotate-180' : ''}`} />
+                          <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                         </button>
                         <div
-                          id="desktop-services-menu"
-                          className={`absolute top-full ${isRTL ? 'right-0' : 'left-0'} pt-2 ${servicesOpen ? 'block' : 'hidden'}`}
-                          onMouseEnter={() => setServicesOpen(true)}
-                          onMouseLeave={() => setServicesOpen(false)}
+                          id={`desktop-menu-${menuId}`}
+                          className={`absolute left-1/2 top-full w-[min(900px,calc(100vw-2rem))] -translate-x-1/2 pt-3 ${isOpen ? 'block' : 'hidden'}`}
+                          onMouseEnter={() => setOpenMenu(menuId)}
+                          onMouseLeave={() => setOpenMenu(null)}
                         >
                           <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-white rounded-xl shadow-xl border border-slate-100 py-3 min-w-[240px]"
+                            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl"
                           >
-                            {services.map((service) => (
-                              <Link
-                                key={service.href}
-                                to={createPageUrl(service.href)}
-                                className="block px-5 py-2.5 text-slate-700 hover:text-blue-600 hover:bg-blue-50 transition"
-                              >
-                                {service.name}
-                              </Link>
-                            ))}
+                            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                              {groupMenuChildren(link.children).map(([group, children]) => (
+                                <div key={group}>
+                                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-blue-600">{group}</p>
+                                  <div className="space-y-1">
+                                    {children.map((child) => {
+                                      const content = <><div className="flex gap-3">{child.image_url && <img src={child.image_url} alt="" className="h-12 w-16 rounded-lg object-cover" />}<div><span className="block font-medium text-slate-900">{child.name || child.label}</span>{child.description && <span className="mt-0.5 block text-xs leading-relaxed text-slate-500">{getLocalized(child, 'description') || child.description}</span>}</div></div></>;
+                                      const className = "block rounded-xl p-2.5 transition hover:bg-blue-50";
+                                      return isExternalHref(child.href) ? <a key={child.id || child.href} href={child.href} target={child.open_new_tab ? '_blank' : undefined} rel={child.open_new_tab ? 'noopener noreferrer' : undefined} className={className}>{content}</a> : <Link key={child.id || child.href} to={resolveMenuHref(child.href)} className={className}>{content}</Link>;
+                                    })}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
                           </motion.div>
                         </div>
                       </div>
                     ) : (
-                      <Link
-                        key={link.name}
-                        to={createPageUrl(link.href)}
+                      isExternalHref(link.href) ? <a key={menuId} href={link.href} className="font-medium text-slate-700 transition hover:text-blue-600">{link.name}</a> : <Link
+                        key={menuId}
+                        to={resolveMenuHref(link.href)}
                         className={`font-medium transition ${isActive(link.href) ? 'text-blue-600' : 'text-slate-700 hover:text-blue-600'}`}
                       >
                         {link.name}
                       </Link>
-                    )
-                  ))}
+                    );
+                  })}
                   {isAdmin && (
                     <Link
                       to={createPageUrl('AdminDashboard')}
@@ -343,45 +406,39 @@ export default function Layout({ children, currentPageName }) {
                       <span className="text-sm font-medium text-slate-500">{t('common.language', 'Language')}</span>
                       <LanguageSwitcher />
                     </div>
-                    {navLinks.map((link) => (
-                      link.dropdown ? (
-                        <div key={link.name}>
+                    {navLinks.map((link, linkIndex) => {
+                      const menuId = link.id || link.name || `mobile-menu-${linkIndex}`;
+                      const hasMenu = link.menu_type === 'mega' || link.children?.length > 0;
+                      const isOpen = openMenu === menuId;
+                      return hasMenu ? (
+                        <div key={menuId}>
                           <button
                             type="button"
-                            onClick={() => setServicesOpen(!servicesOpen)}
-                            aria-expanded={servicesOpen}
-                            aria-controls="mobile-services-menu"
+                            onClick={() => setOpenMenu(isOpen ? null : menuId)}
+                            aria-expanded={isOpen}
+                            aria-controls={`mobile-menu-${menuId}`}
                             className="flex items-center justify-between w-full py-3 text-slate-700 font-medium"
                           >
                             {link.name}
-                            <ChevronDown className={`w-4 h-4 transition ${servicesOpen ? 'rotate-180' : ''}`} />
+                            <ChevronDown className={`w-4 h-4 transition ${isOpen ? 'rotate-180' : ''}`} />
                           </button>
-                          {servicesOpen && (
-                            <div id="mobile-services-menu" className={`space-y-1 ${isRTL ? 'pr-4' : 'pl-4'}`}>
-                              {services.map((service) => (
-                                <Link
-                                  key={service.href}
-                                  to={createPageUrl(service.href)}
-                                  onClick={() => setMobileMenuOpen(false)}
-                                  className="block py-2 text-slate-600 hover:text-blue-600"
-                                >
-                                  {service.name}
-                                </Link>
-                              ))}
+                          {isOpen && (
+                            <div id={`mobile-menu-${menuId}`} className={`space-y-3 border-l border-slate-200 ${isRTL ? 'pr-4' : 'pl-4'}`}>
+                              {groupMenuChildren(link.children).map(([group, children]) => <div key={group}><p className="py-1 text-xs font-semibold uppercase tracking-wider text-blue-600">{group}</p>{children.map((child) => isExternalHref(child.href) ? <a key={child.id || child.href} href={child.href} target={child.open_new_tab ? '_blank' : undefined} rel={child.open_new_tab ? 'noopener noreferrer' : undefined} className="block py-2 text-slate-600 hover:text-blue-600">{child.name || child.label}</a> : <Link key={child.id || child.href} to={resolveMenuHref(child.href)} onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-600 hover:text-blue-600">{child.name || child.label}</Link>)}</div>)}
                             </div>
                           )}
                         </div>
                       ) : (
                         <Link
-                          key={link.name}
-                          to={createPageUrl(link.href)}
+                          key={menuId}
+                          to={resolveMenuHref(link.href)}
                           onClick={() => setMobileMenuOpen(false)}
                           className="block py-3 text-slate-700 font-medium hover:text-blue-600"
                         >
                           {link.name}
                         </Link>
-                      )
-                    ))}
+                      );
+                    })}
                     {isAdmin && (
                       <Link
                         to={createPageUrl('AdminDashboard')}
@@ -478,10 +535,10 @@ export default function Layout({ children, currentPageName }) {
                 <div>
                   <h3 className="text-lg font-semibold mb-6">{t('footer.services', 'Services')}</h3>
                   <ul className="space-y-3">
-                    {services.map((service) => (
+                    {footerServices.map((service) => (
                       <li key={service.name}>
                         <Link
-                          to={createPageUrl(service.href)}
+                          to={resolveMenuHref(service.href)}
                           className="text-slate-400 hover:text-white transition-colors"
                         >
                           {service.name}
@@ -495,10 +552,10 @@ export default function Layout({ children, currentPageName }) {
                 <div>
                   <h3 className="text-lg font-semibold mb-6">{t('footer.quick_links', 'Quick Links')}</h3>
                   <ul className="space-y-3">
-                    {navLinks.filter(link => !link.dropdown).map((link) => (
+                    {navLinks.filter(link => link.href).map((link) => (
                       <li key={link.name}>
                         <Link
-                          to={createPageUrl(link.href)}
+                          to={resolveMenuHref(link.href)}
                           className="text-slate-400 hover:text-white transition-colors"
                         >
                           {link.name}

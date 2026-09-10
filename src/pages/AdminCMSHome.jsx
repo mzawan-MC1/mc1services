@@ -11,6 +11,20 @@ import { toast } from 'sonner';
 import FileUpload from '../components/FileUpload';
 import AdminLayout from '../components/admin/AdminLayout';
 
+const HOME_SECTIONS = [
+  { key: 'hero', label: 'Hero' },
+  { key: 'clients', label: 'Client Logos' },
+  { key: 'video', label: 'Who We Are / Video' },
+  { key: 'services', label: 'Solutions' },
+  { key: 'products', label: 'MC1 Products' },
+  { key: 'portfolio', label: 'Flagship Case Studies' },
+  { key: 'industries', label: 'Industries' },
+  { key: 'process', label: 'How We Work' },
+  { key: 'stats', label: 'Verified Results' },
+  { key: 'testimonials', label: 'Client Stories' },
+  { key: 'cta', label: 'Final Call to Action' }
+];
+
 export default function AdminCMSHome() {
   const queryClient = useQueryClient();
   const [selectedSection, setSelectedSection] = useState('hero');
@@ -30,7 +44,10 @@ export default function AdminCMSHome() {
     button_link: '',
     background_image: '',
     background_video: '',
-    section_height: ''
+    section_height: '',
+    display_order: 0,
+    is_visible: true,
+    style_variant: 'default'
   });
 
   React.useEffect(() => {
@@ -43,7 +60,10 @@ export default function AdminCMSHome() {
         button_link: currentSection.button_link || '',
         background_image: currentSection.background_image || '',
         background_video: currentSection.background_video || '',
-        section_height: currentSection.section_height || ''
+        section_height: currentSection.section_height || '',
+        display_order: currentSection.display_order || 0,
+        is_visible: currentSection.is_visible !== false,
+        style_variant: currentSection.style_variant || 'default'
       });
     } else {
       setFormData({
@@ -54,7 +74,10 @@ export default function AdminCMSHome() {
         button_link: '',
         background_image: '',
         background_video: '',
-        section_height: ''
+        section_height: '',
+        display_order: HOME_SECTIONS.findIndex((section) => section.key === selectedSection) * 10,
+        is_visible: true,
+        style_variant: 'default'
       });
     }
   }, [currentSection, selectedSection]);
@@ -106,18 +129,18 @@ export default function AdminCMSHome() {
               <CardTitle className="text-base">Sections</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              {['hero', 'services', 'process', 'stats', 'cta'].map(section => (
+              {HOME_SECTIONS.map(section => (
                 <button
-                  key={section}
-                  onClick={() => setSelectedSection(section)}
+                  key={section.key}
+                  onClick={() => setSelectedSection(section.key)}
                   className={`w-full text-left px-3 py-2 rounded-lg transition capitalize ${
-                    selectedSection === section
+                    selectedSection === section.key
                       ? 'bg-blue-50 text-blue-700 font-medium'
                       : 'hover:bg-slate-100 text-slate-700'
                   }`}
                 >
-                  {section}
-                  {sections.find(s => s.section_key === section) && (
+                  {section.label}
+                  {sections.find(s => s.section_key === section.key) && (
                     <span className="ml-2 text-green-600">✓</span>
                   )}
                 </button>
@@ -179,24 +202,32 @@ export default function AdminCMSHome() {
                     />
                   </div>
                 </div>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div><Label>Display Order</Label><Input type="number" value={formData.display_order} onChange={(e) => handleChange('display_order', Number(e.target.value) || 0)} className="mt-2" /></div>
+                  <div><Label>Visual Style</Label><select value={formData.style_variant} onChange={(e) => handleChange('style_variant', e.target.value)} className="mt-2 w-full rounded-md border border-slate-300 px-3 py-2"><option value="default">Default</option><option value="dark">Dark / Futuristic</option><option value="light">Light</option><option value="immersive">Immersive Media</option><option value="split">Split Layout</option></select></div>
+                  <label className="flex items-center gap-3 self-end rounded-md border p-2.5"><input type="checkbox" checked={formData.is_visible} onChange={(e) => handleChange('is_visible', e.target.checked)} />Visible on website</label>
+                </div>
+                <FileUpload
+                  label="Section Image"
+                  value={formData.background_image}
+                  onChange={(url) => handleChange('background_image', url)}
+                  storagePath={`homepage/${selectedSection}`}
+                  validation={{ width: 1920, height: 1080, aspectRatio: 16 / 9, aspectLabel: '16:9', maxImageMB: 2, note: 'WebP or AVIF is preferred.' }}
+                />
+                {(selectedSection === 'hero' || selectedSection === 'video' || selectedSection === 'products' || selectedSection === 'portfolio') && (
+                  <>
+                    <FileUpload
+                      label="Section Video (optional)"
+                      value={formData.background_video}
+                      onChange={(url) => handleChange('background_video', url)}
+                      accept="video/mp4,video/webm,video/ogg"
+                      storagePath={`homepage/${selectedSection}`}
+                      validation={{ width: 1920, height: 1080, aspectRatio: 16 / 9, aspectLabel: '16:9', maxVideoMB: 20, maxDurationSeconds: selectedSection === 'hero' ? 30 : 180, note: selectedSection === 'hero' ? 'Use a muted 10–30 second loop.' : 'MP4 or WebM is preferred.' }}
+                    />
+                  </>
+                )}
                 {selectedSection === 'hero' && (
                   <>
-                    <div>
-                      <FileUpload
-                        label="Background Image"
-                        value={formData.background_image}
-                        onChange={(url) => handleChange('background_image', url)}
-                      />
-                    </div>
-                    <div>
-                      <Label>Background Video URL (optional)</Label>
-                      <Input
-                        value={formData.background_video}
-                        onChange={(e) => handleChange('background_video', e.target.value)}
-                        placeholder="https://example.com/video.mp4"
-                        className="mt-2"
-                      />
-                    </div>
                     <div>
                       <Label>Section Height</Label>
                       <Input

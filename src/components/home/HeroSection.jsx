@@ -44,6 +44,11 @@ export default function HeroSection() {
     <section className={`relative ${sectionHeight} flex items-center overflow-hidden bg-slate-900`}>
       {/* Animated Background */}
       <div className="absolute inset-0">
+        {heroContent?.background_video ? (
+          <video src={heroContent.background_video} poster={heroContent.background_image || undefined} autoPlay muted loop playsInline className="absolute inset-0 h-full w-full object-cover opacity-35" />
+        ) : heroContent?.background_image ? (
+          <img src={heroContent.background_image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-35" />
+        ) : null}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-pink-600/20" />
         <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-blue-500/30 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 animate-pulse" />
         <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/30 rounded-full blur-[150px] translate-x-1/4 translate-y-1/4 animate-pulse" />

@@ -33,35 +33,69 @@ export const dataLayer = {
   portfolio: {
     getAll: () => supabaseHelpers.getAll('portfolio', 'created_at', false),
     getById: (id) => supabaseHelpers.getById('portfolio', id),
+    getBySlug: async (slug) => {
+      if (!supabase) return null;
+      const { data, error } = await supabase.from('portfolio').select('*').eq('slug', slug).maybeSingle();
+      if (error) throw error;
+      return data;
+    },
     getImages: async (projectId) => {
       const rows = await supabaseHelpers.getByKey('project_images', 'project_id', projectId);
       return rows.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
     },
     setImages: async (projectId, images) => {
-      const existing = await supabaseHelpers.getByKey('project_images', 'project_id', projectId);
-      const nextUrls = new Set((images || []).map((i) => i.image_url).filter(Boolean));
-      const removedUrls = (existing || []).map((e) => e.image_url).filter((u) => u && !nextUrls.has(u));
-      if (removedUrls.length) {
-        await storageHelpers.deleteFilesByPublicUrls(removedUrls);
-      }
-      await supabaseHelpers.deleteByKey('project_images', 'project_id', projectId);
-      if (images?.length) {
-        const payload = images.map((img, idx) => ({
-          project_id: projectId,
-          image_url: img.image_url,
-          caption: img.caption || '',
-          display_order: img.display_order ?? idx,
-        }));
-        await supabaseHelpers.insertMany('project_images', payload);
+      if (!supabase) throw new Error('Supabase not initialized');
+      const payload = (images || []).map((img, idx) => ({
+        image_url: img.image_url,
+        caption: img.caption || '',
+        caption_ar: img.caption_ar || '',
+        alt_text: img.alt_text || '',
+        alt_text_ar: img.alt_text_ar || '',
+        display_order: img.display_order ?? idx,
+        media_type: img.media_type || 'image',
+        media_role: img.media_role || 'gallery',
+        poster_url: img.poster_url || '',
+        mime_type: img.mime_type || '',
+        width: img.width || null,
+        height: img.height || null,
+        duration_seconds: img.duration_seconds || null,
+        is_featured: Boolean(img.is_featured)
+      }));
+      const { data: removedUrls, error } = await supabase.rpc('replace_project_media', {
+        p_project_id: projectId,
+        p_media: payload
+      });
+      if (error) throw error;
+      if (removedUrls?.length) {
+        try {
+          await storageHelpers.deleteFilesByPublicUrls(removedUrls);
+        } catch (storageError) {
+          console.error('Project media metadata saved, but unused-file cleanup failed:', storageError);
+        }
       }
     },
     getFeatured: async () => {
-      const all = await supabaseHelpers.getAll('portfolio');
-      return all.filter(p => p.is_featured && p.status === 'published');
+      if (!supabase) return [];
+      const { data, error } = await supabase
+        .from('portfolio')
+        .select('*')
+        .eq('status', 'published')
+        .neq('confidentiality', 'confidential')
+        .eq('is_featured', true)
+        .order('featured_rank', { ascending: true, nullsFirst: false });
+      if (error) throw error;
+      return data || [];
     },
     getPublished: async () => {
-      const all = await supabaseHelpers.getAll('portfolio');
-      return all.filter(p => p.status === 'published');
+      if (!supabase) return [];
+      const { data, error } = await supabase
+        .from('portfolio')
+        .select('*')
+        .eq('status', 'published')
+        .neq('confidentiality', 'confidential')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
     },
     create: (data) => supabaseHelpers.create('portfolio', data),
     update: (id, data) => supabaseHelpers.update('portfolio', id, data),
@@ -109,12 +143,69 @@ export const dataLayer = {
     getAll: () => supabaseHelpers.getAll('services', 'order', true),
     getById: (id) => supabaseHelpers.getById('services', id),
     getActive: async () => {
-      const all = await supabaseHelpers.getAll('services');
-      return all.filter(s => s.is_active);
+      if (!supabase) return [];
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('is_active', true)
+        .order('order', { ascending: true });
+      if (error) throw error;
+      return data || [];
     },
     create: (data) => supabaseHelpers.create('services', data),
     update: (id, data) => supabaseHelpers.update('services', id, data),
     delete: (id) => supabaseHelpers.delete('services', id),
+  },
+
+  // Industries and project taxonomy
+  industries: {
+    getAll: () => supabaseHelpers.getAll('industries', 'display_order', true),
+    getActive: async () => {
+      if (!supabase) return [];
+      const { data, error } = await supabase
+        .from('industries')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true });
+      if (error) throw error;
+      return data || [];
+    },
+    getById: (id) => supabaseHelpers.getById('industries', id),
+    create: (data) => supabaseHelpers.create('industries', data),
+    update: (id, data) => supabaseHelpers.update('industries', id, data),
+    delete: (id) => supabaseHelpers.delete('industries', id),
+  },
+
+  portfolioTaxonomy: {
+    getIndustryLinks: async () => {
+      if (!supabase) return [];
+      const { data, error } = await supabase.from('portfolio_industries').select('portfolio_id, industry_id');
+      if (error) throw error;
+      return data || [];
+    },
+    getServiceLinks: async () => {
+      if (!supabase) return [];
+      const { data, error } = await supabase.from('portfolio_services').select('portfolio_id, service_id');
+      if (error) throw error;
+      return data || [];
+    },
+    getIndustryIds: async (portfolioId) => {
+      const rows = await supabaseHelpers.getByKey('portfolio_industries', 'portfolio_id', portfolioId);
+      return rows.map((row) => row.industry_id);
+    },
+    getServiceIds: async (portfolioId) => {
+      const rows = await supabaseHelpers.getByKey('portfolio_services', 'portfolio_id', portfolioId);
+      return rows.map((row) => row.service_id);
+    },
+    set: async (portfolioId, industryIds = [], serviceIds = []) => {
+      if (!supabase) throw new Error('Supabase not initialized');
+      const { error } = await supabase.rpc('replace_portfolio_taxonomy', {
+        p_project_id: portfolioId,
+        p_industry_ids: industryIds,
+        p_service_ids: serviceIds
+      });
+      if (error) throw error;
+    }
   },
 
   // Team Members

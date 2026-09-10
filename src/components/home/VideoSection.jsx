@@ -25,9 +25,11 @@ export default function VideoSection() {
       // Fallback to home content 'video' section
       const sections = await dataLayer.homeContent.getBySection('video');
       const fromHome = sections[0] || {};
+      const preferredSettings = Object.fromEntries(Object.entries(fromSettings).filter(([, value]) => value));
       return {
         ...fromHome,
-        ...fromSettings,
+        ...preferredSettings,
+        media_url: fromSettings.media_url || fromHome.background_video || fromHome.background_image,
         background_image: fromSettings.media_url || fromHome.background_image
       };
     }

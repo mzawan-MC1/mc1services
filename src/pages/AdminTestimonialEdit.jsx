@@ -3,7 +3,7 @@ import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { ArrowLeft, Save, Loader2, Upload, X, Star } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -13,6 +13,7 @@ import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import AdminLayout from '../components/admin/AdminLayout';
 import AdminRoute from '../components/AdminRoute';
+import FileUpload from '../components/FileUpload';
 
 export default function AdminTestimonialEdit() {
   const [searchParams] = useSearchParams();
@@ -30,7 +31,6 @@ export default function AdminTestimonialEdit() {
     rating: 5,
     is_featured: false
   });
-  const [uploading, setUploading] = useState(false);
 
   const { data: testimonial, isLoading } = useQuery({
     queryKey: ['testimonial', id],
@@ -70,22 +70,6 @@ export default function AdminTestimonialEdit() {
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    setUploading(true);
-    try {
-      const path = `testimonials/${Date.now()}_${file.name}`;
-      const { file_url } = await dataLayer.uploadFile(file, path);
-      setFormData(prev => ({ ...prev, image_url: file_url }));
-    } catch (error) {
-      toast.error('Failed to upload image');
-      console.error(error);
-    }
-    setUploading(false);
   };
 
   const handleSubmit = (e) => {
@@ -153,25 +137,8 @@ export default function AdminTestimonialEdit() {
                 </div>
               </div>
               <div>
-                <Label>Photo</Label>
                 <div className="mt-2">
-                  {formData.image_url ? (
-                    <div className="relative inline-block">
-                      <img src={formData.image_url} alt="Client" className="w-20 h-20 rounded-full object-cover" />
-                      <button
-                        type="button"
-                        onClick={() => handleChange('image_url', '')}
-                        className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ) : (
-                    <label className="flex items-center justify-center w-20 h-20 border-2 border-dashed border-slate-300 rounded-full cursor-pointer hover:border-blue-500 transition">
-                      <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-                      {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5 text-slate-400" />}
-                    </label>
-                  )}
+                  <FileUpload label="Client Photo" value={formData.image_url} onChange={(url) => handleChange('image_url', url)} storagePath="testimonials" validation={{ width: 512, height: 512, aspectRatio: 1, aspectLabel: '1:1 square', maxImageMB: 0.5, note: 'Use a clear, centred portrait.' }} />
                 </div>
               </div>
             </CardContent>

@@ -10,7 +10,12 @@ import { useTranslation } from 'react-i18next';
 export default function ServicesHighlight() {
   const { t, i18n } = useTranslation();
 
-  const highlights = [
+  const { data: managedServices = [] } = useQuery({
+    queryKey: ['active-services'],
+    queryFn: () => dataLayer.services.getActive()
+  });
+
+  const fallbackHighlights = [
     {
       icon: Code,
       title: t('home.services_highlight.software.title', 'Software Development'),
@@ -74,6 +79,28 @@ export default function ServicesHighlight() {
   });
 
   const getLoc = (obj, key) => getLocalizedValue(obj, key, i18n.language, false);
+  const iconMap = { Code, Megaphone, Server, Zap };
+  const colors = ['from-blue-500 to-cyan-500', 'from-purple-500 to-pink-500', 'from-amber-500 to-orange-500', 'from-green-500 to-teal-500'];
+  const legacyRouteBySlug = {
+    'web-development': 'WebDevelopment',
+    'app-development': 'AppDevelopment',
+    'mobile-app-development': 'AppDevelopment',
+    'digital-marketing': 'DigitalMarketing',
+    automation: 'Automation',
+    production: 'Production',
+    'it-services': 'ITServices',
+    'professional-services': 'ITServices'
+  };
+  const highlights = managedServices.length
+    ? managedServices.filter((service) => !service.parent_id).slice(0, 8).map((service, index) => ({
+        icon: iconMap[service.icon] || Code,
+        title: i18n.language === 'ar' ? service.title_ar || service.title : service.title,
+        description: i18n.language === 'ar' ? service.description_ar || service.description : service.description,
+        features: service.features || [],
+        href: service.page_url || legacyRouteBySlug[service.slug] || 'DevelopmentServices',
+        color: colors[index % colors.length]
+      }))
+    : fallbackHighlights;
 
   return (
     <section className="py-24 bg-slate-50">
@@ -105,7 +132,7 @@ export default function ServicesHighlight() {
               transition={{ delay: i * 0.1 }}
             >
               <Link
-                to={createPageUrl(item.href)}
+                to={item.href?.startsWith('/') ? item.href : createPageUrl(item.href)}
                 className="group block h-full bg-white rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow-xl hover:border-slate-200 transition-all duration-300"
               >
                 <div className={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>

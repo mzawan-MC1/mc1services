@@ -128,14 +128,8 @@ export default function AdminCMSHeaderFooter() {
             <CardTitle className="capitalize">{activeTab} Settings</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div>
-              <Label>Logo URL</Label>
-              <Input
-                value={formData.logo_url}
-                onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
-                placeholder="https://example.com/logo.png"
-                className="mt-2"
-              />
+            <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-blue-900">
+              Company name, main logo and favicon use the single Branding source in Site Settings. Mega-menu structure and images are managed from the Navigation page.
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               <div>

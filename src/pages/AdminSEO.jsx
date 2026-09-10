@@ -11,6 +11,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import AdminLayout from '../components/admin/AdminLayout';
+import FileUpload from '../components/FileUpload';
 
 const commonPages = [
   { id: 'home', name: 'Home Page' },
@@ -352,16 +353,7 @@ Sitemap: ${window.location.origin}/sitemap.xml`;
                           className="mt-2"
                         />
                       </div>
-                      <div>
-                        <Label>OG Image URL</Label>
-                        <Input
-                          value={formData.og_image}
-                          onChange={(e) => handleChange('og_image', e.target.value)}
-                          placeholder="https://example.com/image.jpg"
-                          className="mt-2"
-                        />
-                        <p className="text-xs text-slate-500 mt-1">Recommended: 1200x630px</p>
-                      </div>
+                      <FileUpload label="Social Sharing Image" value={formData.og_image} onChange={(url) => handleChange('og_image', url)} storagePath="seo" validation={{ width: 1200, height: 630, aspectRatio: 1200 / 630, aspectLabel: '1.91:1', maxImageMB: 1, note: 'WebP or JPG is preferred for social previews.' }} />
                     </CardContent>
                   </Card>
                 </div>

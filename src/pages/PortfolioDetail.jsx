@@ -46,8 +46,13 @@ export default function PortfolioDetail() {
   // Combine main image, gallery images, and videos for the slider
   const allMedia = useMemo(() => portfolio ? [
     ...(portfolio.main_image_url ? [{ type: 'image', url: portfolio.main_image_url }] : []),
-    ...gallery.map(img => ({ type: 'image', url: img.image_url }))
-  ] : [], [portfolio, gallery]);
+    ...gallery.map((media) => ({
+      type: media.media_type || (/\.(mp4|webm|ogg)(\?|$)/i.test(media.image_url) ? 'video' : 'image'),
+      url: media.image_url,
+      poster: media.poster_url,
+      alt: (i18n.language === 'ar' ? media.alt_text_ar || media.alt_text : media.alt_text) || (i18n.language === 'ar' ? portfolio.title_ar || portfolio.title : portfolio.title)
+    }))
+  ] : [], [portfolio, gallery, i18n.language]);
 
   const getEmbedUrl = (url) => {
     if (url.includes('youtube.com/watch')) {
@@ -154,11 +159,11 @@ export default function PortfolioDetail() {
                         {isEmbedVideo(allMedia[currentSlide].url) ? (
                           <iframe src={getEmbedUrl(allMedia[currentSlide].url)} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                         ) : (
-                          <video src={allMedia[currentSlide].url} className="w-full h-full object-cover" controls />
+                          <video src={allMedia[currentSlide].url} poster={allMedia[currentSlide].poster || undefined} className="w-full h-full object-cover" controls />
                         )}
                       </motion.div>
                     ) : (
-                      <motion.img key={currentSlide} src={allMedia[currentSlide]?.url} alt={getLoc(portfolio, 'title')} className="w-full h-full object-cover" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
+                      <motion.img key={currentSlide} src={allMedia[currentSlide]?.url} alt={allMedia[currentSlide]?.alt || getLoc(portfolio, 'title')} className="w-full h-full object-cover" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
                     )}
                   </AnimatePresence>
 
@@ -319,7 +324,7 @@ export default function PortfolioDetail() {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {gallery.map((img, i) => (
                   <button key={i} onClick={() => openLightbox(i + 1)} className="relative group rounded-xl overflow-hidden aspect-video">
-                    <img src={img.image_url} alt="" className="w-full h-full object-cover" />
+                    {img.media_type === 'video' ? <video src={img.image_url} poster={img.poster_url || undefined} className="h-full w-full object-cover" muted /> : <img src={img.image_url} alt={getLoc(img, 'alt_text') || getLoc(portfolio, 'title')} className="w-full h-full object-cover" />}
                     <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/40 transition-all flex items-center justify-center">
                       <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition" />
                     </div>
@@ -353,11 +358,11 @@ export default function PortfolioDetail() {
                 {isEmbedVideo(allMedia[lightboxIndex].url) ? (
                   <iframe src={getEmbedUrl(allMedia[lightboxIndex].url)} className="w-full h-full rounded-lg" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                 ) : (
-                  <video src={allMedia[lightboxIndex].url} className="w-full h-full object-contain rounded-lg" controls autoPlay />
+                  <video src={allMedia[lightboxIndex].url} poster={allMedia[lightboxIndex].poster || undefined} className="w-full h-full object-contain rounded-lg" controls autoPlay />
                 )}
               </div>
             ) : (
-              <img src={allMedia[lightboxIndex]?.url} alt="" className="max-w-full max-h-[85vh] object-contain rounded-lg" onClick={(e) => e.stopPropagation()} />
+              <img src={allMedia[lightboxIndex]?.url} alt={allMedia[lightboxIndex]?.alt || getLoc(portfolio, 'title')} className="max-w-full max-h-[85vh] object-contain rounded-lg" onClick={(e) => e.stopPropagation()} />
             )}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-sm">{lightboxIndex + 1} / {allMedia.length}</div>
           </motion.div>

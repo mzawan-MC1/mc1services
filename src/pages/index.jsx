@@ -103,6 +103,10 @@ const TermsOfService = lazy(() => import("./TermsOfService"));
 
 const AdminCMSLegal = lazy(() => import("./AdminCMSLegal"));
 
+const AdminIndustries = lazy(() => import("./AdminIndustries"));
+
+const AdminNavigation = lazy(() => import("./AdminNavigation"));
+
 import ScrollToTop from "../components/ScrollToTop";
 const AdminTaskListPage = lazy(() => import("./AdminTaskListPage"));
 
@@ -214,6 +218,8 @@ const PAGES = {
     "terms-of-service": TermsOfService,
     
     AdminCMSLegal: AdminCMSLegal,
+    AdminIndustries: AdminIndustries,
+    AdminNavigation: AdminNavigation,
     AdminTaskListPage: AdminTaskListPage,
     AdminTaskDetailsPage: AdminTaskDetailsPage,
     
@@ -224,6 +230,8 @@ const ALT_ROUTE_MAP = {
     '/admin/cms': 'AdminCMSHome',
     '/admin/media': 'AdminClientLogos',
     '/admin/portfolio': 'AdminPortfolio',
+    '/admin/industries': 'AdminIndustries',
+    '/admin/navigation': 'AdminNavigation',
     '/admin/faq': 'AdminFAQs',
     '/admin/team': 'AdminTeam',
     '/admin/inquiries': 'AdminContacts',

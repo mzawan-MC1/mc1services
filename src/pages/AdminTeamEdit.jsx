@@ -145,7 +145,7 @@ export default function AdminTeamEdit() {
                 <div>
                   <Label>Photo</Label>
                   <div className="mt-2">
-                    <FileUpload onUploadComplete={handleUpload} currentFile={formData.image_url} />
+                    <FileUpload onUploadComplete={handleUpload} currentFile={formData.image_url} storagePath="team" validation={{ width: 800, height: 800, aspectRatio: 1, aspectLabel: '1:1 square', maxImageMB: 1, note: 'Use a clear portrait with the face centred.' }} />
                   </div>
                 </div>
                 <div><Label>Display Order</Label><Input type="number" value={formData.order} onChange={(e) => setFormData(p => ({ ...p, order: parseInt(e.target.value) || 0 }))} className="mt-1 w-24" /></div>

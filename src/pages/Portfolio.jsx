@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
@@ -10,36 +10,34 @@ import { useTranslation } from 'react-i18next';
 
 export default function Portfolio() {
   const { t } = useTranslation();
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [searchParams] = useSearchParams();
+  const [activeType, setActiveType] = useState(searchParams.get('type') || 'all');
+  const [activeIndustry, setActiveIndustry] = useState(searchParams.get('industry') || 'all');
+  const [activeService, setActiveService] = useState('all');
 
-  const categories = [
-    { value: 'all', label: t('portfolio.categories.all', 'All Projects') },
-    { value: 'web_development', label: t('portfolio.categories.web_development', 'Web Development') },
-    { value: 'app_development', label: t('portfolio.categories.app_development', 'App Development') },
-    { value: 'digital_marketing', label: t('portfolio.categories.digital_marketing', 'Digital Marketing') },
-    { value: 'production', label: t('portfolio.categories.production', 'Production') },
-    { value: 'it_services', label: t('portfolio.categories.it_services', 'IT Services') },
-    { value: 'development', label: t('portfolio.categories.development', 'Development') },
-    { value: 'apps', label: t('portfolio.categories.apps', 'Apps') },
-    { value: 'marketing', label: t('portfolio.categories.marketing', 'Marketing') },
-    { value: 'branding', label: t('portfolio.categories.branding', 'Branding') },
-    { value: 'creative', label: t('portfolio.categories.creative', 'Creative') }
-  ];
+  useEffect(() => {
+    setActiveType(searchParams.get('type') || 'all');
+    setActiveIndustry(searchParams.get('industry') || 'all');
+  }, [searchParams]);
 
   const { data: portfolios = [], isLoading, isError, refetch } = useQuery({
     queryKey: ['portfolios'],
     queryFn: () => dataLayer.portfolio.getPublished()
   });
 
-  const availableCategories = portfolios.length === 0
-    ? []
-    : categories.filter((category) =>
-        category.value === 'all' || portfolios.some((portfolio) => portfolio.category === category.value)
-      );
+  const { data: industries = [] } = useQuery({ queryKey: ['active-industries'], queryFn: () => dataLayer.industries.getActive() });
+  const { data: services = [] } = useQuery({ queryKey: ['active-services'], queryFn: () => dataLayer.services.getActive() });
+  const { data: industryLinks = [] } = useQuery({ queryKey: ['portfolio-industry-links'], queryFn: () => dataLayer.portfolioTaxonomy.getIndustryLinks() });
+  const { data: serviceLinks = [] } = useQuery({ queryKey: ['portfolio-service-links'], queryFn: () => dataLayer.portfolioTaxonomy.getServiceLinks() });
 
-  const filteredPortfolios = activeCategory === 'all'
-    ? portfolios
-    : portfolios.filter(p => p.category === activeCategory);
+  const selectedIndustryId = industries.find((industry) => industry.slug === activeIndustry)?.id;
+  const industryProjectIds = new Set(industryLinks.filter((link) => !selectedIndustryId || link.industry_id === selectedIndustryId).map((link) => link.portfolio_id));
+  const serviceProjectIds = new Set(serviceLinks.filter((link) => activeService === 'all' || link.service_id === activeService).map((link) => link.portfolio_id));
+  const filteredPortfolios = portfolios.filter((portfolio) =>
+    (activeType === 'all' || portfolio.project_type === activeType)
+    && (activeIndustry === 'all' || industryProjectIds.has(portfolio.id))
+    && (activeService === 'all' || serviceProjectIds.has(portfolio.id))
+  );
 
   return (
     <div>
@@ -72,21 +70,24 @@ export default function Portfolio() {
       {/* Portfolio Grid */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {availableCategories.map(cat => (
+          <div className="mb-5 flex flex-wrap justify-center gap-3">
+            {[['all', 'All Work'], ['client_project', 'Client Projects'], ['mc1_product', 'MC1 Products']].map(([value, label]) => (
               <button
-                key={cat.value}
-                onClick={() => setActiveCategory(cat.value)}
+                key={value}
+                onClick={() => setActiveType(value)}
                 className={`px-6 py-2.5 rounded-full font-medium transition-all ${
-                  activeCategory === cat.value
+                  activeType === value
                     ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
-                {cat.label}
+                {label}
               </button>
             ))}
+          </div>
+          <div className="mx-auto mb-12 grid max-w-3xl gap-3 sm:grid-cols-2">
+            <label><span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Industry</span><select value={activeIndustry} onChange={(event) => setActiveIndustry(event.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3"><option value="all">All industries</option>{industries.map((industry) => <option key={industry.id} value={industry.slug}>{industry.name}</option>)}</select></label>
+            <label><span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Solution</span><select value={activeService} onChange={(event) => setActiveService(event.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3"><option value="all">All solutions</option>{services.map((service) => <option key={service.id} value={service.id}>{service.title}</option>)}</select></label>
           </div>
 
           {isLoading ? (

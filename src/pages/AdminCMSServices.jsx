@@ -236,6 +236,8 @@ export default function AdminCMSServices() {
                     onChange={(url) =>
                       setEditingService({ ...editingService, hero_image: url })
                     }
+                    storagePath="service-pages"
+                    validation={{ width: 1920, height: 1080, aspectRatio: 16 / 9, aspectLabel: '16:9', maxImageMB: 2, note: 'WebP or AVIF is preferred.' }}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">

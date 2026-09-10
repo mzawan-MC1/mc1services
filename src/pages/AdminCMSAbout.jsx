@@ -148,6 +148,8 @@ export default function AdminCMSAbout() {
                     label="Section Image"
                     value={formData.image_url}
                     onChange={(url) => setFormData({ ...formData, image_url: url })}
+                    storagePath="about"
+                    validation={{ width: 1600, height: 1000, aspectRatio: 1.6, aspectLabel: '8:5', maxImageMB: 1.5, note: 'WebP or AVIF is preferred.' }}
                   />
                 </div>
                 <Button onClick={handleSave} disabled={saveMutation.isPending} className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white">
