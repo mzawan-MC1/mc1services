@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { createPageUrl } from '../utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
 import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff } from 'lucide-react';
@@ -56,7 +55,7 @@ export default function AdminServices() {
                 <Button variant="ghost" size="icon" onClick={() => toggleMutation.mutate({ id: service.id, is_active: !service.is_active })}>
                   {service.is_active ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                 </Button>
-                <Link to={createPageUrl(`AdminServiceEdit?id=${service.id}`)}><Button variant="ghost" size="icon"><Pencil className="w-4 h-4" /></Button></Link>
+                <Link to={`/admin/services/edit?id=${service.id}`}><Button variant="ghost" size="icon"><Pencil className="w-4 h-4" /></Button></Link>
                 <AlertDialog>
                   <AlertDialogTrigger asChild><Button variant="ghost" size="icon" className="text-red-600"><Trash2 className="w-4 h-4" /></Button></AlertDialogTrigger>
                   <AlertDialogContent>
@@ -80,7 +79,7 @@ export default function AdminServices() {
             <h1 className="text-2xl font-bold text-slate-900">Services</h1>
             <p className="text-slate-600 mt-1">Manage service offerings</p>
           </div>
-          <Link to={createPageUrl('AdminServiceEdit')}>
+          <Link to="/admin/services/edit">
             <Button className="bg-gradient-to-r from-blue-600 to-purple-600"><Plus className="w-4 h-4 mr-2" />Add Service</Button>
           </Link>
         </div>

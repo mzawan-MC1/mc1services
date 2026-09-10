@@ -230,6 +230,8 @@ const ALT_ROUTE_MAP = {
     '/admin/cms': 'AdminCMSHome',
     '/admin/media': 'AdminClientLogos',
     '/admin/portfolio': 'AdminPortfolio',
+    '/admin/services': 'AdminServices',
+    '/admin/services/edit': 'AdminServiceEdit',
     '/admin/industries': 'AdminIndustries',
     '/admin/navigation': 'AdminNavigation',
     '/admin/faq': 'AdminFAQs',

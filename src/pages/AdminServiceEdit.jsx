@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { createPageUrl } from '../utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
 import { ArrowLeft, Save, Loader2, X } from 'lucide-react';
@@ -77,7 +76,7 @@ export default function AdminServiceEdit() {
     onSuccess: () => {
       queryClient.invalidateQueries(['admin-services']);
       toast.success('Service saved successfully');
-      navigate(createPageUrl('AdminServices'));
+      navigate('/admin/services');
     },
     onError: () => toast.error('Failed to save service')
   });
@@ -106,7 +105,7 @@ export default function AdminServiceEdit() {
     <AdminLayout>
       <div className="p-6">
         <div className="flex items-center gap-4 mb-8">
-          <Link to={createPageUrl('AdminServices')}><Button variant="ghost" size="icon"><ArrowLeft className="w-5 h-5" /></Button></Link>
+          <Link to="/admin/services"><Button variant="ghost" size="icon"><ArrowLeft className="w-5 h-5" /></Button></Link>
           <h1 className="text-3xl font-bold text-slate-900">{isEditing ? 'Edit' : 'New'} Service</h1>
         </div>
 
@@ -192,7 +191,7 @@ export default function AdminServiceEdit() {
           </Card>
 
           <div className="flex justify-end gap-3">
-            <Link to={createPageUrl('AdminServices')}><Button type="button" variant="outline">Cancel</Button></Link>
+            <Link to="/admin/services"><Button type="button" variant="outline">Cancel</Button></Link>
             <Button type="submit" disabled={saveMutation.isPending} className="bg-gradient-to-r from-blue-600 to-purple-600">
               {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}{isEditing ? 'Save' : 'Create'}
             </Button>
