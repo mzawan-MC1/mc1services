@@ -142,6 +142,17 @@ export const dataLayer = {
   services: {
     getAll: () => supabaseHelpers.getAll('services', 'order', true),
     getById: (id) => supabaseHelpers.getById('services', id),
+    getBySlug: async (slug) => {
+      if (!supabase || !slug) return null;
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('slug', slug)
+        .eq('is_active', true)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
     getActive: async () => {
       if (!supabase) return [];
       const { data, error } = await supabase

@@ -13,11 +13,12 @@ export default function Portfolio() {
   const [searchParams] = useSearchParams();
   const [activeType, setActiveType] = useState(searchParams.get('type') || 'all');
   const [activeIndustry, setActiveIndustry] = useState(searchParams.get('industry') || 'all');
-  const [activeService, setActiveService] = useState('all');
+  const [activeService, setActiveService] = useState(searchParams.get('service') || 'all');
 
   useEffect(() => {
     setActiveType(searchParams.get('type') || 'all');
     setActiveIndustry(searchParams.get('industry') || 'all');
+    setActiveService(searchParams.get('service') || 'all');
   }, [searchParams]);
 
   const { data: portfolios = [], isLoading, isError, refetch } = useQuery({

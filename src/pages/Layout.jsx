@@ -133,7 +133,7 @@ export default function Layout({ children, currentPageName }) {
     if (!child?.source_type || child.source_type === 'custom' || !child.source_id) return child;
     if (child.source_type === 'service') {
       const service = menuSources.services.find((item) => item.id === child.source_id);
-      return service ? { ...child, label: service.title, label_ar: service.title_ar, description: service.menu_description || service.description, description_ar: service.menu_description_ar || service.description_ar, image_url: service.menu_image_url || service.image_url, href: service.page_url || child.href } : child;
+      return service ? { ...child, label: service.title, label_ar: service.title_ar, description: service.menu_description || service.description, description_ar: service.menu_description_ar || service.description_ar, image_url: service.menu_image_url || service.image_url, href: service.slug ? `/solutions/${service.slug}` : service.page_url || child.href } : child;
     }
     if (child.source_type === 'industry') {
       const industry = menuSources.industries.find((item) => item.id === child.source_id);

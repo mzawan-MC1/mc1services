@@ -3,7 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { createPageUrl } from '../../utils';
 import {
   LayoutDashboard, FileText, Settings, Search, Image, Users, Mail,
-  Menu, X, Eye, LogOut, PanelsTopLeft, Building2
+  Menu, X, Eye, LogOut, PanelsTopLeft, Building2, BriefcaseBusiness,
+  CircleHelp, ContactRound, Home, ListTodo, MessageSquareQuote, ShieldCheck, UserCog
 } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import { Button } from '@/components/ui/button';
@@ -35,26 +36,57 @@ function AdminShell({ children }) {
     navigate(createPageUrl('AdminLogin'));
   };
 
-  const menuItems = [
-    { id: 'label', label: 'Admin Menu', header: true },
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, to: '/admin' },
-    { id: 'cms', label: 'CMS', icon: FileText, to: '/admin/cms' },
-    { id: 'media', label: 'Media Manager', icon: Image, to: '/admin/media' },
-    { id: 'tasks', label: 'Tasks', icon: FileText, to: '/admin/tasks' },
-    { id: 'portfolio', label: 'Portfolio', icon: FileText, to: '/admin/portfolio' },
-    { id: 'services', label: 'Services', icon: PanelsTopLeft, to: '/admin/services' },
-    { id: 'industries', label: 'Industries', icon: Building2, to: '/admin/industries' },
-    { id: 'navigation', label: 'Navigation', icon: PanelsTopLeft, to: '/admin/navigation' },
-    { id: 'faq', label: 'FAQ', icon: FileText, to: '/admin/faq' },
-    { id: 'team', label: 'Team Members', icon: Users, to: '/admin/team' },
-    { id: 'inquiries', label: 'Inquiries', icon: Mail, to: '/admin/inquiries' },
-    { id: 'testimonials', label: 'Testimonials', icon: FileText, to: '/admin/testimonials' },
-    { id: 'site-settings', label: 'Site Settings', icon: Settings, to: '/admin/settings' },
-    { id: 'seo', label: 'SEO Settings', icon: Search, to: '/admin/seo' },
-    { id: 'users', label: 'User Management', icon: Users, to: '/admin/users' },
-    { id: 'roles', label: 'Role Management', icon: Users, to: '/admin/roles' },
-    { id: 'profile', label: 'Profile', icon: Users, to: '/admin/profile' },
+  const menuSections = [
+    {
+      id: 'overview',
+      label: 'Overview',
+      items: [{ id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, to: '/admin' }]
+    },
+    {
+      id: 'content',
+      label: 'Website Content',
+      items: [
+        { id: 'cms', label: 'Homepage CMS', icon: Home, to: '/admin/cms' },
+        { id: 'portfolio', label: 'Portfolio', icon: BriefcaseBusiness, to: '/admin/portfolio' },
+        { id: 'services', label: 'Services', icon: PanelsTopLeft, to: '/admin/services' },
+        { id: 'industries', label: 'Industries', icon: Building2, to: '/admin/industries' },
+        { id: 'navigation', label: 'Navigation', icon: ListTodo, to: '/admin/navigation' },
+        { id: 'media', label: 'Media & Client Logos', icon: Image, to: '/admin/media' },
+        { id: 'faq', label: 'FAQ', icon: CircleHelp, to: '/admin/faq' },
+        { id: 'team', label: 'Team Members', icon: Users, to: '/admin/team' },
+        { id: 'testimonials', label: 'Testimonials', icon: MessageSquareQuote, to: '/admin/testimonials' }
+      ]
+    },
+    {
+      id: 'operations',
+      label: 'Business Operations',
+      items: [
+        { id: 'tasks', label: 'Tasks', icon: FileText, to: '/admin/tasks' },
+        { id: 'inquiries', label: 'Inquiries', icon: Mail, to: '/admin/inquiries' }
+      ]
+    },
+    {
+      id: 'growth',
+      label: 'Growth & Visibility',
+      items: [{ id: 'seo', label: 'SEO Settings', icon: Search, to: '/admin/seo' }]
+    },
+    {
+      id: 'administration',
+      label: 'Administration',
+      items: [
+        { id: 'site-settings', label: 'Site Settings', icon: Settings, to: '/admin/settings' },
+        { id: 'users', label: 'User Management', icon: UserCog, to: '/admin/users' },
+        { id: 'roles', label: 'Role Management', icon: ShieldCheck, to: '/admin/roles' },
+        { id: 'profile', label: 'My Profile', icon: ContactRound, to: '/admin/profile' }
+      ]
+    }
   ];
+
+  const currentPath = location.pathname.toLowerCase();
+  const isMenuItemActive = (path) => {
+    const target = path.toLowerCase();
+    return target === '/admin' ? currentPath === target : currentPath === target || currentPath.startsWith(`${target}/`);
+  };
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -98,17 +130,18 @@ function AdminShell({ children }) {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto py-4 px-2">
-            {menuItems.map(item => (
-              <div key={item.id}>
-                {item.header ? (
-                  <div className="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">{item.label}</div>
-                ) : (
+          <nav aria-label="Admin navigation" className="flex-1 overflow-y-auto px-2 py-3">
+            {menuSections.map((section) => (
+              <section key={section.id} aria-labelledby={`admin-section-${section.id}`} className="mb-3">
+                <h2 id={`admin-section-${section.id}`} className="px-3 pb-1 pt-2 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">{section.label}</h2>
+                <div className="space-y-0.5">
+                  {section.items.map((item) => (
                   <Link
+                    key={item.id}
                     to={item.to}
                     onClick={() => setMobileSidebarOpen(false)}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                      location.pathname.toLowerCase() === item.to
+                      isMenuItemActive(item.to)
                         ? 'bg-blue-50 text-blue-700'
                         : 'text-slate-700 hover:bg-slate-100'
                     }`}
@@ -116,8 +149,9 @@ function AdminShell({ children }) {
                     {item.icon && <item.icon className="w-5 h-5 flex-shrink-0" />}
                     <span>{item.label}</span>
                   </Link>
-                )}
-              </div>
+                  ))}
+                </div>
+              </section>
             ))}
           </nav>
 

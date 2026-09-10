@@ -97,7 +97,7 @@ export default function ServicesHighlight() {
         title: i18n.language === 'ar' ? service.title_ar || service.title : service.title,
         description: i18n.language === 'ar' ? service.description_ar || service.description : service.description,
         features: i18n.language === 'ar' ? service.features_ar || service.features || [] : service.features || [],
-        href: service.page_url || legacyRouteBySlug[service.slug] || 'DevelopmentServices',
+        href: service.slug ? `/solutions/${service.slug}` : service.page_url || legacyRouteBySlug[service.slug] || 'DevelopmentServices',
         color: colors[index % colors.length]
       }))
     : fallbackHighlights;

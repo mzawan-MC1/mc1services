@@ -11,6 +11,8 @@ const Portfolio = lazy(() => import("./Portfolio"));
 
 const PortfolioDetail = lazy(() => import("./PortfolioDetail"));
 
+const SolutionDetail = lazy(() => import("./SolutionDetail"));
+
 const WebDevelopment = lazy(() => import("./WebDevelopment"));
 
 const AppDevelopment = lazy(() => import("./AppDevelopment"));
@@ -329,6 +331,7 @@ function PagesContent() {
             <Suspense fallback={<PageLoading />}>
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/solutions/:slug" element={<SolutionDetail />} />
 
                 {/* Public pages retain their existing canonical and lowercase URLs. */}
                 {Object.keys(PAGES)
