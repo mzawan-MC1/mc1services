@@ -30,47 +30,47 @@ export default function Layout({ children, currentPageName }) {
   }, [isRTL, i18n.language]);
 
   useEffect(() => {
-    if (!isAdminPage) {
-      const checkAdmin = async () => {
-        try {
-          const admin = await dataLayer.auth.isAdmin();
-          setIsAdmin(admin);
-        } catch (_err) {
-          setIsAdmin(false);
-        }
-      };
-      checkAdmin();
+    const checkAdmin = async () => {
+      if (isAdminPage) return;
+      try {
+        const admin = await dataLayer.auth.isAdmin();
+        setIsAdmin(admin);
+      } catch (_err) {
+        setIsAdmin(false);
+      }
+    };
 
-      const loadSettings = async () => {
-        try {
-          const settings = await dataLayer.siteSettings.getAll();
-          const settingsObj = {};
-          settings.forEach(s => {
-            settingsObj[s.setting_key] = s.setting_value;
-            settingsObj[`${s.setting_key}_ar`] = s.setting_value_ar;
-          });
-          setSiteSettings(settingsObj);
+    const loadSettings = async () => {
+      try {
+        const settings = await dataLayer.siteSettings.getAll();
+        const settingsObj = {};
+        settings.forEach(s => {
+          settingsObj[s.setting_key] = s.setting_value;
+          settingsObj[`${s.setting_key}_ar`] = s.setting_value_ar;
+        });
+        setSiteSettings(settingsObj);
 
+        if (!isAdminPage) {
           const headerFooter = await dataLayer.headerFooter.getAll();
           const header = headerFooter.find(s => s.setting_key === 'header');
           const footer = headerFooter.find(s => s.setting_key === 'footer');
           setHeaderSettings(header);
           setFooterSettings(footer);
-
-          if (settingsObj.favicon_url) {
-            const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-            link.type = 'image/x-icon';
-            link.rel = 'shortcut icon';
-            link.href = settingsObj.favicon_url;
-            document.getElementsByTagName('head')[0].appendChild(link);
-          }
-
-        } catch (_err) {
-          console.error('Failed to load site settings:', _err);
         }
-      };
-      loadSettings();
-    }
+
+        if (settingsObj.favicon_url) {
+          const link = document.querySelector("link[rel~='icon']") || document.createElement('link');
+          link.rel = 'icon';
+          link.href = settingsObj.favicon_url;
+          document.head.appendChild(link);
+        }
+      } catch (_err) {
+        console.error('Failed to load site settings:', _err);
+      }
+    };
+
+    checkAdmin();
+    loadSettings();
   }, [isAdminPage]);
 
   useEffect(() => {
