@@ -91,8 +91,13 @@ export default function ServicesHighlight() {
     'it-services': 'ITServices',
     'professional-services': 'ITServices'
   };
+  const desktopCardSpans = [
+    'lg:col-span-4', 'lg:col-span-2',
+    'lg:col-span-2', 'lg:col-span-4',
+    'lg:col-span-2', 'lg:col-span-2', 'lg:col-span-2'
+  ];
   const highlights = managedServices.length
-    ? managedServices.filter((service) => !service.parent_id).slice(0, 8).map((service, index) => ({
+    ? managedServices.filter((service) => !service.parent_id).slice(0, 7).map((service, index) => ({
         icon: iconMap[service.icon] || Code,
         title: i18n.language === 'ar' ? service.title_ar || service.title : service.title,
         description: i18n.language === 'ar' ? service.description_ar || service.description : service.description,
@@ -123,48 +128,56 @@ export default function ServicesHighlight() {
           </p>
         </motion.div>
 
-        <div className="relative grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {highlights.map((item, i) => (
+        <div className="relative grid gap-6 md:grid-cols-2 lg:grid-cols-6">
+          {highlights.map((item, i) => {
+            const isWideCard = i === 0 || i === 3;
+            return (
             <motion.div
               key={item.title}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
+              className={`h-full ${desktopCardSpans[i] || 'lg:col-span-2'}`}
             >
               <Link
                 to={item.href?.startsWith('/') ? item.href : createPageUrl(item.href)}
-                className="group relative block h-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.06] p-8 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-300/30 hover:bg-white/[0.1] hover:shadow-2xl hover:shadow-blue-950/40"
+                className={`group relative block h-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.06] p-8 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-300/30 hover:bg-white/[0.1] hover:shadow-2xl hover:shadow-blue-950/40 ${isWideCard ? 'lg:p-10' : ''}`}
               >
                 <span className="absolute right-6 top-5 text-5xl font-black text-white/[0.04]">{String(i + 1).padStart(2, '0')}</span>
-                <div className={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg`}>
-                  <item.icon className="w-8 h-8 text-white" />
-                </div>
+                <div className={isWideCard ? 'lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-x-8' : ''}>
+                  <div className={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg`}>
+                    <item.icon className="w-8 h-8 text-white" />
+                  </div>
 
-                <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-200 transition">
-                  {item.title}
-                </h3>
+                  <div>
+                    <h3 className={`font-bold text-white mb-3 group-hover:text-cyan-200 transition ${isWideCard ? 'text-2xl lg:text-3xl' : 'text-2xl'}`}>
+                      {item.title}
+                    </h3>
 
-                <p className="text-slate-300 mb-6 leading-relaxed">
-                  {item.description}
-                </p>
+                    <p className="text-slate-300 mb-6 leading-relaxed">
+                      {item.description}
+                    </p>
 
-                <ul className="space-y-2 mb-6">
-                  {item.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2 text-sm text-slate-300">
-                      <div className="w-1.5 h-1.5 bg-cyan-300 rounded-full" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+                    <ul className={`space-y-2 mb-6 ${isWideCard ? 'sm:grid sm:grid-cols-2 sm:gap-x-6 sm:space-y-0 sm:[&>li]:mb-2' : ''}`}>
+                      {item.features.map((feature) => (
+                        <li key={feature} className="flex items-center gap-2 text-sm text-slate-300">
+                          <div className="w-1.5 h-1.5 bg-cyan-300 rounded-full" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
 
-                <div className="flex items-center gap-2 text-cyan-300 font-medium">
-                  <span>{t('common.learn_more', 'Learn More')}</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform rtl:rotate-180 rtl:group-hover:-translate-x-2" />
+                    <div className="flex items-center gap-2 text-cyan-300 font-medium">
+                      <span>{t('common.learn_more', 'Learn More')}</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform rtl:rotate-180 rtl:group-hover:-translate-x-2" />
+                    </div>
+                  </div>
                 </div>
               </Link>
             </motion.div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
