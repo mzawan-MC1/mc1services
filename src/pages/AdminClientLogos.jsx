@@ -74,7 +74,7 @@ export default function AdminClientLogos() {
               <form onSubmit={(e) => { e.preventDefault(); saveMutation.mutate(formData); }} className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div><Label>Company Name *</Label><Input value={formData.name} onChange={(e) => setFormData(p => ({ ...p, name: e.target.value }))} required className="mt-1" /></div>
-                  <div><Label>Website URL</Label><Input value={formData.website_url} onChange={(e) => setFormData(p => ({ ...p, website_url: e.target.value }))} className="mt-1" placeholder="https://" /></div>
+                  <div><Label>Website URL</Label><Input type="url" inputMode="url" value={formData.website_url} onChange={(e) => setFormData(p => ({ ...p, website_url: e.target.value }))} className="mt-1" placeholder="https://example.com" /></div>
                 </div>
                 <div>
                   <Label>Logo</Label>
@@ -86,11 +86,11 @@ export default function AdminClientLogos() {
                       </div>
                     ) : (
                       <div className="w-32">
-                        <FileUpload onUploadComplete={handleUpload} validation={{ width: 240, height: 100 }} />
+                        <FileUpload onUploadComplete={handleUpload} storagePath="client-logos" validation={{ width: 480, height: 200, aspectRatio: 2.4, aspectLabel: '12:5', maxImageMB: 0.15, note: 'Use the original full-colour logo on a transparent background.' }} />
                       </div>
                     )}
                   </div>
-                  <p className="text-xs text-slate-500 mt-2">Recommended size: 240×100 px, ≤ 50 KB. PNG/SVG with transparent background preferred.</p>
+                  <p className="text-xs text-slate-500 mt-2">Recommended: 480 × 200 px, maximum 150 KB. Use the original full-colour transparent PNG or WebP so the hover effect can restore its real colours.</p>
                 </div>
                 <div className="flex gap-2">
                   <Button type="button" variant="outline" onClick={() => { setShowForm(false); setEditingLogo(null); setFormData({ name: '', website_url: '', logo_url: '' }); }} className="border-slate-300 text-slate-700 hover:bg-slate-100">Cancel</Button>
