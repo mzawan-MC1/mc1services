@@ -3,12 +3,17 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../dataLayer';
 import { useTranslation } from 'react-i18next';
+import { getLocalizedValue } from '../../utils';
 
 export default function ClientLogosSection() {
   const { t, i18n } = useTranslation();
   const { data: logos = [] } = useQuery({
     queryKey: ['client-logos'],
     queryFn: () => dataLayer.clientLogos.getAll()
+  });
+  const { data: sectionContent = {} } = useQuery({
+    queryKey: ['home-section', 'clients'],
+    queryFn: async () => (await dataLayer.homeContent.getBySection('clients'))[0] || {}
   });
 
   // Client names are trust signals, so only show entries managed in the CMS.
@@ -44,7 +49,7 @@ export default function ClientLogosSection() {
           className="text-center mb-12"
         >
           <p className="text-slate-500 font-medium">
-            {i18n.language === 'ar' ? 'موثوق به من قبل الشركات الرائدة' : t('home.trusted_by', 'Trusted by Leading Companies')}
+            {getLocalizedValue(sectionContent, 'title', i18n.language, false) || (i18n.language === 'ar' ? 'موثوق به من قبل الشركات الرائدة' : t('home.trusted_by', 'Trusted by Leading Companies'))}
           </p>
         </motion.div>
 

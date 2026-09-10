@@ -12,7 +12,11 @@ export default function TestimonialsSlider() {
 
   const { data: testimonials = [] } = useQuery({
     queryKey: ['testimonials'],
-    queryFn: () => dataLayer.testimonials.getAll()
+    queryFn: () => dataLayer.testimonials.getFeatured()
+  });
+  const { data: sectionContent = {} } = useQuery({
+    queryKey: ['home-section', 'testimonials'],
+    queryFn: async () => (await dataLayer.homeContent.getBySection('testimonials'))[0] || {}
   });
 
   useEffect(() => {
@@ -39,10 +43,10 @@ export default function TestimonialsSlider() {
           className="text-center mb-12"
         >
           <span className="inline-block px-4 py-1.5 bg-white/10 text-blue-300 rounded-full text-sm font-medium mb-4">
-            {t('home.testimonials.subtitle', 'Testimonials')}
+            {getLoc(sectionContent, 'subtitle') || t('home.testimonials.subtitle', 'Testimonials')}
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-white">
-            {t('home.testimonials.title', 'What Our Clients Say')}
+            {getLoc(sectionContent, 'title') || t('home.testimonials.title', 'What Our Clients Say')}
           </h2>
         </motion.div>
 
@@ -102,6 +106,8 @@ export default function TestimonialsSlider() {
           {testimonials.length > 1 && (
             <div className="flex justify-center items-center gap-4 mt-8">
               <button
+                type="button"
+                aria-label="Previous testimonial"
                 onClick={prev}
                 className="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition"
               >
@@ -111,6 +117,8 @@ export default function TestimonialsSlider() {
               <div className="flex gap-2">
                 {testimonials.map((_, i) => (
                   <button
+                    type="button"
+                    aria-label={`Show testimonial ${i + 1}`}
                     key={i}
                     onClick={() => setCurrent(i)}
                     className={`w-2.5 h-2.5 rounded-full transition-all ${
@@ -121,6 +129,8 @@ export default function TestimonialsSlider() {
               </div>
 
               <button
+                type="button"
+                aria-label="Next testimonial"
                 onClick={next}
                 className="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition"
               >

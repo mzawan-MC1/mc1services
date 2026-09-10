@@ -37,6 +37,14 @@ export default function VideoSection() {
 
   const getLoc = (obj, key) => getLocalizedValue(obj, key, i18n.language, false);
   const isVideo = /\.(mp4|webm|ogg)$/i.test(videoContent?.media_url || '');
+  const managedHighlights = videoContent?.content_data?.highlights;
+  const highlights = Array.isArray(managedHighlights) && managedHighlights.length
+    ? managedHighlights.filter((item) => item?.label || item?.label_ar).map((item) => i18n.language === 'ar' ? item.label_ar || item.label : item.label)
+    : [
+        t('home.video_section.features.agile', 'Clear Communication'),
+        t('home.video_section.features.support', 'Practical Delivery'),
+        t('home.video_section.features.global', 'Ongoing Support')
+      ];
 
   return (
     <section className="py-24 bg-white">
@@ -57,18 +65,7 @@ export default function VideoSection() {
               {getLoc(videoContent, 'description') || t('home.video_section.desc', 'MCS Consultancy brings technology, marketing, automation, and IT expertise together to solve practical business problems. We focus on clear communication, dependable delivery, and maintainable solutions.')}
             </div>
             <div className="flex flex-wrap gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full" />
-                <span className="text-slate-600">{t('home.video_section.features.agile', 'Clear Communication')}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                <span className="text-slate-600">{t('home.video_section.features.support', 'Practical Delivery')}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-purple-500 rounded-full" />
-                <span className="text-slate-600">{t('home.video_section.features.global', 'Ongoing Support')}</span>
-              </div>
+              {highlights.map((highlight, index) => <div key={highlight} className="flex items-center gap-2"><div className={`h-2 w-2 rounded-full ${['bg-green-500', 'bg-blue-500', 'bg-purple-500'][index % 3]}`} /><span className="text-slate-600">{highlight}</span></div>)}
             </div>
           </motion.div>
 
@@ -81,16 +78,22 @@ export default function VideoSection() {
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               {/\.(mp4|webm|ogg)$/i.test(videoContent?.media_url || '') ? (
                 <video src={videoContent.media_url} className="w-full aspect-video object-cover" />
-              ) : (
+              ) : videoContent?.background_image ? (
                 <img
-                  src={videoContent?.background_image || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800"}
+                  src={videoContent.background_image}
                   alt="Our Team"
                   className="w-full aspect-video object-cover"
                 />
+              ) : (
+                <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-purple-900 p-8 text-center">
+                  <div><p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-300">MC1 Consultancy</p><p className="mt-3 text-2xl font-bold text-white">Technology shaped around your operation</p></div>
+                </div>
               )}
               {isVideo && (
                 <div className="absolute inset-0 bg-slate-900/30 flex items-center justify-center">
                   <button
+                    type="button"
+                    aria-label="Play company video"
                     onClick={() => setIsPlaying(true)}
                     className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform"
                   >
@@ -109,8 +112,10 @@ export default function VideoSection() {
 
       {/* Video Modal */}
       {isPlaying && isVideo && (
-        <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
+        <div role="dialog" aria-modal="true" aria-label="Company video" className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
           <button
+            type="button"
+            aria-label="Close company video"
             onClick={() => setIsPlaying(false)}
             className="absolute top-4 right-4 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center"
           >

@@ -8,7 +8,7 @@ import { getLocalizedValue } from '../../utils';
 export default function ProcessSection() {
   const { t, i18n } = useTranslation();
 
-  const steps = [
+  const fallbackSteps = [
     {
       icon: Search,
       title: t('home.process.steps.discovery.title', 'Discover'),
@@ -44,6 +44,18 @@ export default function ProcessSection() {
   });
 
   const getLoc = (obj, key) => getLocalizedValue(obj, key, i18n.language, false);
+  const stepIcons = { Search, Palette, Code, Rocket };
+  const stepColors = ['from-blue-500 to-cyan-500', 'from-purple-500 to-pink-500', 'from-orange-500 to-red-500', 'from-green-500 to-emerald-500'];
+  const managedSteps = processContent?.content_data?.steps;
+  const steps = Array.isArray(managedSteps) && managedSteps.length
+    ? managedSteps.filter((step) => step?.title || step?.title_ar).map((step, index) => ({
+        ...step,
+        title: i18n.language === 'ar' ? step.title_ar || step.title : step.title,
+        description: i18n.language === 'ar' ? step.description_ar || step.description : step.description,
+        icon: stepIcons[step.icon] || fallbackSteps[index % fallbackSteps.length].icon,
+        color: stepColors[index % stepColors.length]
+      }))
+    : fallbackSteps;
 
   return (
     <section className="py-24 bg-white">

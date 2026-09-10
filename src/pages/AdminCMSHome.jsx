@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { Save, Loader2 } from 'lucide-react';
+import { Save, Loader2, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -42,8 +42,12 @@ export default function AdminCMSHome() {
     description: '',
     button_text: '',
     button_link: '',
+    button_text_secondary: '',
+    button_link_secondary: '',
+    show_secondary_button: true,
     background_image: '',
     background_video: '',
+    content_data: {},
     section_height: '',
     display_order: 0,
     is_visible: true,
@@ -58,8 +62,12 @@ export default function AdminCMSHome() {
         description: currentSection.description || '',
         button_text: currentSection.button_text || '',
         button_link: currentSection.button_link || '',
+        button_text_secondary: currentSection.button_text_secondary || '',
+        button_link_secondary: currentSection.button_link_secondary || '',
+        show_secondary_button: currentSection.show_secondary_button !== false,
         background_image: currentSection.background_image || '',
         background_video: currentSection.background_video || '',
+        content_data: currentSection.content_data || {},
         section_height: currentSection.section_height || '',
         display_order: currentSection.display_order || 0,
         is_visible: currentSection.is_visible !== false,
@@ -72,8 +80,12 @@ export default function AdminCMSHome() {
         description: '',
         button_text: '',
         button_link: '',
+        button_text_secondary: '',
+        button_link_secondary: '',
+        show_secondary_button: true,
         background_image: '',
         background_video: '',
+        content_data: {},
         section_height: '',
         display_order: HOME_SECTIONS.findIndex((section) => section.key === selectedSection) * 10,
         is_visible: true,
@@ -105,6 +117,38 @@ export default function AdminCMSHome() {
 
   const handleSave = () => {
     saveMutation.mutate(formData);
+  };
+
+  const updateStat = (index, field, value) => {
+    const stats = [...(formData.content_data?.stats || [])];
+    stats[index] = { ...stats[index], [field]: value };
+    handleChange('content_data', { ...formData.content_data, stats });
+  };
+
+  const addStat = () => {
+    const stats = [...(formData.content_data?.stats || []), { value: '', label: '', label_ar: '', icon: 'Briefcase' }];
+    handleChange('content_data', { ...formData.content_data, stats });
+  };
+
+  const removeStat = (index) => {
+    const stats = (formData.content_data?.stats || []).filter((_, itemIndex) => itemIndex !== index);
+    handleChange('content_data', { ...formData.content_data, stats });
+  };
+
+  const updateContentItem = (listKey, index, field, value) => {
+    const items = [...(formData.content_data?.[listKey] || [])];
+    items[index] = { ...items[index], [field]: value };
+    handleChange('content_data', { ...formData.content_data, [listKey]: items });
+  };
+
+  const addContentItem = (listKey, item) => {
+    const items = [...(formData.content_data?.[listKey] || []), item];
+    handleChange('content_data', { ...formData.content_data, [listKey]: items });
+  };
+
+  const removeContentItem = (listKey, index) => {
+    const items = (formData.content_data?.[listKey] || []).filter((_, itemIndex) => itemIndex !== index);
+    handleChange('content_data', { ...formData.content_data, [listKey]: items });
   };
 
   if (isLoading) {
@@ -202,6 +246,58 @@ export default function AdminCMSHome() {
                     />
                   </div>
                 </div>
+                {selectedSection === 'hero' && (
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="mb-3 flex items-center justify-between gap-4">
+                      <div><Label>Secondary Action</Label><p className="text-xs text-slate-500">Shown beside the main hero button.</p></div>
+                      <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={formData.show_secondary_button} onChange={(e) => handleChange('show_secondary_button', e.target.checked)} />Show</label>
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div><Label>Secondary Button Text</Label><Input value={formData.button_text_secondary} onChange={(e) => handleChange('button_text_secondary', e.target.value)} placeholder="e.g., Explore Our Work" className="mt-2" /></div>
+                      <div><Label>Secondary Button Link</Label><Input value={formData.button_link_secondary} onChange={(e) => handleChange('button_link_secondary', e.target.value)} placeholder="e.g., Portfolio" className="mt-2" /></div>
+                    </div>
+                  </div>
+                )}
+                {selectedSection === 'stats' && (
+                  <div className="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="flex items-center justify-between gap-4">
+                      <div><Label>Verified Metrics</Label><p className="text-xs text-slate-500">Only publish numbers the business can support with evidence.</p></div>
+                      <Button type="button" variant="outline" size="sm" onClick={addStat}><Plus className="mr-2 h-4 w-4" />Add Metric</Button>
+                    </div>
+                    {(formData.content_data?.stats || []).map((stat, index) => (
+                      <div key={index} className="grid gap-3 rounded-lg border bg-white p-3 md:grid-cols-[0.7fr_1fr_1fr_0.8fr_auto]">
+                        <div><Label>Value</Label><Input value={stat.value || ''} onChange={(e) => updateStat(index, 'value', e.target.value)} placeholder="e.g., 20+" className="mt-1" /></div>
+                        <div><Label>English Label</Label><Input value={stat.label || ''} onChange={(e) => updateStat(index, 'label', e.target.value)} placeholder="Projects delivered" className="mt-1" /></div>
+                        <div><Label>Arabic Label</Label><Input value={stat.label_ar || ''} onChange={(e) => updateStat(index, 'label_ar', e.target.value)} dir="rtl" className="mt-1" /></div>
+                        <div><Label>Icon</Label><select value={stat.icon || 'Briefcase'} onChange={(e) => updateStat(index, 'icon', e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2"><option>Briefcase</option><option>Users</option><option>Cpu</option><option>Calendar</option></select></div>
+                        <Button type="button" variant="ghost" size="icon" className="self-end text-red-600" aria-label={`Remove metric ${index + 1}`} onClick={() => removeStat(index)}><Trash2 className="h-4 w-4" /></Button>
+                      </div>
+                    ))}
+                    {!(formData.content_data?.stats || []).length && <p className="rounded-lg border border-dashed p-4 text-center text-sm text-slate-500">No verified metrics will appear until you add and save them.</p>}
+                  </div>
+                )}
+                {selectedSection === 'process' && (
+                  <div className="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="flex items-center justify-between gap-4">
+                      <div><Label>Delivery Steps</Label><p className="text-xs text-slate-500">These steps appear in this order on the homepage.</p></div>
+                      <Button type="button" variant="outline" size="sm" onClick={() => addContentItem('steps', { title: '', title_ar: '', description: '', description_ar: '', icon: 'Search' })}><Plus className="mr-2 h-4 w-4" />Add Step</Button>
+                    </div>
+                    {(formData.content_data?.steps || []).map((step, index) => (
+                      <div key={index} className="rounded-lg border bg-white p-4">
+                        <div className="mb-3 flex items-center justify-between"><strong className="text-sm">Step {index + 1}</strong><Button type="button" variant="ghost" size="icon" className="text-red-600" aria-label={`Remove step ${index + 1}`} onClick={() => removeContentItem('steps', index)}><Trash2 className="h-4 w-4" /></Button></div>
+                        <div className="grid gap-3 md:grid-cols-2"><div><Label>English Title</Label><Input value={step.title || ''} onChange={(e) => updateContentItem('steps', index, 'title', e.target.value)} className="mt-1" /></div><div><Label>Arabic Title</Label><Input dir="rtl" value={step.title_ar || ''} onChange={(e) => updateContentItem('steps', index, 'title_ar', e.target.value)} className="mt-1" /></div><div><Label>English Description</Label><Textarea rows={3} value={step.description || ''} onChange={(e) => updateContentItem('steps', index, 'description', e.target.value)} className="mt-1" /></div><div><Label>Arabic Description</Label><Textarea dir="rtl" rows={3} value={step.description_ar || ''} onChange={(e) => updateContentItem('steps', index, 'description_ar', e.target.value)} className="mt-1" /></div></div>
+                        <div className="mt-3 max-w-xs"><Label>Icon</Label><select value={step.icon || 'Search'} onChange={(e) => updateContentItem('steps', index, 'icon', e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2"><option>Search</option><option>Palette</option><option>Code</option><option>Rocket</option></select></div>
+                      </div>
+                    ))}
+                    {!(formData.content_data?.steps || []).length && <p className="rounded-lg border border-dashed p-4 text-center text-sm text-slate-500">The current four-step fallback remains visible until managed steps are added and saved.</p>}
+                  </div>
+                )}
+                {selectedSection === 'video' && (
+                  <div className="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="flex items-center justify-between gap-4"><div><Label>Company Highlights</Label><p className="text-xs text-slate-500">Short trust points shown beside the company media.</p></div><Button type="button" variant="outline" size="sm" onClick={() => addContentItem('highlights', { label: '', label_ar: '' })}><Plus className="mr-2 h-4 w-4" />Add Highlight</Button></div>
+                    {(formData.content_data?.highlights || []).map((highlight, index) => <div key={index} className="grid gap-3 rounded-lg border bg-white p-3 md:grid-cols-[1fr_1fr_auto]"><div><Label>English</Label><Input value={highlight.label || ''} onChange={(e) => updateContentItem('highlights', index, 'label', e.target.value)} className="mt-1" /></div><div><Label>Arabic</Label><Input dir="rtl" value={highlight.label_ar || ''} onChange={(e) => updateContentItem('highlights', index, 'label_ar', e.target.value)} className="mt-1" /></div><Button type="button" variant="ghost" size="icon" className="self-end text-red-600" aria-label={`Remove highlight ${index + 1}`} onClick={() => removeContentItem('highlights', index)}><Trash2 className="h-4 w-4" /></Button></div>)}
+                  </div>
+                )}
                 <div className="grid gap-4 md:grid-cols-3">
                   <div><Label>Display Order</Label><Input type="number" value={formData.display_order} onChange={(e) => handleChange('display_order', Number(e.target.value) || 0)} className="mt-2" /></div>
                   <div><Label>Visual Style</Label><select value={formData.style_variant} onChange={(e) => handleChange('style_variant', e.target.value)} className="mt-2 w-full rounded-md border border-slate-300 px-3 py-2"><option value="default">Default</option><option value="dark">Dark / Futuristic</option><option value="light">Light</option><option value="immersive">Immersive Media</option><option value="split">Split Layout</option></select></div>

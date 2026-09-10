@@ -103,7 +103,8 @@ export default function ServicesHighlight() {
     : fallbackHighlights;
 
   return (
-    <section className="py-24 bg-slate-50">
+    <section className="relative overflow-hidden bg-slate-950 py-24 text-white">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(37,99,235,0.22),transparent_32%),radial-gradient(circle_at_85%_70%,rgba(147,51,234,0.18),transparent_30%)]" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -111,18 +112,18 @@ export default function ServicesHighlight() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="inline-block px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-sm font-medium mb-4">
+          <span className="inline-block rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-1.5 text-sm font-medium text-cyan-200 mb-4">
             {getLoc(servicesContent, 'subtitle') || t('home.services_highlight.subtitle', 'What We Do')}
           </span>
-          <h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-4">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
             {getLoc(servicesContent, 'title') || t('home.services_highlight.title', 'Our Core Services')}
           </h2>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+          <p className="text-xl text-slate-300 max-w-2xl mx-auto">
             {getLoc(servicesContent, 'description') || t('home.services_highlight.desc', 'End-to-end digital solutions tailored to your business needs')}
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="relative grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {highlights.map((item, i) => (
             <motion.div
               key={item.title}
@@ -133,30 +134,31 @@ export default function ServicesHighlight() {
             >
               <Link
                 to={item.href?.startsWith('/') ? item.href : createPageUrl(item.href)}
-                className="group block h-full bg-white rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow-xl hover:border-slate-200 transition-all duration-300"
+                className="group relative block h-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.06] p-8 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-300/30 hover:bg-white/[0.1] hover:shadow-2xl hover:shadow-blue-950/40"
               >
-                <div className={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                <span className="absolute right-6 top-5 text-5xl font-black text-white/[0.04]">{String(i + 1).padStart(2, '0')}</span>
+                <div className={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg`}>
                   <item.icon className="w-8 h-8 text-white" />
                 </div>
 
-                <h3 className="text-2xl font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition">
+                <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-200 transition">
                   {item.title}
                 </h3>
 
-                <p className="text-slate-600 mb-6 leading-relaxed">
+                <p className="text-slate-300 mb-6 leading-relaxed">
                   {item.description}
                 </p>
 
                 <ul className="space-y-2 mb-6">
                   {item.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2 text-slate-600">
-                      <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
+                    <li key={feature} className="flex items-center gap-2 text-sm text-slate-300">
+                      <div className="w-1.5 h-1.5 bg-cyan-300 rounded-full" />
                       {feature}
                     </li>
                   ))}
                 </ul>
 
-                <div className="flex items-center gap-2 text-blue-600 font-medium">
+                <div className="flex items-center gap-2 text-cyan-300 font-medium">
                   <span>{t('common.learn_more', 'Learn More')}</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform rtl:rotate-180 rtl:group-hover:-translate-x-2" />
                 </div>
