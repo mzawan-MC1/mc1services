@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowDown, ArrowUp, Loader2, Plus, Save, Sparkles, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, ChevronDown, Loader2, Plus, Save, Sparkles, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import AdminLayout from '../components/admin/AdminLayout';
 import FileUpload from '../components/FileUpload';
@@ -81,6 +81,7 @@ const normalizeItem = (item) => ({
 export default function AdminNavigation() {
   const queryClient = useQueryClient();
   const [items, setItems] = useState([]);
+  const [expandedItemId, setExpandedItemId] = useState(null);
 
   const { data: settings = [], isLoading } = useQuery({
     queryKey: ['header-footer-settings'],
@@ -124,7 +125,7 @@ export default function AdminNavigation() {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div><h1 className="text-2xl font-bold text-slate-900">Navigation & Mega-Menu</h1><p className="mt-1 text-slate-600">Every public menu label, link, description and image is controlled here.</p></div>
           <div className="flex gap-2">
-            <Button type="button" variant="outline" onClick={() => { if (window.confirm('Replace the current menu editor values with the approved MC1 blueprint? Save is still required.')) setItems(blueprint.map(normalizeItem)); }}><Sparkles className="mr-2 h-4 w-4" />Load MC1 Blueprint</Button>
+            <Button type="button" variant="outline" onClick={() => { if (window.confirm('Replace the current menu editor values with the approved MC1 blueprint? Save is still required.')) { const nextItems = blueprint.map(normalizeItem); setItems(nextItems); setExpandedItemId(nextItems[0]?.id || null); } }}><Sparkles className="mr-2 h-4 w-4" />Load MC1 Blueprint</Button>
             <Button type="button" onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending} className="bg-blue-600 text-white hover:bg-blue-700">{saveMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}Save Navigation</Button>
           </div>
         </div>
@@ -133,14 +134,26 @@ export default function AdminNavigation() {
           {items.map((item, itemIndex) => (
             <Card key={item.id}>
               <CardHeader className="flex-row items-center justify-between gap-3">
-                <CardTitle className="text-lg">{item.label || `Menu item ${itemIndex + 1}`}</CardTitle>
+                <button
+                  type="button"
+                  className="flex min-w-0 flex-1 items-center gap-3 text-left"
+                  onClick={() => setExpandedItemId((current) => current === item.id ? null : item.id)}
+                  aria-expanded={expandedItemId === item.id}
+                  aria-controls={`navigation-editor-${item.id}`}
+                >
+                  <ChevronDown className={`h-5 w-5 shrink-0 text-slate-500 transition-transform ${expandedItemId === item.id ? 'rotate-180' : ''}`} />
+                  <span className="min-w-0">
+                    <CardTitle className="truncate text-lg">{item.label || `Menu item ${itemIndex + 1}`}</CardTitle>
+                    <span className="mt-1 block text-xs font-normal text-slate-500">{item.children.length} menu link{item.children.length === 1 ? '' : 's'} · {item.is_visible ? 'Visible' : 'Hidden'}</span>
+                  </span>
+                </button>
                 <div className="flex gap-1">
                   <Button type="button" size="icon" variant="outline" onClick={() => moveItem(itemIndex, -1)}><ArrowUp className="h-4 w-4" /></Button>
                   <Button type="button" size="icon" variant="outline" onClick={() => moveItem(itemIndex, 1)}><ArrowDown className="h-4 w-4" /></Button>
                   <Button type="button" size="icon" variant="outline" className="text-red-600" onClick={() => setItems((current) => current.filter((_, index) => index !== itemIndex))}><Trash2 className="h-4 w-4" /></Button>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-5">
+              {expandedItemId === item.id && <CardContent id={`navigation-editor-${item.id}`} className="space-y-5 border-t pt-5">
                 <div className="grid gap-3 md:grid-cols-5">
                   <div><Label>English Label</Label><Input className="mt-1" value={item.label} onChange={(event) => updateItem(itemIndex, { label: event.target.value })} /></div>
                   <div dir="rtl"><Label>Arabic Label</Label><Input className="mt-1" value={item.label_ar} onChange={(event) => updateItem(itemIndex, { label_ar: event.target.value })} /></div>
@@ -172,11 +185,11 @@ export default function AdminNavigation() {
                     </div>
                   ))}
                 </div>}
-              </CardContent>
+              </CardContent>}
             </Card>
           ))}
         </div>
-        <Button type="button" variant="outline" onClick={() => setItems((current) => [...current, normalizeItem({ label: 'New Menu Item' })])}><Plus className="mr-2 h-4 w-4" />Add Main Menu Item</Button>
+        <Button type="button" variant="outline" onClick={() => { const item = normalizeItem({ label: 'New Menu Item' }); setItems((current) => [...current, item]); setExpandedItemId(item.id); }}><Plus className="mr-2 h-4 w-4" />Add Main Menu Item</Button>
       </div>
     </AdminLayout>
   );

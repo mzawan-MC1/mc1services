@@ -299,13 +299,13 @@ export default function Layout({ children, currentPageName }) {
                 </Link>
 
                 {/* Desktop Navigation */}
-                <div className="hidden lg:flex items-center gap-8">
+                <div className="relative hidden items-center gap-5 lg:flex xl:gap-7">
                   {navLinks.map((link, linkIndex) => {
                     const menuId = link.id || link.name || `menu-${linkIndex}`;
                     const hasMenu = link.menu_type === 'mega' || link.children?.length > 0;
                     const isOpen = openMenu === menuId;
                     return hasMenu ? (
-                      <div key={menuId} className="relative">
+                      <div key={menuId}>
                         <button
                           type="button"
                           className="flex items-center gap-1 py-2 font-medium text-slate-700 transition hover:text-blue-600"
