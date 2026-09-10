@@ -33,9 +33,15 @@ function AdminRouteCheck({ children }) {
       }
     };
     checkAdmin();
-    const { data: sub } = supabase ? supabase.auth.onAuthStateChange(() => {
-      setIsAdmin(null);
-      checkAdmin();
+    const { data: sub } = supabase ? supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') {
+        setIsAdmin(false);
+        return;
+      }
+
+      if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+        window.setTimeout(checkAdmin, 0);
+      }
     }) : { data: null };
     return () => { if (sub && typeof sub.subscription?.unsubscribe === 'function') sub.subscription.unsubscribe(); };
   }, []);

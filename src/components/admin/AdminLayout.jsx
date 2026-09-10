@@ -23,7 +23,7 @@ export default function AdminLayout({ children }) {
 
 
 function AdminShell({ children }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [profile, setProfile] = useState({ name: '', avatar: '' });
   const navigate = useNavigate();
   const location = useLocation();
@@ -84,18 +84,16 @@ function AdminShell({ children }) {
     <AdminLayoutContext.Provider value={true}>
     <div className="min-h-screen bg-slate-50 flex">
       {/* Sidebar */}
-      <aside className={`bg-white border-r border-slate-200 transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-0 lg:w-20'} flex-shrink-0`}>
+      <aside id="admin-sidebar" className={`fixed inset-y-0 left-0 z-50 w-64 flex-shrink-0 transform border-r border-slate-200 bg-white transition-transform duration-300 lg:static lg:translate-x-0 ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="h-full flex flex-col">
           {/* Header */}
           <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200">
-            {sidebarOpen && (
-              <Link to={createPageUrl('AdminDashboard')} className="flex items-center gap-2">
+            <Link to={createPageUrl('AdminDashboard')} onClick={() => setMobileSidebarOpen(false)} className="flex min-w-0 items-center gap-2">
                 <img src={profile.avatar} alt="avatar" className="w-8 h-8 rounded-lg object-cover border" />
                 <span className="font-semibold text-slate-900 truncate max-w-[150px]">{profile.name || 'Admin'}</span>
-              </Link>
-            )}
-            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 hover:bg-slate-100 rounded-lg">
-              {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </Link>
+            <button type="button" aria-label="Close admin menu" onClick={() => setMobileSidebarOpen(false)} className="lg:hidden p-2 hover:bg-slate-100 rounded-lg">
+              <X className="w-5 h-5" />
             </button>
           </div>
 
@@ -104,10 +102,11 @@ function AdminShell({ children }) {
             {menuItems.map(item => (
               <div key={item.id}>
                 {item.header ? (
-                  sidebarOpen ? <div className="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">{item.label}</div> : null
+                  <div className="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">{item.label}</div>
                 ) : (
                   <Link
                     to={item.to}
+                    onClick={() => setMobileSidebarOpen(false)}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                       location.pathname.toLowerCase() === item.to
                         ? 'bg-blue-50 text-blue-700'
@@ -115,7 +114,7 @@ function AdminShell({ children }) {
                     }`}
                   >
                     {item.icon && <item.icon className="w-5 h-5 flex-shrink-0" />}
-                    {sidebarOpen && <span>{item.label}</span>}
+                    <span>{item.label}</span>
                   </Link>
                 )}
               </div>
@@ -124,10 +123,10 @@ function AdminShell({ children }) {
 
           {/* Footer */}
           <div className="border-t border-slate-200 p-4 space-y-2">
-            <Link to={createPageUrl('Home')}>
+            <Link to={createPageUrl('Home')} onClick={() => setMobileSidebarOpen(false)}>
               <Button variant="outline" size="sm" className="w-full border-slate-300 text-slate-700 hover:bg-slate-100 justify-start">
                 <Eye className="w-4 h-4 mr-2" />
-                {sidebarOpen && 'View Site'}
+                View Site
               </Button>
             </Link>
             <Button
@@ -137,7 +136,7 @@ function AdminShell({ children }) {
               onClick={handleLogout}
             >
               <LogOut className="w-4 h-4 mr-2" />
-              {sidebarOpen && 'Logout'}
+              Logout
             </Button>
           </div>
         </div>
@@ -147,7 +146,7 @@ function AdminShell({ children }) {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile Header */}
         <header className="lg:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4">
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 hover:bg-slate-100 rounded-lg">
+          <button type="button" aria-label="Open admin menu" aria-expanded={mobileSidebarOpen} aria-controls="admin-sidebar" onClick={() => setMobileSidebarOpen(true)} className="p-2 hover:bg-slate-100 rounded-lg">
             <Menu className="w-6 h-6" />
           </button>
           <span className="font-semibold text-slate-900">Admin Panel</span>
@@ -161,10 +160,11 @@ function AdminShell({ children }) {
       </div>
 
       {/* Mobile Overlay */}
-      {sidebarOpen && (
+      {mobileSidebarOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/20 z-40"
-          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+          className="fixed inset-0 z-40 bg-black/30 lg:hidden"
+          onClick={() => setMobileSidebarOpen(false)}
         />
       )}
     </div>
