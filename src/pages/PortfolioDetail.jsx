@@ -6,7 +6,8 @@ import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
 import {
   ArrowLeft, ExternalLink, Calendar, Building2, Loader2,
-  ChevronLeft, ChevronRight, X, ZoomIn, Play, Target, Lightbulb, Trophy, Quote
+  ChevronLeft, ChevronRight, X, ZoomIn, Play, Target, Lightbulb, Trophy, Quote,
+  CheckCircle2, Layers3, Sparkles
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -42,6 +43,15 @@ export default function PortfolioDetail() {
   });
 
   const testimonial = testimonials[0];
+
+  const { data: industries = [] } = useQuery({ queryKey: ['active-industries'], queryFn: () => dataLayer.industries.getActive() });
+  const { data: services = [] } = useQuery({ queryKey: ['active-services'], queryFn: () => dataLayer.services.getActive() });
+  const { data: industryLinks = [] } = useQuery({ queryKey: ['portfolio-industry-links'], queryFn: () => dataLayer.portfolioTaxonomy.getIndustryLinks() });
+  const { data: serviceLinks = [] } = useQuery({ queryKey: ['portfolio-service-links'], queryFn: () => dataLayer.portfolioTaxonomy.getServiceLinks() });
+  const relatedIndustryIds = new Set(industryLinks.filter((link) => link.portfolio_id === id).map((link) => link.industry_id));
+  const relatedServiceIds = new Set(serviceLinks.filter((link) => link.portfolio_id === id).map((link) => link.service_id));
+  const relatedIndustries = industries.filter((industry) => relatedIndustryIds.has(industry.id));
+  const relatedServices = services.filter((service) => relatedServiceIds.has(service.id));
 
   // Combine main image, gallery images, and videos for the slider
   const allMedia = useMemo(() => portfolio ? [
@@ -108,24 +118,33 @@ export default function PortfolioDetail() {
     );
   }
 
+  const headline = getLoc(portfolio, 'headline') || getLoc(portfolio, 'short_description');
+  const projectTypeLabel = portfolio.project_type === 'mc1_product'
+    ? t('portfolio.mc1_product', 'MC1 Product')
+    : t('portfolio.client_project', 'Client Project');
+  const galleryOffset = portfolio.main_image_url ? 1 : 0;
+
   return (
     <div>
       {/* Hero */}
-      <section className="relative py-24 bg-slate-900 overflow-hidden">
+      <section className="relative overflow-hidden bg-slate-950 py-24 md:py-32">
         <div className="absolute inset-0">
-          {portfolio.main_image_url && <img src={portfolio.main_image_url} alt={getLoc(portfolio, 'title')} className="w-full h-full object-cover opacity-20" />}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-slate-900/60" />
+          {portfolio.main_image_url && <img src={portfolio.main_image_url} alt="" className="h-full w-full scale-105 object-cover opacity-30 blur-[1px]" />}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/55" />
+          <div className="absolute -right-20 top-12 h-72 w-72 rounded-full bg-blue-500/20 blur-[100px]" />
         </div>
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Link to={createPageUrl('Portfolio')} className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition">
             <ArrowLeft className="w-4 h-4 rtl:rotate-180" /> {t('portfolio.detail.back_to_portfolio', 'Back to Portfolio')}
           </Link>
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
-            <Badge className="bg-white/10 text-blue-300 border-0 mb-4">
-              {t(`portfolio.categories.${portfolio.category}`, portfolio.category)}
-            </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">{getLoc(portfolio, 'title')}</h1>
-            <p className="text-xl text-slate-300 mb-8">{getLoc(portfolio, 'short_description')}</p>
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl">
+            <div className="mb-5 flex flex-wrap gap-2">
+              <Badge className="border border-white/10 bg-white/10 text-blue-200 hover:bg-white/10">{t(`portfolio.categories.${portfolio.category}`, portfolio.category)}</Badge>
+              <Badge className="border border-white/10 bg-white/10 text-slate-100 hover:bg-white/10">{projectTypeLabel}</Badge>
+              {portfolio.is_featured && <Badge className="border border-purple-300/20 bg-purple-500/20 text-purple-100 hover:bg-purple-500/20"><Sparkles className="mr-1 h-3 w-3" />{t('portfolio.featured_case_study', 'Featured case study')}</Badge>}
+            </div>
+            <h1 className="mb-6 text-4xl font-bold tracking-tight text-white md:text-6xl">{getLoc(portfolio, 'title')}</h1>
+            {headline && <p className="mb-8 max-w-3xl text-xl leading-relaxed text-slate-200 md:text-2xl">{headline}</p>}
             <div className="flex flex-wrap gap-6 text-slate-400">
               {portfolio.client_name && (
                 <div className="flex items-center gap-2"><Building2 className="w-4 h-4" /><span>{portfolio.client_name}</span></div>
@@ -144,20 +163,30 @@ export default function PortfolioDetail() {
         </div>
       </section>
 
+      <nav aria-label={t('portfolio.detail.case_study_sections', 'Case study sections')} className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl gap-6 overflow-x-auto px-4 py-4 text-sm font-semibold text-slate-600 sm:px-6 lg:px-8">
+          <a href="#experience" className="whitespace-nowrap hover:text-blue-600">{t('portfolio.detail.experience', 'Experience')}</a>
+          <a href="#story" className="whitespace-nowrap hover:text-blue-600">{t('portfolio.detail.project_story', 'Project story')}</a>
+          <a href="#solution" className="whitespace-nowrap hover:text-blue-600">{t('portfolio.detail.solution', 'Solution')}</a>
+          <a href="#results" className="whitespace-nowrap hover:text-blue-600">{t('portfolio.detail.results', 'Results')}</a>
+          <a href="#gallery" className="whitespace-nowrap hover:text-blue-600">{t('portfolio.detail.media', 'Media')}</a>
+        </div>
+      </nav>
+
       {/* Content */}
-      <section className="py-16">
+      <section className="bg-gradient-to-b from-white to-slate-50 py-16 md:py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Media Carousel */}
           {allMedia.length > 0 && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-16">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-100">
+            <motion.div id="experience" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-16 scroll-mt-24">
+              <div className="relative overflow-hidden rounded-[2rem] bg-slate-100 shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/10">
                 <div className="relative aspect-[16/9] overflow-hidden">
                   <AnimatePresence mode="wait">
                     {allMedia[currentSlide]?.type === 'video' ? (
                       <motion.div key={currentSlide} className="w-full h-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                         {isEmbedVideo(allMedia[currentSlide].url) ? (
-                          <iframe src={getEmbedUrl(allMedia[currentSlide].url)} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                          <iframe title={`${getLoc(portfolio, 'title')} video`} src={getEmbedUrl(allMedia[currentSlide].url)} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                         ) : (
                           <video src={allMedia[currentSlide].url} poster={allMedia[currentSlide].poster || undefined} className="w-full h-full object-cover" controls />
                         )}
@@ -169,17 +198,17 @@ export default function PortfolioDetail() {
 
                   {allMedia.length > 1 && (
                     <>
-                      <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg rtl:right-4 rtl:left-auto">
+                      <button type="button" aria-label="Previous project media" onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg rtl:right-4 rtl:left-auto">
                         <ChevronLeft className="w-6 h-6 rtl:rotate-180" />
                       </button>
-                      <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg rtl:left-4 rtl:right-auto">
+                      <button type="button" aria-label="Next project media" onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg rtl:left-4 rtl:right-auto">
                         <ChevronRight className="w-6 h-6 rtl:rotate-180" />
                       </button>
                     </>
                   )}
 
                   {allMedia[currentSlide]?.type === 'image' && (
-                    <button onClick={() => openLightbox(currentSlide)} className="absolute bottom-4 right-4 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center shadow-lg rtl:right-auto rtl:left-4">
+                    <button type="button" aria-label="Open project image" onClick={() => openLightbox(currentSlide)} className="absolute bottom-4 right-4 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center shadow-lg rtl:right-auto rtl:left-4">
                       <ZoomIn className="w-5 h-5" />
                     </button>
                   )}
@@ -188,7 +217,7 @@ export default function PortfolioDetail() {
                 {allMedia.length > 1 && (
                   <div className="flex gap-2 p-4 bg-slate-50 overflow-x-auto">
                     {allMedia.map((media, i) => (
-                      <button key={i} onClick={() => setCurrentSlide(i)} className={`relative flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 transition-all ${currentSlide === i ? 'border-blue-500 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'}`}>
+                      <button type="button" aria-label={`Show project media ${i + 1}`} key={i} onClick={() => setCurrentSlide(i)} className={`relative flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 transition-all ${currentSlide === i ? 'border-blue-500 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'}`}>
                         {media.type === 'video' ? (
                           <div className="w-full h-full bg-slate-800 flex items-center justify-center"><Play className="w-6 h-6 text-white" /></div>
                         ) : (
@@ -203,8 +232,8 @@ export default function PortfolioDetail() {
           )}
 
           {/* Project Details */}
-          <div className="grid lg:grid-cols-3 gap-12">
-            <div className="lg:col-span-2 space-y-12">
+          <div id="story" className="grid scroll-mt-24 gap-12 lg:grid-cols-3">
+            <div className="space-y-12 lg:col-span-2">
               {/* Overview */}
               {getLoc(portfolio, 'project_overview') && (
                 <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
@@ -239,7 +268,7 @@ export default function PortfolioDetail() {
 
               {/* Solutions */}
               {getLoc(portfolio, 'solutions') && (
-                <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="bg-blue-50 rounded-2xl p-8">
+                <motion.div id="solution" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="scroll-mt-24 rounded-2xl border border-blue-100 bg-blue-50 p-8">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
                       <Lightbulb className="w-5 h-5 text-blue-600" />
@@ -252,7 +281,7 @@ export default function PortfolioDetail() {
 
               {/* Results */}
               {getLoc(portfolio, 'results') && (
-                <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="bg-green-50 rounded-2xl p-8">
+                <motion.div id="results" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="scroll-mt-24 rounded-2xl border border-emerald-100 bg-emerald-50 p-8">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
                       <Trophy className="w-5 h-5 text-green-600" />
@@ -295,6 +324,14 @@ export default function PortfolioDetail() {
                   </div>
                 </motion.div>
 
+                {(relatedIndustries.length > 0 || relatedServices.length > 0) && (
+                  <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="rounded-2xl bg-slate-950 p-6 text-white">
+                    <div className="mb-5 flex items-center gap-3"><Layers3 className="h-5 w-5 text-blue-300" /><h3 className="font-bold">{t('portfolio.detail.expertise_demonstrated', 'Expertise demonstrated')}</h3></div>
+                    {relatedIndustries.length > 0 && <div className="mb-5"><p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">{t('portfolio.industry', 'Industry')}</p><div className="flex flex-wrap gap-2">{relatedIndustries.map((industry) => <Badge key={industry.id} className="border border-white/10 bg-white/10 text-white hover:bg-white/10">{getLoc(industry, 'name')}</Badge>)}</div></div>}
+                    {relatedServices.length > 0 && <div><p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">{t('portfolio.solution', 'Solutions')}</p><ul className="space-y-2">{relatedServices.map((service) => <li key={service.id} className="flex items-start gap-2 text-sm text-slate-200"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-blue-300" />{getLoc(service, 'title')}</li>)}</ul></div>}
+                  </motion.div>
+                )}
+
                 {portfolio.tech_stack?.length > 0 && (
                   <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="bg-slate-50 rounded-2xl p-6">
                     <h3 className="font-bold text-slate-900 mb-4">{t('portfolio.detail.tech_stack', 'Tech Stack')}</h3>
@@ -319,11 +356,12 @@ export default function PortfolioDetail() {
 
           {/* Gallery */}
           {gallery?.length > 0 && (
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-16">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">{t('portfolio.detail.screenshots', 'Screenshots')}</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <motion.div id="gallery" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-20 scroll-mt-24">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">{t('portfolio.detail.product_experience', 'Product experience')}</p>
+              <h2 className="mb-6 mt-2 text-3xl font-bold text-slate-900">{t('portfolio.detail.screenshots', 'Screenshots and walkthroughs')}</h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
                 {gallery.map((img, i) => (
-                  <button key={i} onClick={() => openLightbox(i + 1)} className="relative group rounded-xl overflow-hidden aspect-video">
+                  <button key={i} type="button" aria-label={`${t('portfolio.detail.open_media', 'Open media')} ${i + 1}`} onClick={() => openLightbox(i + galleryOffset)} className="relative group rounded-2xl overflow-hidden aspect-video bg-slate-900">
                     {img.media_type === 'video' ? <video src={img.image_url} poster={img.poster_url || undefined} className="h-full w-full object-cover" muted /> : <img src={img.image_url} alt={getLoc(img, 'alt_text') || getLoc(portfolio, 'title')} className="w-full h-full object-cover" />}
                     <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/40 transition-all flex items-center justify-center">
                       <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition" />
@@ -333,6 +371,13 @@ export default function PortfolioDetail() {
               </div>
             </motion.div>
           )}
+
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-20 overflow-hidden rounded-[2rem] bg-slate-950 px-6 py-12 text-center text-white md:px-12">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-300">{t('portfolio.detail.next_system', 'Your workflow could be next')}</p>
+            <h2 className="mx-auto mt-3 max-w-3xl text-3xl font-bold tracking-tight md:text-4xl">{t('portfolio.detail.cta_title', 'Have a complex process that should work better?')}</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-slate-300">{t('portfolio.detail.cta_description', 'Show us how your business operates today. We will help you map the opportunity and turn it into a practical digital solution.')}</p>
+            <Link to="/Contact" className="mt-7 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:scale-[1.02]">{t('portfolio.detail.discuss_project', 'Discuss your project')}<ExternalLink className="h-4 w-4 rtl:-scale-x-100" /></Link>
+          </motion.div>
         </div>
       </section>
 
@@ -340,15 +385,15 @@ export default function PortfolioDetail() {
       <AnimatePresence>
         {lightboxOpen && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4" onClick={() => setLightboxOpen(false)}>
-            <button onClick={() => setLightboxOpen(false)} className="absolute top-4 right-4 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center rtl:left-4 rtl:right-auto">
+            <button type="button" aria-label="Close project media" onClick={() => setLightboxOpen(false)} className="absolute top-4 right-4 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center rtl:left-4 rtl:right-auto">
               <X className="w-6 h-6 text-white" />
             </button>
             {allMedia.length > 1 && (
               <>
-                <button onClick={(e) => { e.stopPropagation(); setLightboxIndex((prev) => (prev - 1 + allMedia.length) % allMedia.length); }} className="absolute left-4 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center rtl:right-4 rtl:left-auto">
+                <button type="button" aria-label="Previous project media" onClick={(e) => { e.stopPropagation(); setLightboxIndex((prev) => (prev - 1 + allMedia.length) % allMedia.length); }} className="absolute left-4 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center rtl:right-4 rtl:left-auto">
                   <ChevronLeft className="w-6 h-6 text-white rtl:rotate-180" />
                 </button>
-                <button onClick={(e) => { e.stopPropagation(); setLightboxIndex((prev) => (prev + 1) % allMedia.length); }} className="absolute right-4 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center rtl:left-4 rtl:right-auto">
+                <button type="button" aria-label="Next project media" onClick={(e) => { e.stopPropagation(); setLightboxIndex((prev) => (prev + 1) % allMedia.length); }} className="absolute right-4 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center rtl:left-4 rtl:right-auto">
                   <ChevronRight className="w-6 h-6 text-white rtl:rotate-180" />
                 </button>
               </>
@@ -356,7 +401,7 @@ export default function PortfolioDetail() {
             {allMedia[lightboxIndex]?.type === 'video' ? (
               <div className="w-full max-w-5xl aspect-video" onClick={(e) => e.stopPropagation()}>
                 {isEmbedVideo(allMedia[lightboxIndex].url) ? (
-                  <iframe src={getEmbedUrl(allMedia[lightboxIndex].url)} className="w-full h-full rounded-lg" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                  <iframe title={`${getLoc(portfolio, 'title')} video`} src={getEmbedUrl(allMedia[lightboxIndex].url)} className="w-full h-full rounded-lg" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                 ) : (
                   <video src={allMedia[lightboxIndex].url} poster={allMedia[lightboxIndex].poster || undefined} className="w-full h-full object-contain rounded-lg" controls autoPlay />
                 )}
