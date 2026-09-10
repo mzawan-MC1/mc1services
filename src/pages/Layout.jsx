@@ -137,7 +137,7 @@ export default function Layout({ children, currentPageName }) {
     }
     if (child.source_type === 'industry') {
       const industry = menuSources.industries.find((item) => item.id === child.source_id);
-      return industry ? { ...child, label: industry.name, label_ar: industry.name_ar, description: industry.short_description, description_ar: industry.short_description_ar, image_url: industry.image_url, href: `/Portfolio?industry=${industry.slug}` } : child;
+      return industry ? { ...child, label: industry.name, label_ar: industry.name_ar, description: industry.short_description, description_ar: industry.short_description_ar, image_url: industry.image_url, href: industry.slug ? `/industries/${industry.slug}` : `/Portfolio?industry=${industry.slug}` } : child;
     }
     if (child.source_type === 'project') {
       const project = menuSources.projects.find((item) => item.id === child.source_id);

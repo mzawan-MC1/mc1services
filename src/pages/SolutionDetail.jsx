@@ -38,6 +38,10 @@ const getContactServiceValue = (service) => {
 
 const setMetaContent = (selector, attributeName, attributeValue, content) => {
   let element = document.querySelector(selector);
+  if (!content) {
+    element?.remove();
+    return;
+  }
   if (!element) {
     element = document.createElement('meta');
     element.setAttribute(attributeName, attributeValue);
@@ -98,7 +102,7 @@ export default function SolutionDetail() {
     setMetaContent('meta[name="description"]', 'name', 'description', metaDescription);
     setMetaContent('meta[property="og:title"]', 'property', 'og:title', `${title} | MCS Consultancy`);
     setMetaContent('meta[property="og:description"]', 'property', 'og:description', metaDescription);
-    if (service.image_url) setMetaContent('meta[property="og:image"]', 'property', 'og:image', service.image_url);
+    setMetaContent('meta[property="og:image"]', 'property', 'og:image', service.image_url);
   }, [description, fullDescription, service, t, title]);
 
   if (serviceQuery.isLoading) {

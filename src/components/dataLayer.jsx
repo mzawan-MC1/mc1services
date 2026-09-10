@@ -171,6 +171,17 @@ export const dataLayer = {
   // Industries and project taxonomy
   industries: {
     getAll: () => supabaseHelpers.getAll('industries', 'display_order', true),
+    getBySlug: async (slug) => {
+      if (!supabase || !slug) return null;
+      const { data, error } = await supabase
+        .from('industries')
+        .select('*')
+        .eq('slug', slug)
+        .eq('is_active', true)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
     getActive: async () => {
       if (!supabase) return [];
       const { data, error } = await supabase
