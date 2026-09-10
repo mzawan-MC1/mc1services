@@ -28,8 +28,14 @@ export default function AdminServices() {
     onSuccess: () => queryClient.invalidateQueries(['admin-services'])
   });
 
-  const devServices = services.filter(s => s.category === 'development');
-  const mktServices = services.filter(s => s.category === 'marketing');
+  const preferredGroups = ['Build', 'Scale', 'Create'];
+  const groupNames = [
+    ...preferredGroups.filter((group) => services.some((service) => service.service_group === group)),
+    ...[...new Set(services.map((service) => service.service_group || 'Other'))]
+      .filter((group) => !preferredGroups.includes(group))
+      .sort()
+  ];
+  const defaultGroup = groupNames[0] || 'Other';
 
   const renderServices = (items) => (
     items.length === 0 ? (
@@ -82,13 +88,15 @@ export default function AdminServices() {
         {isLoading ? (
           <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>
         ) : (
-          <Tabs defaultValue="development">
-            <TabsList className="mb-6">
-              <TabsTrigger value="development">Development ({devServices.length})</TabsTrigger>
-              <TabsTrigger value="marketing">Marketing ({mktServices.length})</TabsTrigger>
+          <Tabs key={defaultGroup} defaultValue={defaultGroup}>
+            <TabsList className="mb-6 h-auto flex-wrap justify-start">
+              {groupNames.map((group) => (
+                <TabsTrigger key={group} value={group}>{group} ({services.filter((service) => (service.service_group || 'Other') === group).length})</TabsTrigger>
+              ))}
             </TabsList>
-            <TabsContent value="development">{renderServices(devServices)}</TabsContent>
-            <TabsContent value="marketing">{renderServices(mktServices)}</TabsContent>
+            {groupNames.map((group) => (
+              <TabsContent key={group} value={group}>{renderServices(services.filter((service) => (service.service_group || 'Other') === group))}</TabsContent>
+            ))}
           </Tabs>
         )}
       </div>

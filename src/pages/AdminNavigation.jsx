@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowDown, ArrowUp, ChevronDown, Loader2, Plus, Save, Sparkles, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, ChevronDown, Link2, Loader2, Plus, Save, Sparkles, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import AdminLayout from '../components/admin/AdminLayout';
 import FileUpload from '../components/FileUpload';
@@ -117,6 +117,31 @@ export default function AdminNavigation() {
     return next;
   });
 
+  const linkManagedRecords = () => {
+    let linked = 0;
+    const findByLabel = (records, label) => records.find((record) =>
+      (record.title || record.name || '').trim().toLowerCase() === (label || '').trim().toLowerCase()
+    );
+    const nextItems = items.map((item) => ({
+      ...item,
+      children: item.children.map((child) => {
+        const service = findByLabel(services, child.label);
+        if (service) {
+          linked += 1;
+          return { ...child, source_type: 'service', source_id: service.id };
+        }
+        const industry = findByLabel(industries, child.label);
+        if (industry) {
+          linked += 1;
+          return { ...child, source_type: 'industry', source_id: industry.id };
+        }
+        return child;
+      })
+    }));
+    setItems(nextItems);
+    toast.success(linked ? `${linked} menu links connected. Review and save navigation.` : 'No exact service or industry label matches were found.');
+  };
+
   if (isLoading) return <div className="flex min-h-[50vh] items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-blue-600" /></div>;
 
   return (
@@ -126,6 +151,7 @@ export default function AdminNavigation() {
           <div><h1 className="text-2xl font-bold text-slate-900">Navigation & Mega-Menu</h1><p className="mt-1 text-slate-600">Every public menu label, link, description and image is controlled here.</p></div>
           <div className="flex gap-2">
             <Button type="button" variant="outline" onClick={() => { if (window.confirm('Replace the current menu editor values with the approved MC1 blueprint? Save is still required.')) { const nextItems = blueprint.map(normalizeItem); setItems(nextItems); setExpandedItemId(nextItems[0]?.id || null); } }}><Sparkles className="mr-2 h-4 w-4" />Load MC1 Blueprint</Button>
+            <Button type="button" variant="outline" onClick={linkManagedRecords}><Link2 className="mr-2 h-4 w-4" />Link Managed Records</Button>
             <Button type="button" onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending} className="bg-blue-600 text-white hover:bg-blue-700">{saveMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}Save Navigation</Button>
           </div>
         </div>

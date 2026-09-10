@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../dataLayer';
-import { Code, Megaphone, Server, Zap, ArrowRight } from 'lucide-react';
+import { ArrowRight, Boxes, Clapperboard, CloudCog, Code, Code2, Megaphone, PanelsTopLeft, Server, Sparkles, TrendingUp, Zap } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function ServicesHighlight() {
@@ -79,7 +79,7 @@ export default function ServicesHighlight() {
   });
 
   const getLoc = (obj, key) => getLocalizedValue(obj, key, i18n.language, false);
-  const iconMap = { Code, Megaphone, Server, Zap };
+  const iconMap = { Boxes, Clapperboard, CloudCog, Code, Code2, Megaphone, PanelsTopLeft, Server, Sparkles, TrendingUp, Zap };
   const colors = ['from-blue-500 to-cyan-500', 'from-purple-500 to-pink-500', 'from-amber-500 to-orange-500', 'from-green-500 to-teal-500'];
   const legacyRouteBySlug = {
     'web-development': 'WebDevelopment',
@@ -96,7 +96,7 @@ export default function ServicesHighlight() {
         icon: iconMap[service.icon] || Code,
         title: i18n.language === 'ar' ? service.title_ar || service.title : service.title,
         description: i18n.language === 'ar' ? service.description_ar || service.description : service.description,
-        features: service.features || [],
+        features: i18n.language === 'ar' ? service.features_ar || service.features || [] : service.features || [],
         href: service.page_url || legacyRouteBySlug[service.slug] || 'DevelopmentServices',
         color: colors[index % colors.length]
       }))

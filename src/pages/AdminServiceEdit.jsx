@@ -24,11 +24,13 @@ export default function AdminServiceEdit() {
   const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState({
-    title: '', description: '', full_description: '', category: 'development',
-    slug: '', parent_id: '', service_group: '', page_url: '', menu_description: '', menu_image_url: '',
-    icon: '', features: [], image_url: '', order: 0, is_active: true, is_featured: false
+    title: '', title_ar: '', description: '', description_ar: '', full_description: '', full_description_ar: '',
+    category: 'development', category_ar: '', slug: '', parent_id: '', service_group: '', page_url: '',
+    menu_description: '', menu_description_ar: '', menu_image_url: '', icon: '', features: [], features_ar: [],
+    image_url: '', order: 0, is_active: true, is_featured: false
   });
   const [newFeature, setNewFeature] = useState('');
+  const [newFeatureAr, setNewFeatureAr] = useState('');
 
   const { data: service, isLoading } = useQuery({
     queryKey: ['service', id],
@@ -44,12 +46,15 @@ export default function AdminServiceEdit() {
   useEffect(() => {
     if (service) {
       setFormData({
-        title: service.title || '', description: service.description || '',
-        full_description: service.full_description || '', category: service.category || 'development',
+        title: service.title || '', title_ar: service.title_ar || '',
+        description: service.description || '', description_ar: service.description_ar || '',
+        full_description: service.full_description || '', full_description_ar: service.full_description_ar || '',
+        category: service.category || 'development', category_ar: service.category_ar || '',
         slug: service.slug || '', parent_id: service.parent_id || '', service_group: service.service_group || '',
         page_url: service.page_url || '',
-        menu_description: service.menu_description || '', menu_image_url: service.menu_image_url || '',
-        icon: service.icon || '', features: service.features || [],
+        menu_description: service.menu_description || '', menu_description_ar: service.menu_description_ar || '',
+        menu_image_url: service.menu_image_url || '', icon: service.icon || '',
+        features: service.features || [], features_ar: service.features_ar || [],
         image_url: service.image_url || '', order: service.order || 0, is_active: service.is_active !== false,
         is_featured: Boolean(service.is_featured)
       });
@@ -88,6 +93,13 @@ export default function AdminServiceEdit() {
     }
   };
 
+  const addArabicFeature = () => {
+    if (newFeatureAr.trim()) {
+      setFormData(prev => ({ ...prev, features_ar: [...prev.features_ar, newFeatureAr.trim()] }));
+      setNewFeatureAr('');
+    }
+  };
+
   if (isEditing && isLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>;
 
   return (
@@ -102,7 +114,10 @@ export default function AdminServiceEdit() {
           <Card>
             <CardHeader><CardTitle>Service Details</CardTitle></CardHeader>
             <CardContent className="space-y-4">
-              <div><Label>Title *</Label><Input value={formData.title} onChange={(e) => setFormData(p => ({ ...p, title: e.target.value }))} required className="mt-1" /></div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div><Label>English Title *</Label><Input value={formData.title} onChange={(e) => setFormData(p => ({ ...p, title: e.target.value }))} required className="mt-1" /></div>
+                <div dir="rtl"><Label>Arabic Title</Label><Input value={formData.title_ar} onChange={(e) => setFormData(p => ({ ...p, title_ar: e.target.value }))} className="mt-1" /></div>
+              </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div><Label>SEO Slug</Label><Input value={formData.slug} onChange={(e) => setFormData(p => ({ ...p, slug: e.target.value }))} placeholder="ai-automation" className="mt-1" /></div>
                 <div><Label>Service Group</Label><Input value={formData.service_group} onChange={(e) => setFormData(p => ({ ...p, service_group: e.target.value }))} placeholder="AI & Automation" className="mt-1" /></div>
@@ -112,20 +127,31 @@ export default function AdminServiceEdit() {
                 <Select value={formData.category} onValueChange={(v) => setFormData(p => ({ ...p, category: v }))}>
                   <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="development">Development</SelectItem>
+                    <SelectItem value="development">Custom Software</SelectItem>
+                    <SelectItem value="ai_automation">AI & Automation</SelectItem>
+                    <SelectItem value="application_development">Application Development</SelectItem>
+                    <SelectItem value="saas_engineering">SaaS Engineering</SelectItem>
                     <SelectItem value="marketing">Marketing</SelectItem>
+                    <SelectItem value="it_services">Cloud & IT</SelectItem>
+                    <SelectItem value="production">Creative Production</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+              <div dir="rtl"><Label>Arabic Category Label</Label><Input value={formData.category_ar} onChange={(e) => setFormData(p => ({ ...p, category_ar: e.target.value }))} className="mt-1" /></div>
               <div><Label>Parent Service</Label>
                 <select value={formData.parent_id} onChange={(e) => setFormData(p => ({ ...p, parent_id: e.target.value }))} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2">
                   <option value="">Top-level service</option>
                   {allServices.filter((item) => item.id !== id).map((item) => <option key={item.id} value={item.id}>{item.title}</option>)}
                 </select>
               </div>
-              <div><Label>Short Description</Label><Textarea value={formData.description} onChange={(e) => setFormData(p => ({ ...p, description: e.target.value }))} className="mt-1" rows={2} /></div>
-              <div><Label>Full Description</Label><Textarea value={formData.full_description} onChange={(e) => setFormData(p => ({ ...p, full_description: e.target.value }))} className="mt-1" rows={4} /></div>
-              <div><Label>Mega-Menu Description</Label><Textarea value={formData.menu_description} onChange={(e) => setFormData(p => ({ ...p, menu_description: e.target.value }))} className="mt-1" rows={2} /></div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div><Label>English Short Description</Label><Textarea value={formData.description} onChange={(e) => setFormData(p => ({ ...p, description: e.target.value }))} className="mt-1" rows={3} /></div>
+                <div dir="rtl"><Label>Arabic Short Description</Label><Textarea value={formData.description_ar} onChange={(e) => setFormData(p => ({ ...p, description_ar: e.target.value }))} className="mt-1" rows={3} /></div>
+                <div><Label>English Full Description</Label><Textarea value={formData.full_description} onChange={(e) => setFormData(p => ({ ...p, full_description: e.target.value }))} className="mt-1" rows={5} /></div>
+                <div dir="rtl"><Label>Arabic Full Description</Label><Textarea value={formData.full_description_ar} onChange={(e) => setFormData(p => ({ ...p, full_description_ar: e.target.value }))} className="mt-1" rows={5} /></div>
+                <div><Label>English Mega-Menu Description</Label><Textarea value={formData.menu_description} onChange={(e) => setFormData(p => ({ ...p, menu_description: e.target.value }))} className="mt-1" rows={2} /></div>
+                <div dir="rtl"><Label>Arabic Mega-Menu Description</Label><Textarea value={formData.menu_description_ar} onChange={(e) => setFormData(p => ({ ...p, menu_description_ar: e.target.value }))} className="mt-1" rows={2} /></div>
+              </div>
               <div><Label>Icon Name (Lucide)</Label><Input value={formData.icon} onChange={(e) => setFormData(p => ({ ...p, icon: e.target.value }))} className="mt-1" placeholder="e.g., Globe, Smartphone" /></div>
               <div>
                 <Label>Image</Label>
@@ -138,16 +164,15 @@ export default function AdminServiceEdit() {
           </Card>
 
           <Card>
-            <CardHeader><CardTitle>Features</CardTitle></CardHeader>
-            <CardContent>
-              <div className="flex gap-2 mb-3">
-                <Input value={newFeature} onChange={(e) => setNewFeature(e.target.value)} placeholder="Add feature..." onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())} />
-                <Button type="button" onClick={addFeature}>Add</Button>
+            <CardHeader><CardTitle>Features (English and Arabic)</CardTitle></CardHeader>
+            <CardContent className="grid gap-6 md:grid-cols-2">
+              <div>
+                <div className="flex gap-2 mb-3"><Input value={newFeature} onChange={(e) => setNewFeature(e.target.value)} placeholder="Add English feature..." onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())} /><Button type="button" onClick={addFeature}>Add</Button></div>
+                <div className="flex flex-wrap gap-2">{formData.features.map((f, i) => <Badge key={i} variant="secondary" className="pr-1">{f}<button type="button" onClick={() => setFormData(p => ({ ...p, features: p.features.filter((_, idx) => idx !== i) }))} className="ml-2 hover:text-red-500"><X className="w-3 h-3" /></button></Badge>)}</div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {formData.features.map((f, i) => (
-                  <Badge key={i} variant="secondary" className="pr-1">{f}<button type="button" onClick={() => setFormData(p => ({ ...p, features: p.features.filter((_, idx) => idx !== i) }))} className="ml-2 hover:text-red-500"><X className="w-3 h-3" /></button></Badge>
-                ))}
+              <div dir="rtl">
+                <div className="flex gap-2 mb-3"><Input value={newFeatureAr} onChange={(e) => setNewFeatureAr(e.target.value)} placeholder="أضف ميزة بالعربية..." onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addArabicFeature())} /><Button type="button" onClick={addArabicFeature}>إضافة</Button></div>
+                <div className="flex flex-wrap gap-2">{formData.features_ar.map((f, i) => <Badge key={i} variant="secondary" className="pl-1">{f}<button type="button" onClick={() => setFormData(p => ({ ...p, features_ar: p.features_ar.filter((_, idx) => idx !== i) }))} className="mr-2 hover:text-red-500"><X className="w-3 h-3" /></button></Badge>)}</div>
               </div>
             </CardContent>
           </Card>

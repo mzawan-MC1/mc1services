@@ -42,6 +42,7 @@ function AdminShell({ children }) {
     { id: 'media', label: 'Media Manager', icon: Image, to: '/admin/media' },
     { id: 'tasks', label: 'Tasks', icon: FileText, to: '/admin/tasks' },
     { id: 'portfolio', label: 'Portfolio', icon: FileText, to: '/admin/portfolio' },
+    { id: 'services', label: 'Services', icon: PanelsTopLeft, to: '/admin/services' },
     { id: 'industries', label: 'Industries', icon: Building2, to: '/admin/industries' },
     { id: 'navigation', label: 'Navigation', icon: PanelsTopLeft, to: '/admin/navigation' },
     { id: 'faq', label: 'FAQ', icon: FileText, to: '/admin/faq' },
