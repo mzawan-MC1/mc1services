@@ -317,7 +317,7 @@ export default function Layout({ children, currentPageName }) {
                     <img
                       src={siteSettings.logo_url}
                       alt={siteSettings.company_name || 'MCS Consultancy'}
-                      className="h-12 w-auto object-contain"
+                      className="h-[4.5rem] w-auto object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
                         e.target.nextElementSibling.style.display = 'flex';
@@ -325,7 +325,7 @@ export default function Layout({ children, currentPageName }) {
                     />
                   ) : null}
                   <div style={{ display: siteSettings.logo_url ? 'none' : 'flex' }} className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                    <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600">
                       <span className="text-white font-bold text-xl">M</span>
                     </div>
                     <div>
@@ -536,7 +536,7 @@ export default function Layout({ children, currentPageName }) {
                       <img
                         src={siteSettings.logo_url}
                         alt={siteSettings.company_name || 'MCS Consultancy'}
-                        className="h-12 w-auto object-contain"
+                        className="h-24 w-auto object-contain"
                         onError={(e) => {
                           e.target.style.display = 'none';
                           e.target.nextElementSibling.style.display = 'flex';
@@ -544,7 +544,7 @@ export default function Layout({ children, currentPageName }) {
                       />
                     ) : null}
                     <div style={{ display: siteSettings.logo_url ? 'none' : 'flex' }} className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                      <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600">
                         <span className="text-white font-bold text-xl">M</span>
                       </div>
                       <div>

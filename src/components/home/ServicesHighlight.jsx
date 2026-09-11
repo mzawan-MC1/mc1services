@@ -92,9 +92,9 @@ export default function ServicesHighlight() {
     'professional-services': 'ITServices'
   };
   const desktopCardSpans = [
-    'lg:col-span-4', 'lg:col-span-2',
-    'lg:col-span-2', 'lg:col-span-4',
-    'lg:col-span-2', 'lg:col-span-2', 'lg:col-span-2'
+    'core-service-span-18', 'core-service-span-12',
+    'core-service-span-12', 'core-service-span-18',
+    'core-service-span-10', 'core-service-span-10', 'core-service-span-10'
   ];
   const highlights = managedServices.length
     ? managedServices.filter((service) => !service.parent_id).slice(0, 7).map((service, index) => ({
@@ -128,7 +128,7 @@ export default function ServicesHighlight() {
           </p>
         </motion.div>
 
-        <div className="relative grid gap-6 md:grid-cols-2 lg:grid-cols-6">
+        <div className="relative grid gap-6 md:grid-cols-2 lg:grid-cols-[repeat(30,minmax(0,1fr))]">
           {highlights.map((item, i) => {
             const isWideCard = i === 0 || i === 3;
             return (
@@ -138,7 +138,7 @@ export default function ServicesHighlight() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className={`h-full ${desktopCardSpans[i] || 'lg:col-span-2'}`}
+              className={`h-full ${desktopCardSpans[i] || 'core-service-span-10'}`}
             >
               <Link
                 to={item.href?.startsWith('/') ? item.href : createPageUrl(item.href)}

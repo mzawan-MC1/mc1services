@@ -146,6 +146,20 @@ button:focus-visible {
   }
 }
 
+@media (min-width: 1024px) {
+  .core-service-span-18 {
+    grid-column: span 18 / span 18;
+  }
+
+  .core-service-span-12 {
+    grid-column: span 12 / span 12;
+  }
+
+  .core-service-span-10 {
+    grid-column: span 10 / span 10;
+  }
+}
+
 
 
 @layer base {
