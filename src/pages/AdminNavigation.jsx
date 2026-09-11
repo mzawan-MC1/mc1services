@@ -107,7 +107,7 @@ const normalizeItem = (item, itemIndex = 0) => ({
   children: Array.isArray(item.children) ? item.children.map((child, childIndex) => ({
     id: child.id || uid(), group: child.group || '', group_ar: child.group_ar || '', label: child.label || '', label_ar: child.label_ar || '',
     href: child.href || '', description: child.description || '', description_ar: child.description_ar || '',
-    image_url: child.image_url || '', open_new_tab: Boolean(child.open_new_tab),
+    icon_image_url: child.icon_image_url || '', image_url: child.image_url || '', open_new_tab: Boolean(child.open_new_tab),
     source_type: child.source_type || 'custom', source_id: child.source_id || '',
     display_order: child.display_order ?? childIndex, is_visible: child.is_visible !== false
   })) : []
@@ -259,7 +259,7 @@ export default function AdminNavigation() {
                       <div><Label>Preview Width</Label><select className="mt-1 w-full rounded-md border bg-white px-3 py-2" value={item.preview_size} onChange={(event) => updateItem(itemIndex, { preview_size: event.target.value })}><option value="balanced">Balanced</option><option value="wide">Wide feature panel</option></select></div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between"><div><h3 className="font-semibold">Mega-menu links and cards</h3><p className="text-xs text-slate-500">Category is optional. Each active item can provide its own description, link and preview image.</p></div><Button type="button" size="sm" variant="outline" onClick={() => updateItem(itemIndex, { children: [...item.children, { id: uid(), group: '', group_ar: '', label: '', label_ar: '', href: '', description: '', description_ar: '', image_url: '', open_new_tab: false, source_type: 'custom', source_id: '', display_order: item.children.length, is_visible: true }] })}><Plus className="mr-1 h-4 w-4" />Add Link</Button></div>
+                  <div className="flex items-center justify-between"><div><h3 className="font-semibold">Mega-menu links and cards</h3><p className="text-xs text-slate-500">Category is optional. Each active item has a separate left-side icon and right-side feature image.</p></div><Button type="button" size="sm" variant="outline" onClick={() => updateItem(itemIndex, { children: [...item.children, { id: uid(), group: '', group_ar: '', label: '', label_ar: '', href: '', description: '', description_ar: '', icon_image_url: '', image_url: '', open_new_tab: false, source_type: 'custom', source_id: '', display_order: item.children.length, is_visible: true }] })}><Plus className="mr-1 h-4 w-4" />Add Link</Button></div>
                   {item.children.map((child, childIndex) => (
                     <div key={child.id} className="grid gap-4 rounded-xl bg-slate-50 p-4 lg:grid-cols-[1fr_1fr_1.5fr_auto]">
                       <div className="space-y-3">
@@ -279,7 +279,8 @@ export default function AdminNavigation() {
                       <div className="space-y-3">
                         <div><Label>Description</Label><Textarea className="mt-1" rows={2} value={child.description} onChange={(event) => updateChild(itemIndex, childIndex, { description: event.target.value })} /></div>
                         <div dir="rtl"><Label>Arabic Description</Label><Textarea className="mt-1" rows={2} value={child.description_ar} onChange={(event) => updateChild(itemIndex, childIndex, { description_ar: event.target.value })} /></div>
-                        <FileUpload label="Optional Feature Image" value={child.image_url} onChange={(url) => updateChild(itemIndex, childIndex, { image_url: url })} storagePath="navigation" validation={{ width: 1200, height: 750, aspectRatio: 1.6, aspectLabel: '8:5', maxImageMB: 1, note: 'WebP or AVIF is preferred.' }} />
+                        <FileUpload label="Menu Icon / Profile Image (left side)" value={child.icon_image_url} onChange={(url) => updateChild(itemIndex, childIndex, { icon_image_url: url })} storagePath="navigation/icons" validation={{ width: 256, height: 256, aspectRatio: 1, aspectLabel: '1:1', maxImageMB: 0.5, note: 'Use a simple square icon or logo. WebP, AVIF or transparent PNG is preferred.' }} />
+                        <FileUpload label="Main Feature Image (right-side preview)" value={child.image_url} onChange={(url) => updateChild(itemIndex, childIndex, { image_url: url })} storagePath="navigation/features" validation={{ width: 1200, height: 750, aspectRatio: 1.6, aspectLabel: '8:5', maxImageMB: 1, note: 'Use a detailed landscape image. WebP or AVIF is preferred.' }} />
                       </div>
                       <div className="flex gap-1 lg:flex-col"><Button type="button" size="icon" variant="ghost" onClick={() => moveChild(itemIndex, childIndex, -1)} disabled={childIndex === 0}><ArrowUp className="h-4 w-4" /></Button><Button type="button" size="icon" variant="ghost" onClick={() => moveChild(itemIndex, childIndex, 1)} disabled={childIndex === item.children.length - 1}><ArrowDown className="h-4 w-4" /></Button><Button type="button" size="icon" variant="ghost" className="text-red-600" onClick={() => updateItem(itemIndex, { children: item.children.filter((_, index) => index !== childIndex) })}><Trash2 className="h-4 w-4" /></Button></div>
                     </div>
