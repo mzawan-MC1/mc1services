@@ -40,6 +40,33 @@ const ARABIC_DESCRIPTION_FALLBACKS = {
   'An MC1-owned digital product': 'منتج رقمي مملوك لـ MC1'
 };
 
+const MENU_PANEL_FALLBACKS = {
+  solutions: {
+    en: { title: 'Solutions built for real business impact', description: 'From intelligent automation to scalable products and digital growth.', featured: 'Featured service' },
+    ar: { title: 'حلول مصممة لأثر تجاري حقيقي', description: 'من الأتمتة الذكية إلى المنتجات القابلة للتوسع والنمو الرقمي.', featured: 'خدمة مميزة' }
+  },
+  industries: {
+    en: { title: 'Tailored solutions for every industry', description: 'Deep domain expertise. Real-world operational impact.', featured: 'Industry experience' },
+    ar: { title: 'حلول مصممة لكل قطاع', description: 'خبرة قطاعية عميقة وأثر تشغيلي واقعي.', featured: 'خبرة قطاعية' }
+  },
+  work: {
+    en: { title: 'Explore what we have built', description: 'Products and platforms shaped around demanding real-world workflows.', featured: 'Selected work' },
+    ar: { title: 'استكشف ما قمنا ببنائه', description: 'منتجات ومنصات مصممة حول مسارات عمل واقعية ومتطلبة.', featured: 'أعمال مختارة' }
+  },
+  products: {
+    en: { title: 'Products engineered by MC1', description: 'Scalable platforms created, operated and continuously improved by our team.', featured: 'MC1 product' },
+    ar: { title: 'منتجات طورتها MC1', description: 'منصات قابلة للتوسع ينشئها فريقنا ويديرها ويطورها باستمرار.', featured: 'منتج MC1' }
+  },
+  company: {
+    en: { title: 'Meet the team behind the work', description: 'Technology, strategy and creative execution under one roof.', featured: 'About MC1' },
+    ar: { title: 'تعرّف على الفريق خلف أعمالنا', description: 'التقنية والاستراتيجية والتنفيذ الإبداعي تحت سقف واحد.', featured: 'عن MC1' }
+  },
+  resources: {
+    en: { title: 'Tools and resources for better decisions', description: 'Practical utilities, answers and important company information.', featured: 'Featured resource' },
+    ar: { title: 'أدوات ومصادر لقرارات أفضل', description: 'أدوات عملية وإجابات ومعلومات مهمة عن الشركة.', featured: 'مصدر مميز' }
+  }
+};
+
 export default function Layout({ children, currentPageName }) {
   const { t, i18n } = useTranslation();
   const location = useLocation();
@@ -186,12 +213,13 @@ export default function Layout({ children, currentPageName }) {
   const configuredNavLinks = Array.isArray(headerSettings?.menu_items)
     ? headerSettings.menu_items
       .filter((item) => item?.is_visible !== false)
+      .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
       .map((item, index) => ({
         ...item,
         id: item.id || `menu-${index}`,
         name: getLocalized(item, 'label') || item.label,
         children: Array.isArray(item.children)
-          ? item.children.map(resolveReferencedChild).map((child) => ({ ...child, name: getLocalized(child, 'label') || child.label }))
+          ? item.children.filter((child) => child?.is_visible !== false).sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0)).map(resolveReferencedChild).map((child) => ({ ...child, name: getLocalized(child, 'label') || child.label }))
           : []
       }))
     : [];
@@ -206,10 +234,12 @@ export default function Layout({ children, currentPageName }) {
 
   const isExternalHref = (href) => /^https?:\/\//i.test(href || '');
   const groupMenuChildren = (children = []) => Object.entries(children.reduce((groups, child) => {
-    const group = getLocalized(child, 'group') || t('nav.explore', 'Explore');
+    const group = (getLocalized(child, 'group') || '').trim();
     groups[group] = [...(groups[group] || []), child];
     return groups;
   }, {}));
+
+  const getMenuPanelCopy = (link, key) => getLocalized(link, key) || MENU_PANEL_FALLBACKS[link.id]?.[isRTL ? 'ar' : 'en']?.[key.replace('menu_', '').replace('featured_title', 'featured')] || '';
 
   const isActive = (href) => currentPageName === href;
 
@@ -310,7 +340,7 @@ export default function Layout({ children, currentPageName }) {
           {/* Main Navigation */}
           <nav className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'glass-nav shadow-lg' : 'bg-white'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between items-center h-20">
+              <div className="relative flex h-20 items-center justify-between">
                 {/* Logo */}
                 <Link to={createPageUrl('Home')} className="flex items-center gap-3" aria-label={t('nav.home', 'Home')}>
                   {siteSettings.logo_url ? (
@@ -336,17 +366,49 @@ export default function Layout({ children, currentPageName }) {
                 </Link>
 
                 {/* Desktop Navigation */}
-                <div className="relative hidden items-center gap-5 lg:flex xl:gap-7">
+                <div className="hidden items-center gap-5 lg:flex xl:gap-7">
                   {navLinks.map((link, linkIndex) => {
                     const menuId = link.id || link.name || `menu-${linkIndex}`;
                     const hasMenu = link.menu_type === 'mega' || link.children?.length > 0;
                     const isOpen = openMenu === menuId;
                     const previewChild = link.children?.find((child) => (child.id || child.href) === activeMenuChild[menuId]) || link.children?.[0];
+                    const menuGroups = groupMenuChildren(link.children);
+                    const namedGroups = menuGroups.filter(([group]) => group);
+                    const hasCategories = namedGroups.length > 1;
+                    const groupsToRender = hasCategories ? menuGroups.map(([group, groupChildren]) => [group || t('nav.explore', 'Explore'), groupChildren]) : [];
+                    const panelTitle = getMenuPanelCopy(link, 'menu_title') || link.name;
+                    const panelDescription = getMenuPanelCopy(link, 'menu_description');
+                    const featuredLabel = getMenuPanelCopy(link, 'featured_title') || (previewChild && getLocalized(previewChild, 'group')) || t('nav.explore', 'Explore');
+                    const ctaLabel = getLocalized(link, 'featured_cta') || t('common.learn_more', 'Learn More');
+                    const ctaHref = link.featured_cta_url || previewChild?.href || link.href || '#';
+                    const categoryColumns = link.layout_columns === '3' ? 'grid-cols-3' : 'grid-cols-2';
+                    const directColumns = link.layout_columns === '3' ? 'grid-cols-3' : link.layout_columns === '2' ? 'grid-cols-2' : link.children?.length > 1 ? 'grid-cols-2' : 'grid-cols-1';
+                    const panelColumns = !previewChild ? 'grid-cols-1' : link.preview_size === 'wide' ? 'lg:grid-cols-[0.9fr_1.1fr]' : 'lg:grid-cols-[1.08fr_0.92fr]';
+
+                    const renderDesktopItem = (child, compact = false) => {
+                      const childKey = child.id || child.href;
+                      const selected = previewChild === child;
+                      const description = getLocalized(child, 'description');
+                      const content = <span className="flex min-w-0 items-center gap-3">
+                        <span className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl border transition ${compact ? 'h-11 w-11' : 'h-12 w-12'} ${selected ? 'border-blue-200 bg-blue-50 text-blue-600' : 'border-slate-200 bg-white text-slate-500'}`}>
+                          {child.image_url ? <img src={child.image_url} alt="" className="h-full w-full object-cover" loading="lazy" /> : <span className="text-base font-black">{(child.name || child.label || '?').trim().charAt(0)}</span>}
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className={`block font-bold leading-snug ${selected ? 'text-blue-700' : 'text-slate-900'} ${compact ? 'text-sm' : 'text-[15px]'}`}>{child.name || child.label}</span>
+                          {description && <span className="mt-1 line-clamp-2 block text-xs leading-relaxed text-slate-500">{description}</span>}
+                        </span>
+                        <ArrowRight className={`h-4 w-4 shrink-0 transition rtl:-scale-x-100 ${selected ? 'translate-x-0 text-blue-600' : '-translate-x-1 text-slate-300'}`} />
+                      </span>;
+                      const className = `block rounded-xl p-2.5 text-left transition duration-200 ${selected ? 'bg-blue-50/80 shadow-sm ring-1 ring-blue-100' : 'hover:bg-slate-50'}`;
+                      const events = { onMouseEnter: () => setActiveMenuChild((current) => ({ ...current, [menuId]: childKey })), onFocus: () => setActiveMenuChild((current) => ({ ...current, [menuId]: childKey })) };
+                      return isExternalHref(child.href) ? <a key={childKey} href={child.href} target={child.open_new_tab ? '_blank' : undefined} rel={child.open_new_tab ? 'noopener noreferrer' : undefined} className={className} {...events}>{content}</a> : <Link key={childKey} to={resolveMenuHref(child.href)} className={className} {...events}>{content}</Link>;
+                    };
+
                     return hasMenu ? (
-                      <div key={menuId}>
+                      <div key={menuId} onMouseLeave={() => setOpenMenu(null)}>
                         <button
                           type="button"
-                          className="flex items-center gap-1 py-2 font-medium text-slate-700 transition hover:text-blue-600"
+                          className={`relative flex items-center gap-1 py-7 font-medium transition after:absolute after:inset-x-0 after:bottom-4 after:h-0.5 after:origin-center after:scale-x-0 after:bg-blue-600 after:transition-transform hover:text-blue-600 ${isOpen ? 'text-blue-600 after:scale-x-100' : 'text-slate-700'}`}
                           onClick={() => setOpenMenu(isOpen ? null : menuId)}
                           onFocus={() => setOpenMenu(menuId)}
                           onMouseEnter={() => setOpenMenu(menuId)}
@@ -359,41 +421,43 @@ export default function Layout({ children, currentPageName }) {
                         </button>
                         <div
                           id={`desktop-menu-${menuId}`}
-                          className={`absolute left-1/2 top-full w-[min(980px,calc(100vw-2rem))] -translate-x-1/2 pt-2 ${isOpen ? 'block' : 'hidden'}`}
+                          className={`absolute inset-x-0 top-full z-50 pt-2 ${isOpen ? 'block' : 'hidden'}`}
                           onMouseEnter={() => setOpenMenu(menuId)}
-                          onMouseLeave={() => setOpenMenu(null)}
                         >
                           <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-950/20"
+                            className="h-[clamp(390px,56vh,480px)] overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-[0_28px_80px_-24px_rgba(15,23,42,0.45)]"
                           >
-                            <div className="grid min-h-[326px] lg:grid-cols-[0.92fr_1.08fr]">
-                              <div className="grid content-start grid-cols-2 gap-x-3 gap-y-4 border-r border-slate-200 bg-slate-50/80 p-4 rtl:border-l rtl:border-r-0">
-                                {groupMenuChildren(link.children).map(([group, children]) => (
-                                  <div key={group} className={children.length > 3 ? 'col-span-2' : ''}>
-                                    <p className="mb-1.5 px-2 text-[10px] font-bold uppercase tracking-[0.2em] text-blue-600">{group}</p>
-                                    <div className={children.length > 3 ? 'grid grid-cols-2 gap-1' : 'space-y-1'}>
-                                      {children.map((child) => {
-                                        const childKey = child.id || child.href;
-                                        const selected = previewChild === child;
-                                        const content = <span className="flex items-center justify-between gap-2"><span className="line-clamp-2 text-sm font-semibold leading-snug text-slate-900">{child.name || child.label}</span><ArrowRight className={`h-3.5 w-3.5 shrink-0 transition rtl:-scale-x-100 ${selected ? 'translate-x-0 text-blue-600' : '-translate-x-1 text-slate-300'}`} /></span>;
-                                        const className = `block rounded-lg px-2.5 py-2 text-left transition ${selected ? 'bg-white shadow-sm ring-1 ring-slate-200' : 'hover:bg-white/80'}`;
-                                        const events = { onMouseEnter: () => setActiveMenuChild((current) => ({ ...current, [menuId]: childKey })), onFocus: () => setActiveMenuChild((current) => ({ ...current, [menuId]: childKey })) };
-                                        return isExternalHref(child.href) ? <a key={childKey} href={child.href} target={child.open_new_tab ? '_blank' : undefined} rel={child.open_new_tab ? 'noopener noreferrer' : undefined} className={className} {...events}>{content}</a> : <Link key={childKey} to={resolveMenuHref(child.href)} className={className} {...events}>{content}</Link>;
-                                      })}
-                                    </div>
-                                  </div>
-                                ))}
+                            <div className={`grid h-full ${panelColumns}`}>
+                              <div className="overflow-y-auto border-r border-slate-200 bg-white p-6 rtl:border-l rtl:border-r-0 xl:p-7">
+                                <div className="mb-5">
+                                  <p className="text-[10px] font-black uppercase tracking-[0.24em] text-blue-600">{link.name}</p>
+                                  <h3 className="mt-2 text-2xl font-bold leading-tight text-slate-950">{panelTitle}</h3>
+                                  {panelDescription && <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-slate-500">{panelDescription}</p>}
+                                </div>
+                                {hasCategories ? <div className={`grid items-start gap-x-6 gap-y-5 ${categoryColumns}`}>
+                                  {groupsToRender.map(([group, groupChildren], groupIndex) => {
+                                    const spanLastGroup = categoryColumns === 'grid-cols-2' && groupsToRender.length % 2 === 1 && groupIndex === groupsToRender.length - 1;
+                                    return <section key={`${group}-${groupIndex}`} className={spanLastGroup ? 'col-span-2 border-t border-slate-200 pt-4' : ''}>
+                                      <p className="mb-2 px-2 text-[10px] font-black uppercase tracking-[0.22em] text-blue-600">{group}</p>
+                                      <div className={spanLastGroup ? 'grid grid-cols-2 gap-x-4' : 'space-y-1'}>{groupChildren.map((child) => renderDesktopItem(child, true))}</div>
+                                    </section>;
+                                  })}
+                                </div> : <div className={`grid gap-2 ${directColumns}`}>{link.children.map((child) => renderDesktopItem(child))}</div>}
                               </div>
-                              {previewChild && <div className="relative flex min-h-[326px] flex-col overflow-hidden bg-slate-950 p-5 text-white">
-                                {previewChild.image_url ? <img key={previewChild.image_url} src={previewChild.image_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-65 transition duration-500" /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,.55),transparent_35%),linear-gradient(135deg,#0f172a,#172554,#3b0764)]" />}
-                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/55 to-slate-950/10" />
-                                <div className="relative mt-auto max-w-xl rounded-xl border border-white/10 bg-slate-950/65 p-4 backdrop-blur-md">
-                                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300">{getLocalized(previewChild, 'group') || t('nav.explore')}</p>
-                                  <h3 className="mt-1.5 text-xl font-bold leading-tight">{previewChild.name || previewChild.label}</h3>
-                                  {getLocalized(previewChild, 'description') && <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-200">{getLocalized(previewChild, 'description')}</p>}
-                                  <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">{t('common.learn_more')}<ArrowRight className="h-4 w-4 rtl:-scale-x-100" /></span>
+                              {previewChild && <div className="relative flex min-h-0 flex-col overflow-hidden bg-slate-950 p-7 text-white xl:p-8">
+                                <AnimatePresence mode="wait">
+                                  <motion.div key={previewChild.id || previewChild.href} initial={{ opacity: 0.35, scale: 1.02 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.24 }} className="absolute inset-0">
+                                    {previewChild.image_url ? <img src={previewChild.image_url} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,.7),transparent_36%),radial-gradient(circle_at_15%_75%,rgba(124,58,237,.55),transparent_42%),linear-gradient(135deg,#020617,#0f2557,#2e1065)]" />}
+                                  </motion.div>
+                                </AnimatePresence>
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/10" />
+                                <div className="relative mt-auto max-w-xl">
+                                  <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300">{featuredLabel}</p>
+                                  <h3 className="mt-2 text-3xl font-bold leading-tight xl:text-4xl">{previewChild.name || previewChild.label}</h3>
+                                  {getLocalized(previewChild, 'description') && <p className="mt-3 max-w-lg text-sm leading-relaxed text-slate-200 xl:text-base">{getLocalized(previewChild, 'description')}</p>}
+                                  {isExternalHref(ctaHref) ? <a href={ctaHref} target={previewChild.open_new_tab ? '_blank' : undefined} rel={previewChild.open_new_tab ? 'noopener noreferrer' : undefined} className="mt-5 inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-950/30 transition hover:-translate-y-0.5 hover:shadow-xl">{ctaLabel}<ArrowRight className="h-4 w-4 rtl:-scale-x-100" /></a> : <Link to={resolveMenuHref(ctaHref)} className="mt-5 inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-950/30 transition hover:-translate-y-0.5 hover:shadow-xl">{ctaLabel}<ArrowRight className="h-4 w-4 rtl:-scale-x-100" /></Link>}
                                 </div>
                               </div>}
                             </div>
@@ -463,6 +527,10 @@ export default function Layout({ children, currentPageName }) {
                       const menuId = link.id || link.name || `mobile-menu-${linkIndex}`;
                       const hasMenu = link.menu_type === 'mega' || link.children?.length > 0;
                       const isOpen = openMenu === menuId;
+                      const mobileGroups = groupMenuChildren(link.children);
+                      const mobileNamedGroups = mobileGroups.filter(([group]) => group);
+                      const mobileHasCategories = mobileNamedGroups.length > 1;
+                      const mobileSections = mobileHasCategories ? mobileGroups.map(([group, groupChildren]) => [group || t('nav.explore', 'Explore'), groupChildren]) : [['', link.children || []]];
                       return hasMenu ? (
                         <div key={menuId} className={`rounded-xl transition ${isOpen ? 'border border-slate-200 bg-white shadow-sm' : ''}`}>
                           <button
@@ -477,7 +545,8 @@ export default function Layout({ children, currentPageName }) {
                           </button>
                           {isOpen && (
                             <div id={`mobile-menu-${menuId}`} className="space-y-4 px-3 pb-3">
-                              {groupMenuChildren(link.children).map(([group, children]) => <div key={group} className="space-y-2"><p className="px-1 pt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-blue-600">{group}</p>{children.map((child) => {
+                              {(getMenuPanelCopy(link, 'menu_title') || getMenuPanelCopy(link, 'menu_description')) && <div className="rounded-xl bg-slate-950 px-4 py-3 text-white"><p className="font-bold">{getMenuPanelCopy(link, 'menu_title') || link.name}</p>{getMenuPanelCopy(link, 'menu_description') && <p className="mt-1 text-xs leading-relaxed text-slate-300">{getMenuPanelCopy(link, 'menu_description')}</p>}</div>}
+                              {mobileSections.map(([group, children], sectionIndex) => <div key={group || `direct-${sectionIndex}`} className="space-y-2">{mobileHasCategories && <p className="px-1 pt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-blue-600">{group}</p>}{children.map((child) => {
                                 const childKey = child.id || child.href;
                                 const description = getLocalized(child, 'description');
                                 const content = <span className="flex min-w-0 flex-1 items-center gap-3">{child.image_url ? <img src={child.image_url} alt="" className="h-14 w-20 shrink-0 rounded-lg object-cover" loading="lazy" /> : <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 text-lg font-bold text-white">{(child.name || child.label || '?').trim().charAt(0)}</span>}<span className="min-w-0 flex-1"><span className="block text-sm font-semibold leading-snug text-slate-900">{child.name || child.label}</span>{description && <span className="mt-1 line-clamp-2 block text-xs leading-relaxed text-slate-500">{description}</span>}</span><ArrowRight className="h-4 w-4 shrink-0 text-blue-500 rtl:-scale-x-100" /></span>;

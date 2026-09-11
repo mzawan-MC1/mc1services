@@ -85,22 +85,35 @@ const blueprint = [
   }
 ];
 
-const normalizeItem = (item) => ({
+const normalizeItem = (item, itemIndex = 0) => ({
   id: item.id || uid(),
   label: item.label || '',
   label_ar: item.label_ar || '',
   href: item.href || '',
   menu_type: item.menu_type || (item.children?.length ? 'mega' : 'link'),
   is_visible: item.is_visible !== false,
-  children: Array.isArray(item.children) ? item.children.map((child) => ({
+  display_order: item.display_order ?? itemIndex,
+  menu_title: item.menu_title || '',
+  menu_title_ar: item.menu_title_ar || '',
+  menu_description: item.menu_description || '',
+  menu_description_ar: item.menu_description_ar || '',
+  featured_title: item.featured_title || '',
+  featured_title_ar: item.featured_title_ar || '',
+  featured_cta: item.featured_cta || '',
+  featured_cta_ar: item.featured_cta_ar || '',
+  featured_cta_url: item.featured_cta_url || '',
+  layout_columns: ['2', '3'].includes(String(item.layout_columns)) ? String(item.layout_columns) : 'auto',
+  preview_size: item.preview_size === 'wide' ? 'wide' : 'balanced',
+  children: Array.isArray(item.children) ? item.children.map((child, childIndex) => ({
     id: child.id || uid(), group: child.group || '', group_ar: child.group_ar || '', label: child.label || '', label_ar: child.label_ar || '',
     href: child.href || '', description: child.description || '', description_ar: child.description_ar || '',
     image_url: child.image_url || '', open_new_tab: Boolean(child.open_new_tab),
-    source_type: child.source_type || 'custom', source_id: child.source_id || ''
+    source_type: child.source_type || 'custom', source_id: child.source_id || '',
+    display_order: child.display_order ?? childIndex, is_visible: child.is_visible !== false
   })) : []
 });
 
-const localizeBlueprintItem = (item) => normalizeItem({
+const localizeBlueprintItem = (item, itemIndex = 0) => normalizeItem({
   ...item,
   children: (item.children || []).map((child) => ({
     ...child,
@@ -108,7 +121,7 @@ const localizeBlueprintItem = (item) => normalizeItem({
     label_ar: child.label_ar || blueprintArabic[child.label] || '',
     description_ar: child.description_ar || blueprintArabicDescriptions[child.description] || ''
   }))
-});
+}, itemIndex);
 
 export default function AdminNavigation() {
   const queryClient = useQueryClient();
@@ -141,12 +154,20 @@ export default function AdminNavigation() {
 
   const updateItem = (index, values) => setItems((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, ...values } : item));
   const updateChild = (itemIndex, childIndex, values) => setItems((current) => current.map((item, index) => index === itemIndex ? { ...item, children: item.children.map((child, cIndex) => cIndex === childIndex ? { ...child, ...values } : child) } : item));
+  const moveChild = (itemIndex, childIndex, direction) => setItems((current) => current.map((item, index) => {
+    if (index !== itemIndex) return item;
+    const children = [...item.children];
+    const target = childIndex + direction;
+    if (target < 0 || target >= children.length) return item;
+    [children[childIndex], children[target]] = [children[target], children[childIndex]];
+    return { ...item, children: children.map((child, order) => ({ ...child, display_order: order })) };
+  }));
   const moveItem = (index, direction) => setItems((current) => {
     const next = [...current];
     const target = index + direction;
     if (target < 0 || target >= next.length) return current;
     [next[index], next[target]] = [next[target], next[index]];
-    return next;
+    return next.map((item, order) => ({ ...item, display_order: order }));
   });
 
   const linkManagedRecords = () => {
@@ -212,20 +233,37 @@ export default function AdminNavigation() {
                 </div>
               </CardHeader>
               {expandedItemId === item.id && <CardContent id={`navigation-editor-${item.id}`} className="space-y-5 border-t pt-5">
-                <div className="grid gap-3 md:grid-cols-5">
+                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
                   <div><Label>English Label</Label><Input className="mt-1" value={item.label} onChange={(event) => updateItem(itemIndex, { label: event.target.value })} /></div>
                   <div dir="rtl"><Label>Arabic Label</Label><Input className="mt-1" value={item.label_ar} onChange={(event) => updateItem(itemIndex, { label_ar: event.target.value })} /></div>
                   <div><Label>Direct Link</Label><Input className="mt-1" value={item.href} onChange={(event) => updateItem(itemIndex, { href: event.target.value })} /></div>
                   <div><Label>Menu Type</Label><select className="mt-1 w-full rounded-md border px-3 py-2" value={item.menu_type} onChange={(event) => updateItem(itemIndex, { menu_type: event.target.value })}><option value="link">Simple Link</option><option value="mega">Mega-Menu</option></select></div>
+                  <div><Label>Display Order</Label><Input className="mt-1" type="number" min="0" value={item.display_order} onChange={(event) => updateItem(itemIndex, { display_order: Number(event.target.value) })} /></div>
                   <label className="flex items-center gap-2 self-end rounded-md border px-3 py-2"><input type="checkbox" checked={item.is_visible} onChange={(event) => updateItem(itemIndex, { is_visible: event.target.checked })} />Visible</label>
                 </div>
 
                 {item.menu_type === 'mega' && <div className="space-y-4 border-t pt-5">
-                  <div className="flex items-center justify-between"><div><h3 className="font-semibold">Mega-menu links and cards</h3><p className="text-xs text-slate-500">Group names create columns. Reference existing content to keep one source of truth.</p></div><Button type="button" size="sm" variant="outline" onClick={() => updateItem(itemIndex, { children: [...item.children, { id: uid(), group: '', group_ar: '', label: '', label_ar: '', href: '', description: '', description_ar: '', image_url: '', open_new_tab: false, source_type: 'custom', source_id: '' }] })}><Plus className="mr-1 h-4 w-4" />Add Link</Button></div>
+                  <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-4">
+                    <div className="mb-4"><h3 className="font-semibold text-slate-900">Mega-menu presentation</h3><p className="text-xs text-slate-500">Two or more category names use the category layout. Zero or one category uses the direct-item layout.</p></div>
+                    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                      <div><Label>Menu Panel Title</Label><Input className="mt-1 bg-white" value={item.menu_title} onChange={(event) => updateItem(itemIndex, { menu_title: event.target.value })} placeholder="Built for real business impact" /></div>
+                      <div dir="rtl"><Label>Arabic Panel Title</Label><Input className="mt-1 bg-white" value={item.menu_title_ar} onChange={(event) => updateItem(itemIndex, { menu_title_ar: event.target.value })} /></div>
+                      <div><Label>Featured Label</Label><Input className="mt-1 bg-white" value={item.featured_title} onChange={(event) => updateItem(itemIndex, { featured_title: event.target.value })} placeholder="Featured service" /></div>
+                      <div dir="rtl"><Label>Arabic Featured Label</Label><Input className="mt-1 bg-white" value={item.featured_title_ar} onChange={(event) => updateItem(itemIndex, { featured_title_ar: event.target.value })} /></div>
+                      <div className="md:col-span-2"><Label>Menu Introduction</Label><Textarea className="mt-1 bg-white" rows={2} value={item.menu_description} onChange={(event) => updateItem(itemIndex, { menu_description: event.target.value })} placeholder="A short introduction shown above the menu items." /></div>
+                      <div className="md:col-span-2" dir="rtl"><Label>Arabic Introduction</Label><Textarea className="mt-1 bg-white" rows={2} value={item.menu_description_ar} onChange={(event) => updateItem(itemIndex, { menu_description_ar: event.target.value })} /></div>
+                      <div><Label>Featured CTA Label</Label><Input className="mt-1 bg-white" value={item.featured_cta} onChange={(event) => updateItem(itemIndex, { featured_cta: event.target.value })} placeholder="Learn More" /></div>
+                      <div dir="rtl"><Label>Arabic CTA Label</Label><Input className="mt-1 bg-white" value={item.featured_cta_ar} onChange={(event) => updateItem(itemIndex, { featured_cta_ar: event.target.value })} /></div>
+                      <div><Label>CTA URL Override</Label><Input className="mt-1 bg-white" value={item.featured_cta_url} onChange={(event) => updateItem(itemIndex, { featured_cta_url: event.target.value })} placeholder="Uses selected item link when empty" /></div>
+                      <div><Label>Item Columns</Label><select className="mt-1 w-full rounded-md border bg-white px-3 py-2" value={item.layout_columns} onChange={(event) => updateItem(itemIndex, { layout_columns: event.target.value })}><option value="auto">Automatic</option><option value="2">Two columns</option><option value="3">Three columns</option></select></div>
+                      <div><Label>Preview Width</Label><select className="mt-1 w-full rounded-md border bg-white px-3 py-2" value={item.preview_size} onChange={(event) => updateItem(itemIndex, { preview_size: event.target.value })}><option value="balanced">Balanced</option><option value="wide">Wide feature panel</option></select></div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between"><div><h3 className="font-semibold">Mega-menu links and cards</h3><p className="text-xs text-slate-500">Category is optional. Each active item can provide its own description, link and preview image.</p></div><Button type="button" size="sm" variant="outline" onClick={() => updateItem(itemIndex, { children: [...item.children, { id: uid(), group: '', group_ar: '', label: '', label_ar: '', href: '', description: '', description_ar: '', image_url: '', open_new_tab: false, source_type: 'custom', source_id: '', display_order: item.children.length, is_visible: true }] })}><Plus className="mr-1 h-4 w-4" />Add Link</Button></div>
                   {item.children.map((child, childIndex) => (
                     <div key={child.id} className="grid gap-4 rounded-xl bg-slate-50 p-4 lg:grid-cols-[1fr_1fr_1.5fr_auto]">
                       <div className="space-y-3">
-                        <div><Label>Column / Group</Label><Input className="mt-1" value={child.group} onChange={(event) => updateChild(itemIndex, childIndex, { group: event.target.value })} /></div>
+                        <div><Label>Category Name (optional)</Label><Input className="mt-1" value={child.group} onChange={(event) => updateChild(itemIndex, childIndex, { group: event.target.value })} /></div>
                         <div dir="rtl"><Label>Arabic Group</Label><Input className="mt-1" value={child.group_ar} onChange={(event) => updateChild(itemIndex, childIndex, { group_ar: event.target.value })} /></div>
                         <div><Label>English Label</Label><Input className="mt-1" value={child.label} onChange={(event) => updateChild(itemIndex, childIndex, { label: event.target.value })} /></div>
                         <div dir="rtl"><Label>Arabic Label</Label><Input className="mt-1" value={child.label_ar} onChange={(event) => updateChild(itemIndex, childIndex, { label_ar: event.target.value })} /></div>
@@ -234,6 +272,8 @@ export default function AdminNavigation() {
                         <div><Label>Content Source</Label><select className="mt-1 w-full rounded-md border px-3 py-2" value={child.source_type || 'custom'} onChange={(event) => updateChild(itemIndex, childIndex, { source_type: event.target.value, source_id: '' })}><option value="custom">Custom Link</option><option value="service">Existing Service</option><option value="industry">Existing Industry</option><option value="project">Existing Project/Product</option></select></div>
                         {child.source_type !== 'custom' && <div><Label>Select Record</Label><select className="mt-1 w-full rounded-md border px-3 py-2" value={child.source_id || ''} onChange={(event) => updateChild(itemIndex, childIndex, { source_id: event.target.value })}><option value="">Choose a record</option>{(child.source_type === 'service' ? services : child.source_type === 'industry' ? industries : projects).map((record) => <option key={record.id} value={record.id}>{record.title || record.name}</option>)}</select></div>}
                         <div><Label>Link</Label><Input className="mt-1" value={child.href} onChange={(event) => updateChild(itemIndex, childIndex, { href: event.target.value })} /></div>
+                        <div><Label>Display Order</Label><Input className="mt-1" type="number" min="0" value={child.display_order} onChange={(event) => updateChild(itemIndex, childIndex, { display_order: Number(event.target.value) })} /></div>
+                        <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={child.is_visible} onChange={(event) => updateChild(itemIndex, childIndex, { is_visible: event.target.checked })} />Active / visible</label>
                         <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={child.open_new_tab} onChange={(event) => updateChild(itemIndex, childIndex, { open_new_tab: event.target.checked })} />Open in new tab</label>
                       </div>
                       <div className="space-y-3">
@@ -241,7 +281,7 @@ export default function AdminNavigation() {
                         <div dir="rtl"><Label>Arabic Description</Label><Textarea className="mt-1" rows={2} value={child.description_ar} onChange={(event) => updateChild(itemIndex, childIndex, { description_ar: event.target.value })} /></div>
                         <FileUpload label="Optional Feature Image" value={child.image_url} onChange={(url) => updateChild(itemIndex, childIndex, { image_url: url })} storagePath="navigation" validation={{ width: 1200, height: 750, aspectRatio: 1.6, aspectLabel: '8:5', maxImageMB: 1, note: 'WebP or AVIF is preferred.' }} />
                       </div>
-                      <Button type="button" size="icon" variant="ghost" className="text-red-600" onClick={() => updateItem(itemIndex, { children: item.children.filter((_, index) => index !== childIndex) })}><Trash2 className="h-4 w-4" /></Button>
+                      <div className="flex gap-1 lg:flex-col"><Button type="button" size="icon" variant="ghost" onClick={() => moveChild(itemIndex, childIndex, -1)} disabled={childIndex === 0}><ArrowUp className="h-4 w-4" /></Button><Button type="button" size="icon" variant="ghost" onClick={() => moveChild(itemIndex, childIndex, 1)} disabled={childIndex === item.children.length - 1}><ArrowDown className="h-4 w-4" /></Button><Button type="button" size="icon" variant="ghost" className="text-red-600" onClick={() => updateItem(itemIndex, { children: item.children.filter((_, index) => index !== childIndex) })}><Trash2 className="h-4 w-4" /></Button></div>
                     </div>
                   ))}
                 </div>}
@@ -249,7 +289,7 @@ export default function AdminNavigation() {
             </Card>
           ))}
         </div>
-        <Button type="button" variant="outline" onClick={() => { const item = normalizeItem({ label: 'New Menu Item' }); setItems((current) => [...current, item]); setExpandedItemId(item.id); }}><Plus className="mr-2 h-4 w-4" />Add Main Menu Item</Button>
+        <Button type="button" variant="outline" onClick={() => { const item = normalizeItem({ label: 'New Menu Item' }, items.length); setItems((current) => [...current, item]); setExpandedItemId(item.id); }}><Plus className="mr-2 h-4 w-4" />Add Main Menu Item</Button>
       </div>
     </AdminLayout>
   );
