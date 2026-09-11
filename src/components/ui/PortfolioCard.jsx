@@ -31,24 +31,23 @@ export default function PortfolioCard({ portfolio, index = 0, masonry = false })
     >
       <Link
         to={createPageUrl(`PortfolioDetail?id=${portfolio.id}`)}
-        className="group block h-full overflow-hidden rounded-[1.75rem] bg-slate-950 shadow-sm ring-1 ring-slate-900/10 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-950/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-white shadow-sm ring-1 ring-slate-200 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-blue-950/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
       >
-        <div className={`relative ${masonry ? 'aspect-[4/3] md:aspect-square' : 'aspect-[4/3]'} overflow-hidden bg-slate-900`}>
+        <div className={`relative ${masonry ? 'aspect-[4/3]' : 'aspect-[16/10]'} overflow-hidden bg-slate-900`}>
           {portfolio.main_image_url || portfolio.image_url ? (
             <img
               src={portfolio.main_image_url || portfolio.image_url}
               alt={title}
               loading="lazy"
               decoding="async"
-              className="h-full w-full object-cover brightness-[0.72] saturate-[0.82] transition duration-700 group-hover:scale-105 group-hover:brightness-[0.82] group-hover:saturate-100"
+              className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
               <span className="text-white text-4xl font-bold">{title?.[0]}</span>
             </div>
           )}
-          <div className="absolute inset-0 bg-slate-950/25" />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/55 to-slate-950/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/45 via-transparent to-slate-950/10" />
           <div className="absolute left-4 right-4 top-4 flex items-start justify-between gap-3">
             <div className="flex flex-wrap gap-2">
               <Badge className="border border-white/15 bg-slate-950/70 text-white backdrop-blur-md hover:bg-slate-950/70">{projectType}</Badge>
@@ -56,12 +55,12 @@ export default function PortfolioCard({ portfolio, index = 0, masonry = false })
             </div>
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-slate-950 shadow-lg transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110"><ArrowUpRight className="h-5 w-5 rtl:-scale-x-100" /></span>
           </div>
-          <div className="absolute inset-x-0 bottom-0 m-3 rounded-2xl border border-white/10 bg-slate-950/80 p-4 shadow-2xl shadow-black/30 backdrop-blur-md md:m-4 md:p-5">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">{getCategoryLabel(portfolio.category)}</p>
-            <h3 className="text-xl font-bold leading-tight text-white md:text-2xl">{title}</h3>
-            {headline && <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-200">{headline}</p>}
-            {clientName && <p className="mt-4 flex items-center gap-2 text-xs font-medium text-slate-300"><Building2 className="h-3.5 w-3.5" />{clientName}</p>}
-          </div>
+        </div>
+        <div className="flex flex-1 flex-col p-5 md:p-6">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">{getCategoryLabel(portfolio.category)}</p>
+          <h3 className="line-clamp-2 text-xl font-bold leading-tight text-slate-950 md:text-2xl">{title}</h3>
+          {headline && <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-slate-600">{headline}</p>}
+          {clientName && <p className="mt-auto flex items-center gap-2 border-t border-slate-100 pt-4 text-xs font-medium text-slate-500"><Building2 className="h-3.5 w-3.5 text-blue-500" />{clientName}</p>}
         </div>
       </Link>
     </motion.div>
