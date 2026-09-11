@@ -359,26 +359,26 @@ export default function Layout({ children, currentPageName }) {
                         </button>
                         <div
                           id={`desktop-menu-${menuId}`}
-                          className={`absolute left-1/2 top-full w-[min(1060px,calc(100vw-2rem))] -translate-x-1/2 pt-3 ${isOpen ? 'block' : 'hidden'}`}
+                          className={`absolute left-1/2 top-full w-[min(980px,calc(100vw-2rem))] -translate-x-1/2 pt-2 ${isOpen ? 'block' : 'hidden'}`}
                           onMouseEnter={() => setOpenMenu(menuId)}
                           onMouseLeave={() => setOpenMenu(null)}
                         >
                           <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-950/20"
+                            className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-950/20"
                           >
-                            <div className="grid min-h-[390px] lg:grid-cols-[0.88fr_1.12fr]">
-                              <div className="max-h-[480px] overflow-y-auto border-r border-slate-200 bg-slate-50/80 p-6 rtl:border-l rtl:border-r-0">
+                            <div className="grid min-h-[326px] lg:grid-cols-[0.92fr_1.08fr]">
+                              <div className="grid content-start grid-cols-2 gap-x-3 gap-y-4 border-r border-slate-200 bg-slate-50/80 p-4 rtl:border-l rtl:border-r-0">
                                 {groupMenuChildren(link.children).map(([group, children]) => (
-                                  <div key={group} className="mb-5 last:mb-0">
-                                    <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">{group}</p>
-                                    <div className="space-y-1">
+                                  <div key={group} className={children.length > 3 ? 'col-span-2' : ''}>
+                                    <p className="mb-1.5 px-2 text-[10px] font-bold uppercase tracking-[0.2em] text-blue-600">{group}</p>
+                                    <div className={children.length > 3 ? 'grid grid-cols-2 gap-1' : 'space-y-1'}>
                                       {children.map((child) => {
                                         const childKey = child.id || child.href;
                                         const selected = previewChild === child;
-                                        const content = <span className="flex items-center justify-between gap-3"><span><span className="block font-semibold text-slate-900">{child.name || child.label}</span>{getLocalized(child, 'description') && <span className="mt-1 line-clamp-1 block text-xs text-slate-500">{getLocalized(child, 'description')}</span>}</span><ArrowRight className={`h-4 w-4 shrink-0 transition rtl:-scale-x-100 ${selected ? 'translate-x-0 text-blue-600' : '-translate-x-1 text-slate-300'}`} /></span>;
-                                        const className = `block rounded-xl px-3 py-3 text-left transition ${selected ? 'bg-white shadow-sm ring-1 ring-slate-200' : 'hover:bg-white/80'}`;
+                                        const content = <span className="flex items-center justify-between gap-2"><span className="line-clamp-2 text-sm font-semibold leading-snug text-slate-900">{child.name || child.label}</span><ArrowRight className={`h-3.5 w-3.5 shrink-0 transition rtl:-scale-x-100 ${selected ? 'translate-x-0 text-blue-600' : '-translate-x-1 text-slate-300'}`} /></span>;
+                                        const className = `block rounded-lg px-2.5 py-2 text-left transition ${selected ? 'bg-white shadow-sm ring-1 ring-slate-200' : 'hover:bg-white/80'}`;
                                         const events = { onMouseEnter: () => setActiveMenuChild((current) => ({ ...current, [menuId]: childKey })), onFocus: () => setActiveMenuChild((current) => ({ ...current, [menuId]: childKey })) };
                                         return isExternalHref(child.href) ? <a key={childKey} href={child.href} target={child.open_new_tab ? '_blank' : undefined} rel={child.open_new_tab ? 'noopener noreferrer' : undefined} className={className} {...events}>{content}</a> : <Link key={childKey} to={resolveMenuHref(child.href)} className={className} {...events}>{content}</Link>;
                                       })}
@@ -386,14 +386,14 @@ export default function Layout({ children, currentPageName }) {
                                   </div>
                                 ))}
                               </div>
-                              {previewChild && <div className="relative flex min-h-[390px] flex-col overflow-hidden bg-slate-950 p-7 text-white">
+                              {previewChild && <div className="relative flex min-h-[326px] flex-col overflow-hidden bg-slate-950 p-5 text-white">
                                 {previewChild.image_url ? <img key={previewChild.image_url} src={previewChild.image_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-65 transition duration-500" /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,.55),transparent_35%),linear-gradient(135deg,#0f172a,#172554,#3b0764)]" />}
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/55 to-slate-950/10" />
-                                <div className="relative mt-auto max-w-xl rounded-2xl border border-white/10 bg-slate-950/55 p-5 backdrop-blur-md">
-                                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">{getLocalized(previewChild, 'group') || t('nav.explore')}</p>
-                                  <h3 className="mt-2 text-2xl font-bold">{previewChild.name || previewChild.label}</h3>
-                                  {getLocalized(previewChild, 'description') && <p className="mt-3 text-sm leading-relaxed text-slate-200">{getLocalized(previewChild, 'description')}</p>}
-                                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">{t('common.learn_more')}<ArrowRight className="h-4 w-4 rtl:-scale-x-100" /></span>
+                                <div className="relative mt-auto max-w-xl rounded-xl border border-white/10 bg-slate-950/65 p-4 backdrop-blur-md">
+                                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300">{getLocalized(previewChild, 'group') || t('nav.explore')}</p>
+                                  <h3 className="mt-1.5 text-xl font-bold leading-tight">{previewChild.name || previewChild.label}</h3>
+                                  {getLocalized(previewChild, 'description') && <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-200">{getLocalized(previewChild, 'description')}</p>}
+                                  <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">{t('common.learn_more')}<ArrowRight className="h-4 w-4 rtl:-scale-x-100" /></span>
                                 </div>
                               </div>}
                             </div>
@@ -452,10 +452,10 @@ export default function Layout({ children, currentPageName }) {
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                   id="mobile-navigation"
-                  className="lg:hidden bg-white border-t"
+                  className="max-h-[calc(100dvh-5rem)] overflow-y-auto border-t border-slate-200 bg-slate-50 lg:hidden"
                 >
-                  <div className="px-4 py-4 space-y-2">
-                    <div className="mb-4 flex justify-between items-center">
+                  <div className="space-y-2 px-4 py-4">
+                    <div className="mb-3 flex items-center justify-between rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm">
                       <span className="text-sm font-medium text-slate-500">{t('common.language', 'Language')}</span>
                       <LanguageSwitcher />
                     </div>
@@ -464,20 +464,26 @@ export default function Layout({ children, currentPageName }) {
                       const hasMenu = link.menu_type === 'mega' || link.children?.length > 0;
                       const isOpen = openMenu === menuId;
                       return hasMenu ? (
-                        <div key={menuId}>
+                        <div key={menuId} className={`rounded-xl transition ${isOpen ? 'border border-slate-200 bg-white shadow-sm' : ''}`}>
                           <button
                             type="button"
                             onClick={() => setOpenMenu(isOpen ? null : menuId)}
                             aria-expanded={isOpen}
                             aria-controls={`mobile-menu-${menuId}`}
-                            className="flex items-center justify-between w-full py-3 text-slate-700 font-medium"
+                            className={`flex w-full items-center justify-between rounded-xl px-3 py-3 text-left font-semibold transition ${isOpen ? 'text-blue-700' : 'text-slate-700 hover:bg-white'}`}
                           >
                             {link.name}
                             <ChevronDown className={`w-4 h-4 transition ${isOpen ? 'rotate-180' : ''}`} />
                           </button>
                           {isOpen && (
-                            <div id={`mobile-menu-${menuId}`} className={`space-y-3 border-l border-slate-200 ${isRTL ? 'pr-4' : 'pl-4'}`}>
-                              {groupMenuChildren(link.children).map(([group, children]) => <div key={group}><p className="py-1 text-xs font-semibold uppercase tracking-wider text-blue-600">{group}</p>{children.map((child) => isExternalHref(child.href) ? <a key={child.id || child.href} href={child.href} target={child.open_new_tab ? '_blank' : undefined} rel={child.open_new_tab ? 'noopener noreferrer' : undefined} className="block py-2 text-slate-600 hover:text-blue-600">{child.name || child.label}</a> : <Link key={child.id || child.href} to={resolveMenuHref(child.href)} onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-600 hover:text-blue-600">{child.name || child.label}</Link>)}</div>)}
+                            <div id={`mobile-menu-${menuId}`} className="space-y-4 px-3 pb-3">
+                              {groupMenuChildren(link.children).map(([group, children]) => <div key={group} className="space-y-2"><p className="px-1 pt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-blue-600">{group}</p>{children.map((child) => {
+                                const childKey = child.id || child.href;
+                                const description = getLocalized(child, 'description');
+                                const content = <span className="flex min-w-0 flex-1 items-center gap-3">{child.image_url ? <img src={child.image_url} alt="" className="h-14 w-20 shrink-0 rounded-lg object-cover" loading="lazy" /> : <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 text-lg font-bold text-white">{(child.name || child.label || '?').trim().charAt(0)}</span>}<span className="min-w-0 flex-1"><span className="block text-sm font-semibold leading-snug text-slate-900">{child.name || child.label}</span>{description && <span className="mt-1 line-clamp-2 block text-xs leading-relaxed text-slate-500">{description}</span>}</span><ArrowRight className="h-4 w-4 shrink-0 text-blue-500 rtl:-scale-x-100" /></span>;
+                                const className = 'block rounded-xl border border-slate-200 bg-white p-2.5 shadow-sm transition active:scale-[0.99] hover:border-blue-200 hover:shadow-md';
+                                return isExternalHref(child.href) ? <a key={childKey} href={child.href} target={child.open_new_tab ? '_blank' : undefined} rel={child.open_new_tab ? 'noopener noreferrer' : undefined} onClick={() => setMobileMenuOpen(false)} className={className}>{content}</a> : <Link key={childKey} to={resolveMenuHref(child.href)} onClick={() => setMobileMenuOpen(false)} className={className}>{content}</Link>;
+                              })}</div>)}
                             </div>
                           )}
                         </div>
@@ -486,7 +492,7 @@ export default function Layout({ children, currentPageName }) {
                           key={menuId}
                           to={resolveMenuHref(link.href)}
                           onClick={() => setMobileMenuOpen(false)}
-                          className="block py-3 text-slate-700 font-medium hover:text-blue-600"
+                          className="block rounded-xl px-3 py-3 font-semibold text-slate-700 transition hover:bg-white hover:text-blue-600"
                         >
                           {link.name}
                         </Link>
@@ -496,7 +502,7 @@ export default function Layout({ children, currentPageName }) {
                       <Link
                         to={createPageUrl('AdminDashboard')}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="block py-3 text-slate-700 font-medium hover:text-blue-600"
+                        className="block rounded-xl px-3 py-3 font-semibold text-slate-700 transition hover:bg-white hover:text-blue-600"
                       >
                         {t('nav.admin', 'Admin Dashboard')}
                       </Link>
