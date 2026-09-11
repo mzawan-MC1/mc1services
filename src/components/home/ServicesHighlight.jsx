@@ -142,15 +142,16 @@ export default function ServicesHighlight() {
             >
               <Link
                 to={item.href?.startsWith('/') ? item.href : createPageUrl(item.href)}
-                className={`group relative block h-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.06] p-8 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-300/30 hover:bg-white/[0.1] hover:shadow-2xl hover:shadow-blue-950/40 ${isWideCard ? 'lg:p-10' : ''}`}
+                className={`group relative flex h-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.06] p-8 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-300/30 hover:bg-white/[0.1] hover:shadow-2xl hover:shadow-blue-950/40 ${isWideCard ? 'lg:p-10' : ''}`}
               >
+                {isWideCard && <><div className={`pointer-events-none absolute -bottom-20 -right-16 h-64 w-64 rounded-full bg-gradient-to-br ${item.color} opacity-15 blur-3xl transition duration-500 group-hover:opacity-25`} /><item.icon className="pointer-events-none absolute -bottom-8 right-8 h-48 w-48 text-white/[0.035] transition duration-500 group-hover:-translate-y-2 group-hover:text-white/[0.07]" strokeWidth={0.8} /></>}
                 <span className="absolute right-6 top-5 text-5xl font-black text-white/[0.04]">{String(i + 1).padStart(2, '0')}</span>
-                <div className={isWideCard ? 'lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-x-8' : ''}>
+                <div className={`relative w-full ${isWideCard ? 'lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-x-8' : ''}`}>
                   <div className={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg`}>
                     <item.icon className="w-8 h-8 text-white" />
                   </div>
 
-                  <div>
+                  <div className="flex h-full flex-col">
                     <h3 className={`font-bold text-white mb-3 group-hover:text-cyan-200 transition ${isWideCard ? 'text-2xl lg:text-3xl' : 'text-2xl'}`}>
                       {item.title}
                     </h3>
@@ -168,7 +169,7 @@ export default function ServicesHighlight() {
                       ))}
                     </ul>
 
-                    <div className="flex items-center gap-2 text-cyan-300 font-medium">
+                    <div className="mt-auto flex items-center gap-2 pt-2 text-cyan-300 font-medium">
                       <span>{t('common.learn_more', 'Learn More')}</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform rtl:rotate-180 rtl:group-hover:-translate-x-2" />
                     </div>

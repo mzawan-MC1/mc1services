@@ -171,7 +171,7 @@ export default function AdminNavigation() {
       })
     }));
     setItems(nextItems);
-    toast.success(linked ? `${linked} menu links connected. Review and save navigation.` : 'No exact service or industry label matches were found.');
+    toast.success(linked ? `${linked} menu links connected. Your uploaded menu images were preserved. Review and save navigation.` : 'No exact service or industry label matches were found.');
   };
 
   if (isLoading) return <div className="flex min-h-[50vh] items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-blue-600" /></div>;
@@ -183,7 +183,7 @@ export default function AdminNavigation() {
           <div><h1 className="text-2xl font-bold text-slate-900">Navigation & Mega-Menu</h1><p className="mt-1 text-slate-600">Every public menu label, link, description and image is controlled here.</p></div>
           <div className="flex gap-2">
             <Button type="button" variant="outline" onClick={() => { if (window.confirm('Replace the current menu editor values with the approved MC1 blueprint? Save is still required.')) { const nextItems = blueprint.map(localizeBlueprintItem); setItems(nextItems); setExpandedItemId(nextItems[0]?.id || null); } }}><Sparkles className="mr-2 h-4 w-4" />Load MC1 Blueprint</Button>
-            <Button type="button" variant="outline" onClick={linkManagedRecords}><Link2 className="mr-2 h-4 w-4" />Link Managed Records</Button>
+            <Button type="button" variant="outline" onClick={linkManagedRecords} title="Connect labels and links to managed content without replacing uploaded menu images"><Link2 className="mr-2 h-4 w-4" />Link Records — Keep Images</Button>
             <Button type="button" onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending} className="bg-blue-600 text-white hover:bg-blue-700">{saveMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}Save Navigation</Button>
           </div>
         </div>

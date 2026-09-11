@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, Phone, Mail, Linkedin, Twitter, Facebook, Instagram, Youtube } from 'lucide-react';
+import { Menu, X, ChevronDown, ArrowRight, Phone, Mail, Linkedin, Twitter, Facebook, Instagram, Youtube } from 'lucide-react';
 import { dataLayer } from '../components/dataLayer';
 import WhatsAppButton from '../components/WhatsAppButton';
 import ScrollToTop from '../components/ScrollToTop';
@@ -49,11 +49,13 @@ export default function Layout({ children, currentPageName }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState(null);
+  const [activeMenuChild, setActiveMenuChild] = useState({});
   const [isAdmin, setIsAdmin] = useState(false);
   const [siteSettings, setSiteSettings] = useState({});
   const [headerSettings, setHeaderSettings] = useState(null);
   const [footerSettings, setFooterSettings] = useState(null);
   const [menuSources, setMenuSources] = useState({ services: [], industries: [], projects: [] });
+  const [navigationReady, setNavigationReady] = useState(false);
 
   useEffect(() => {
     document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
@@ -107,6 +109,8 @@ export default function Layout({ children, currentPageName }) {
         }
       } catch (_err) {
         console.error('Failed to load site settings:', _err);
+      } finally {
+        if (!isAdminPage) setNavigationReady(true);
       }
     };
 
@@ -166,15 +170,15 @@ export default function Layout({ children, currentPageName }) {
     if (!child?.source_type || child.source_type === 'custom' || !child.source_id) return child;
     if (child.source_type === 'service') {
       const service = menuSources.services.find((item) => item.id === child.source_id);
-      return service ? { ...child, label: service.title, label_ar: service.title_ar, description: service.menu_description || service.description, description_ar: service.menu_description_ar || service.description_ar, image_url: service.menu_image_url || service.image_url, href: service.slug ? `/solutions/${service.slug}` : service.page_url || child.href } : child;
+      return service ? { ...child, label: service.title, label_ar: service.title_ar || child.label_ar, description: service.menu_description || service.description || child.description, description_ar: service.menu_description_ar || service.description_ar || child.description_ar, image_url: child.image_url || service.menu_image_url || service.image_url, href: service.slug ? `/solutions/${service.slug}` : service.page_url || child.href } : child;
     }
     if (child.source_type === 'industry') {
       const industry = menuSources.industries.find((item) => item.id === child.source_id);
-      return industry ? { ...child, label: industry.name, label_ar: industry.name_ar, description: industry.short_description, description_ar: industry.short_description_ar, image_url: industry.image_url, href: industry.slug ? `/industries/${industry.slug}` : `/Portfolio?industry=${industry.slug}` } : child;
+      return industry ? { ...child, label: industry.name, label_ar: industry.name_ar || child.label_ar, description: industry.short_description || child.description, description_ar: industry.short_description_ar || child.description_ar, image_url: child.image_url || industry.image_url, href: industry.slug ? `/industries/${industry.slug}` : `/Portfolio?industry=${industry.slug}` } : child;
     }
     if (child.source_type === 'project') {
       const project = menuSources.projects.find((item) => item.id === child.source_id);
-      return project ? { ...child, label: project.title, label_ar: project.title_ar, description: project.headline || project.short_description, description_ar: project.headline_ar || project.short_description_ar, image_url: project.main_image_url || project.image_url, href: `/PortfolioDetail?id=${project.id}` } : child;
+      return project ? { ...child, label: project.title, label_ar: project.title_ar || child.label_ar, description: project.headline || project.short_description || child.description, description_ar: project.headline_ar || project.short_description_ar || child.description_ar, image_url: child.image_url || project.main_image_url || project.image_url, href: `/PortfolioDetail?id=${project.id}` } : child;
     }
     return child;
   };
@@ -191,7 +195,7 @@ export default function Layout({ children, currentPageName }) {
           : []
       }))
     : [];
-  const navLinks = configuredNavLinks.length ? configuredNavLinks : fallbackNavLinks;
+  const navLinks = navigationReady ? (configuredNavLinks.length ? configuredNavLinks : fallbackNavLinks) : [];
   const footerServices = (navLinks.find((item) => item.id === 'solutions' || item.name === t('nav.services', 'Services'))?.children || fallbackServices).slice(0, 6);
 
   const resolveMenuHref = (href) => {
@@ -337,6 +341,7 @@ export default function Layout({ children, currentPageName }) {
                     const menuId = link.id || link.name || `menu-${linkIndex}`;
                     const hasMenu = link.menu_type === 'mega' || link.children?.length > 0;
                     const isOpen = openMenu === menuId;
+                    const previewChild = link.children?.find((child) => (child.id || child.href) === activeMenuChild[menuId]) || link.children?.[0];
                     return hasMenu ? (
                       <div key={menuId}>
                         <button
@@ -354,28 +359,43 @@ export default function Layout({ children, currentPageName }) {
                         </button>
                         <div
                           id={`desktop-menu-${menuId}`}
-                          className={`absolute left-1/2 top-full w-[min(900px,calc(100vw-2rem))] -translate-x-1/2 pt-3 ${isOpen ? 'block' : 'hidden'}`}
+                          className={`absolute left-1/2 top-full w-[min(1060px,calc(100vw-2rem))] -translate-x-1/2 pt-3 ${isOpen ? 'block' : 'hidden'}`}
                           onMouseEnter={() => setOpenMenu(menuId)}
                           onMouseLeave={() => setOpenMenu(null)}
                         >
                           <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl"
+                            className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-950/20"
                           >
-                            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-                              {groupMenuChildren(link.children).map(([group, children]) => (
-                                <div key={group}>
-                                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-blue-600">{group}</p>
-                                  <div className="space-y-1">
-                                    {children.map((child) => {
-                                      const content = <><div className="flex gap-3">{child.image_url && <img src={child.image_url} alt="" className="h-12 w-16 rounded-lg object-cover" />}<div><span className="block font-medium text-slate-900">{child.name || child.label}</span>{child.description && <span className="mt-0.5 block text-xs leading-relaxed text-slate-500">{getLocalized(child, 'description') || child.description}</span>}</div></div></>;
-                                      const className = "block rounded-xl p-2.5 transition hover:bg-blue-50";
-                                      return isExternalHref(child.href) ? <a key={child.id || child.href} href={child.href} target={child.open_new_tab ? '_blank' : undefined} rel={child.open_new_tab ? 'noopener noreferrer' : undefined} className={className}>{content}</a> : <Link key={child.id || child.href} to={resolveMenuHref(child.href)} className={className}>{content}</Link>;
-                                    })}
+                            <div className="grid min-h-[390px] lg:grid-cols-[0.88fr_1.12fr]">
+                              <div className="max-h-[480px] overflow-y-auto border-r border-slate-200 bg-slate-50/80 p-6 rtl:border-l rtl:border-r-0">
+                                {groupMenuChildren(link.children).map(([group, children]) => (
+                                  <div key={group} className="mb-5 last:mb-0">
+                                    <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">{group}</p>
+                                    <div className="space-y-1">
+                                      {children.map((child) => {
+                                        const childKey = child.id || child.href;
+                                        const selected = previewChild === child;
+                                        const content = <span className="flex items-center justify-between gap-3"><span><span className="block font-semibold text-slate-900">{child.name || child.label}</span>{getLocalized(child, 'description') && <span className="mt-1 line-clamp-1 block text-xs text-slate-500">{getLocalized(child, 'description')}</span>}</span><ArrowRight className={`h-4 w-4 shrink-0 transition rtl:-scale-x-100 ${selected ? 'translate-x-0 text-blue-600' : '-translate-x-1 text-slate-300'}`} /></span>;
+                                        const className = `block rounded-xl px-3 py-3 text-left transition ${selected ? 'bg-white shadow-sm ring-1 ring-slate-200' : 'hover:bg-white/80'}`;
+                                        const events = { onMouseEnter: () => setActiveMenuChild((current) => ({ ...current, [menuId]: childKey })), onFocus: () => setActiveMenuChild((current) => ({ ...current, [menuId]: childKey })) };
+                                        return isExternalHref(child.href) ? <a key={childKey} href={child.href} target={child.open_new_tab ? '_blank' : undefined} rel={child.open_new_tab ? 'noopener noreferrer' : undefined} className={className} {...events}>{content}</a> : <Link key={childKey} to={resolveMenuHref(child.href)} className={className} {...events}>{content}</Link>;
+                                      })}
+                                    </div>
                                   </div>
+                                ))}
+                              </div>
+                              {previewChild && <div className="relative flex min-h-[390px] flex-col overflow-hidden bg-slate-950 p-7 text-white">
+                                {previewChild.image_url ? <img key={previewChild.image_url} src={previewChild.image_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-65 transition duration-500" /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,.55),transparent_35%),linear-gradient(135deg,#0f172a,#172554,#3b0764)]" />}
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/55 to-slate-950/10" />
+                                <div className="relative mt-auto max-w-xl rounded-2xl border border-white/10 bg-slate-950/55 p-5 backdrop-blur-md">
+                                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">{getLocalized(previewChild, 'group') || t('nav.explore')}</p>
+                                  <h3 className="mt-2 text-2xl font-bold">{previewChild.name || previewChild.label}</h3>
+                                  {getLocalized(previewChild, 'description') && <p className="mt-3 text-sm leading-relaxed text-slate-200">{getLocalized(previewChild, 'description')}</p>}
+                                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">{t('common.learn_more')}<ArrowRight className="h-4 w-4 rtl:-scale-x-100" /></span>
                                 </div>
-                              ))}
+                              </div>}
                             </div>
                           </motion.div>
                         </div>
