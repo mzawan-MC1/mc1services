@@ -388,18 +388,16 @@ export default function Layout({ children, currentPageName }) {
                     const renderDesktopItem = (child, compact = false) => {
                       const childKey = child.id || child.href;
                       const selected = previewChild === child;
-                      const description = getLocalized(child, 'description');
                       const content = <span className="flex min-w-0 items-center gap-3">
                         <span className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl border transition ${compact ? 'h-11 w-11' : 'h-12 w-12'} ${selected ? 'border-blue-200 bg-blue-50 text-blue-600' : 'border-slate-200 bg-white text-slate-500'}`}>
                           {child.icon_image_url ? <img src={child.icon_image_url} alt="" className="h-full w-full object-cover" loading="lazy" /> : <span className="text-base font-black">{(child.name || child.label || '?').trim().charAt(0)}</span>}
                         </span>
                         <span className="min-w-0 flex-1">
                           <span className={`block font-bold leading-snug ${selected ? 'text-blue-700' : 'text-slate-900'} ${compact ? 'text-sm' : 'text-[15px]'}`}>{child.name || child.label}</span>
-                          {description && <span className="mt-1 line-clamp-2 block text-xs leading-relaxed text-slate-500">{description}</span>}
                         </span>
                         <ArrowRight className={`h-4 w-4 shrink-0 transition rtl:-scale-x-100 ${selected ? 'translate-x-0 text-blue-600' : '-translate-x-1 text-slate-300'}`} />
                       </span>;
-                      const className = `block rounded-xl p-2.5 text-left transition duration-200 ${selected ? 'bg-blue-50/80 shadow-sm ring-1 ring-blue-100' : 'hover:bg-slate-50'}`;
+                      const className = `block rounded-xl p-2 text-left transition duration-200 ${selected ? 'bg-blue-50/80 shadow-sm ring-1 ring-blue-100' : 'hover:bg-slate-50'}`;
                       const events = { onMouseEnter: () => setActiveMenuChild((current) => ({ ...current, [menuId]: childKey })), onFocus: () => setActiveMenuChild((current) => ({ ...current, [menuId]: childKey })) };
                       return isExternalHref(child.href) ? <a key={childKey} href={child.href} target={child.open_new_tab ? '_blank' : undefined} rel={child.open_new_tab ? 'noopener noreferrer' : undefined} className={className} {...events}>{content}</a> : <Link key={childKey} to={resolveMenuHref(child.href)} className={className} {...events}>{content}</Link>;
                     };
