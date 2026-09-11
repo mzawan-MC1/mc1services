@@ -383,7 +383,7 @@ export default function Layout({ children, currentPageName }) {
                     const ctaHref = link.featured_cta_url || previewChild?.href || link.href || '#';
                     const categoryColumns = link.layout_columns === '3' ? 'grid-cols-3' : 'grid-cols-2';
                     const directColumns = link.layout_columns === '3' ? 'grid-cols-3' : link.layout_columns === '2' ? 'grid-cols-2' : link.children?.length > 1 ? 'grid-cols-2' : 'grid-cols-1';
-                    const panelColumns = !previewChild ? 'grid-cols-1' : link.preview_size === 'wide' ? 'lg:grid-cols-[0.9fr_1.1fr]' : 'lg:grid-cols-[1.08fr_0.92fr]';
+                    const panelColumns = !previewChild ? 'grid-cols-1' : 'lg:grid-cols-[0.9fr_1.1fr]';
 
                     const renderDesktopItem = (child, compact = false) => {
                       const childKey = child.id || child.href;
