@@ -40,14 +40,15 @@ export default function PortfolioCard({ portfolio, index = 0, masonry = false })
               alt={title}
               loading="lazy"
               decoding="async"
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="h-full w-full object-cover brightness-[0.72] saturate-[0.82] transition duration-700 group-hover:scale-105 group-hover:brightness-[0.82] group-hover:saturate-100"
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
               <span className="text-white text-4xl font-bold">{title?.[0]}</span>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-slate-950/10" />
+          <div className="absolute inset-0 bg-slate-950/25" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/55 to-slate-950/10" />
           <div className="absolute left-4 right-4 top-4 flex items-start justify-between gap-3">
             <div className="flex flex-wrap gap-2">
               <Badge className="border border-white/15 bg-slate-950/70 text-white backdrop-blur-md hover:bg-slate-950/70">{projectType}</Badge>
@@ -55,7 +56,7 @@ export default function PortfolioCard({ portfolio, index = 0, masonry = false })
             </div>
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-slate-950 shadow-lg transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110"><ArrowUpRight className="h-5 w-5 rtl:-scale-x-100" /></span>
           </div>
-          <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
+          <div className="absolute inset-x-0 bottom-0 m-3 rounded-2xl border border-white/10 bg-slate-950/80 p-4 shadow-2xl shadow-black/30 backdrop-blur-md md:m-4 md:p-5">
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">{getCategoryLabel(portfolio.category)}</p>
             <h3 className="text-xl font-bold leading-tight text-white md:text-2xl">{title}</h3>
             {headline && <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-200">{headline}</p>}

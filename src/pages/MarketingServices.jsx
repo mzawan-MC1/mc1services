@@ -200,7 +200,7 @@ export default function MarketingServices() {
                   transition={{ delay: i * 0.1 }}
                   className={`rounded-2xl p-8 ${plan.is_popular ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white' : 'bg-white border border-slate-200'}`}
                 >
-                  {plan.is_popular && <Badge className="bg-white/20 text-white border-0 mb-4">Most Popular</Badge>}
+                  {plan.is_popular && <Badge className="bg-white/20 text-white border-0 mb-4">{t('common.most_popular')}</Badge>}
                   <h3 className={`text-2xl font-bold mb-2 ${plan.is_popular ? 'text-white' : 'text-slate-900'}`}>{getLoc(plan, 'name') || plan.name}</h3>
                   <div className="mb-4">
                     <span className={`text-4xl font-bold ${plan.is_popular ? 'text-white' : 'text-slate-900'}`}>{plan.price}</span>

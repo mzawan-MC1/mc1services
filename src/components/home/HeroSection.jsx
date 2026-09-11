@@ -151,7 +151,7 @@ export default function HeroSection() {
             <div className="absolute -inset-8 rounded-full bg-gradient-to-br from-cyan-400/20 via-blue-500/10 to-purple-500/20 blur-3xl" />
             <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-white/[0.07] p-5 shadow-2xl shadow-blue-950/40 backdrop-blur-xl">
               <div className="mb-8 flex items-center justify-between border-b border-white/10 pb-4">
-                <div className="flex items-center gap-2 text-sm text-slate-300"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />MC1 capability system</div>
+                <div className="flex items-center gap-2 text-sm text-slate-300"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />{t('home.hero.capability_system')}</div>
                 <Rocket className="h-5 w-5 text-cyan-300" />
               </div>
               <div className="space-y-4">
@@ -163,9 +163,9 @@ export default function HeroSection() {
                 ))}
               </div>
               <div className="mt-5 grid grid-cols-3 gap-3 text-center text-xs text-slate-400">
-                <div className="rounded-xl bg-white/5 p-3"><strong className="block text-lg text-white">AI</strong>enabled</div>
-                <div className="rounded-xl bg-white/5 p-3"><strong className="block text-lg text-white">ERP</strong>ready</div>
-                <div className="rounded-xl bg-white/5 p-3"><strong className="block text-lg text-white">360°</strong>delivery</div>
+                <div className="rounded-xl bg-white/5 p-3"><strong className="block text-lg text-white">AI</strong>{t('home.hero.enabled')}</div>
+                <div className="rounded-xl bg-white/5 p-3"><strong className="block text-lg text-white">ERP</strong>{t('home.hero.ready')}</div>
+                <div className="rounded-xl bg-white/5 p-3"><strong className="block text-lg text-white">360°</strong>{t('home.hero.delivery_short')}</div>
               </div>
             </div>
           </motion.div>

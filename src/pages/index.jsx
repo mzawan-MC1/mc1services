@@ -1,4 +1,5 @@
 import React, { Suspense, lazy, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import Layout from "./Layout.jsx";
 
 import Home from "./Home";
@@ -268,25 +269,27 @@ function _getCurrentPage(url) {
 }
 
 function PageLoading() {
+    const { t } = useTranslation();
     return (
         <div className="min-h-[40vh] flex items-center justify-center" role="status" aria-live="polite">
             <div className="flex items-center gap-3 text-slate-600">
                 <span className="h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-blue-600" aria-hidden="true" />
-                <span>Loading page...</span>
+                <span>{t('common.loading_page')}</span>
             </div>
         </div>
     );
 }
 
 function NotFound() {
+    const { t } = useTranslation();
     return (
         <main className="min-h-[55vh] flex items-center justify-center px-6 py-20 text-center">
             <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-600">404</p>
-                <h1 className="mt-3 text-3xl font-bold text-slate-900">Page not found</h1>
-                <p className="mt-3 text-slate-600">The page you requested does not exist or may have moved.</p>
+                <h1 className="mt-3 text-3xl font-bold text-slate-900">{t('common.page_not_found')}</h1>
+                <p className="mt-3 text-slate-600">{t('common.page_not_found_description')}</p>
                 <Link to="/Home" className="mt-6 inline-flex rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
-                    Return to homepage
+                    {t('common.return_home')}
                 </Link>
             </div>
         </main>

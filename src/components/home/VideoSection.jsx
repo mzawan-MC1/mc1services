@@ -81,19 +81,19 @@ export default function VideoSection() {
               ) : videoContent?.background_image ? (
                 <img
                   src={videoContent.background_image}
-                  alt="Our Team"
+                  alt={t('home.video_section.team_alt')}
                   className="w-full aspect-video object-cover"
                 />
               ) : (
                 <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-purple-900 p-8 text-center">
-                  <div><p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-300">MC1 Consultancy</p><p className="mt-3 text-2xl font-bold text-white">Technology shaped around your operation</p></div>
+                  <div><p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-300">MC1 Consultancy</p><p className="mt-3 text-2xl font-bold text-white">{t('home.video_section.operation_headline')}</p></div>
                 </div>
               )}
               {isVideo && (
                 <div className="absolute inset-0 bg-slate-900/30 flex items-center justify-center">
                   <button
                     type="button"
-                    aria-label="Play company video"
+                    aria-label={t('home.video_section.play_video')}
                     onClick={() => setIsPlaying(true)}
                     className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform"
                   >
@@ -112,7 +112,7 @@ export default function VideoSection() {
 
       {/* Video Modal */}
       {isPlaying && isVideo && (
-        <div role="dialog" aria-modal="true" aria-label="Company video" className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
+        <div role="dialog" aria-modal="true" aria-label={t('home.video_section.company_video')} className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
           <button
             type="button"
             aria-label="Close company video"

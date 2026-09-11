@@ -13,6 +13,28 @@ import { Textarea } from '@/components/ui/textarea';
 
 const uid = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
+const blueprintArabic = {
+  Build: 'البناء', Scale: 'التوسع', Create: 'الإبداع', Explore: 'استكشف', 'Industry Experience': 'الخبرة القطاعية',
+  'MC1 Products': 'منتجات MC1', 'About MC1': 'عن MC1', Connect: 'تواصل', Resources: 'المصادر', Legal: 'قانوني',
+  'AI Solutions & Intelligent Automation': 'حلول الذكاء الاصطناعي والأتمتة الذكية', 'Custom Software & Business Platforms': 'البرمجيات المخصصة ومنصات الأعمال',
+  'Application Development': 'تطوير التطبيقات', 'SaaS Product Engineering': 'هندسة منتجات SaaS', 'Digital Marketing & Growth': 'التسويق الرقمي والنمو',
+  'Cloud, IT & Managed Support': 'السحابة وتقنية المعلومات والدعم المُدار', 'Creative Content & Production': 'المحتوى الإبداعي والإنتاج',
+  'Automotive & Auctions': 'السيارات والمزادات', 'Logistics, Shipping & Freight': 'الخدمات اللوجستية والشحن',
+  'Entertainment & Escape Rooms': 'الترفيه وغرف الهروب', Gaming: 'الألعاب', 'Food, Beverage & Hospitality': 'الأغذية والمشروبات والضيافة',
+  'Media & News': 'الإعلام والأخبار', 'Legal & Professional Services': 'الخدمات القانونية والمهنية', 'Other Custom Business Workflows': 'مسارات عمل مخصصة أخرى',
+  'Featured Case Studies': 'دراسات حالة مميزة', 'Client Projects': 'مشاريع العملاء', 'All Projects': 'جميع المشاريع',
+  'How We Work': 'كيف نعمل', 'Our Team': 'فريقنا', Contact: 'تواصل معنا', 'Free Business Tools': 'أدوات أعمال مجانية',
+  FAQs: 'الأسئلة الشائعة', 'Privacy Policy': 'سياسة الخصوصية', 'Terms of Service': 'شروط الخدمة'
+};
+
+const blueprintArabicDescriptions = {
+  'Practical AI and workflow automation.': 'ذكاء اصطناعي عملي وأتمتة لمسارات العمل.', 'ERP, portals and operational systems.': 'أنظمة ERP وبوابات وأنظمة تشغيلية.',
+  'Web, mobile and desktop applications.': 'تطبيقات الويب والجوال وسطح المكتب.', 'Multi-tenant SaaS products and MVPs.': 'منتجات SaaS متعددة المستأجرين ونماذج أولية قابلة للتشغيل.',
+  'SEO, paid media and social growth.': 'تحسين محركات البحث والإعلانات المدفوعة والنمو الاجتماعي.', 'Infrastructure, security and support.': 'البنية التحتية والأمن والدعم.',
+  'Brand, campaign and video production.': 'إنتاج العلامة التجارية والحملات والفيديو.', 'See MC1 solutions in action.': 'شاهد حلول MC1 أثناء العمل.',
+  'MC1 business workflow SaaS platform': 'منصة SaaS من MC1 لإدارة مسارات العمل', 'An MC1-owned digital product': 'منتج رقمي مملوك لـ MC1'
+};
+
 const blueprint = [
   {
     id: 'solutions', label: 'Solutions', label_ar: 'الحلول', menu_type: 'mega', href: '', children: [
@@ -71,11 +93,21 @@ const normalizeItem = (item) => ({
   menu_type: item.menu_type || (item.children?.length ? 'mega' : 'link'),
   is_visible: item.is_visible !== false,
   children: Array.isArray(item.children) ? item.children.map((child) => ({
-    id: child.id || uid(), group: child.group || '', label: child.label || '', label_ar: child.label_ar || '',
+    id: child.id || uid(), group: child.group || '', group_ar: child.group_ar || '', label: child.label || '', label_ar: child.label_ar || '',
     href: child.href || '', description: child.description || '', description_ar: child.description_ar || '',
     image_url: child.image_url || '', open_new_tab: Boolean(child.open_new_tab),
     source_type: child.source_type || 'custom', source_id: child.source_id || ''
   })) : []
+});
+
+const localizeBlueprintItem = (item) => normalizeItem({
+  ...item,
+  children: (item.children || []).map((child) => ({
+    ...child,
+    group_ar: child.group_ar || blueprintArabic[child.group] || '',
+    label_ar: child.label_ar || blueprintArabic[child.label] || '',
+    description_ar: child.description_ar || blueprintArabicDescriptions[child.description] || ''
+  }))
 });
 
 export default function AdminNavigation() {
@@ -150,7 +182,7 @@ export default function AdminNavigation() {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div><h1 className="text-2xl font-bold text-slate-900">Navigation & Mega-Menu</h1><p className="mt-1 text-slate-600">Every public menu label, link, description and image is controlled here.</p></div>
           <div className="flex gap-2">
-            <Button type="button" variant="outline" onClick={() => { if (window.confirm('Replace the current menu editor values with the approved MC1 blueprint? Save is still required.')) { const nextItems = blueprint.map(normalizeItem); setItems(nextItems); setExpandedItemId(nextItems[0]?.id || null); } }}><Sparkles className="mr-2 h-4 w-4" />Load MC1 Blueprint</Button>
+            <Button type="button" variant="outline" onClick={() => { if (window.confirm('Replace the current menu editor values with the approved MC1 blueprint? Save is still required.')) { const nextItems = blueprint.map(localizeBlueprintItem); setItems(nextItems); setExpandedItemId(nextItems[0]?.id || null); } }}><Sparkles className="mr-2 h-4 w-4" />Load MC1 Blueprint</Button>
             <Button type="button" variant="outline" onClick={linkManagedRecords}><Link2 className="mr-2 h-4 w-4" />Link Managed Records</Button>
             <Button type="button" onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending} className="bg-blue-600 text-white hover:bg-blue-700">{saveMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}Save Navigation</Button>
           </div>
@@ -189,11 +221,12 @@ export default function AdminNavigation() {
                 </div>
 
                 {item.menu_type === 'mega' && <div className="space-y-4 border-t pt-5">
-                  <div className="flex items-center justify-between"><div><h3 className="font-semibold">Mega-menu links and cards</h3><p className="text-xs text-slate-500">Group names create columns. Reference existing content to keep one source of truth.</p></div><Button type="button" size="sm" variant="outline" onClick={() => updateItem(itemIndex, { children: [...item.children, { id: uid(), group: '', label: '', label_ar: '', href: '', description: '', description_ar: '', image_url: '', open_new_tab: false, source_type: 'custom', source_id: '' }] })}><Plus className="mr-1 h-4 w-4" />Add Link</Button></div>
+                  <div className="flex items-center justify-between"><div><h3 className="font-semibold">Mega-menu links and cards</h3><p className="text-xs text-slate-500">Group names create columns. Reference existing content to keep one source of truth.</p></div><Button type="button" size="sm" variant="outline" onClick={() => updateItem(itemIndex, { children: [...item.children, { id: uid(), group: '', group_ar: '', label: '', label_ar: '', href: '', description: '', description_ar: '', image_url: '', open_new_tab: false, source_type: 'custom', source_id: '' }] })}><Plus className="mr-1 h-4 w-4" />Add Link</Button></div>
                   {item.children.map((child, childIndex) => (
                     <div key={child.id} className="grid gap-4 rounded-xl bg-slate-50 p-4 lg:grid-cols-[1fr_1fr_1.5fr_auto]">
                       <div className="space-y-3">
                         <div><Label>Column / Group</Label><Input className="mt-1" value={child.group} onChange={(event) => updateChild(itemIndex, childIndex, { group: event.target.value })} /></div>
+                        <div dir="rtl"><Label>Arabic Group</Label><Input className="mt-1" value={child.group_ar} onChange={(event) => updateChild(itemIndex, childIndex, { group_ar: event.target.value })} /></div>
                         <div><Label>English Label</Label><Input className="mt-1" value={child.label} onChange={(event) => updateChild(itemIndex, childIndex, { label: event.target.value })} /></div>
                         <div dir="rtl"><Label>Arabic Label</Label><Input className="mt-1" value={child.label_ar} onChange={(event) => updateChild(itemIndex, childIndex, { label_ar: event.target.value })} /></div>
                       </div>
@@ -205,6 +238,7 @@ export default function AdminNavigation() {
                       </div>
                       <div className="space-y-3">
                         <div><Label>Description</Label><Textarea className="mt-1" rows={2} value={child.description} onChange={(event) => updateChild(itemIndex, childIndex, { description: event.target.value })} /></div>
+                        <div dir="rtl"><Label>Arabic Description</Label><Textarea className="mt-1" rows={2} value={child.description_ar} onChange={(event) => updateChild(itemIndex, childIndex, { description_ar: event.target.value })} /></div>
                         <FileUpload label="Optional Feature Image" value={child.image_url} onChange={(url) => updateChild(itemIndex, childIndex, { image_url: url })} storagePath="navigation" validation={{ width: 1200, height: 750, aspectRatio: 1.6, aspectLabel: '8:5', maxImageMB: 1, note: 'WebP or AVIF is preferred.' }} />
                       </div>
                       <Button type="button" size="icon" variant="ghost" className="text-red-600" onClick={() => updateItem(itemIndex, { children: item.children.filter((_, index) => index !== childIndex) })}><Trash2 className="h-4 w-4" /></Button>

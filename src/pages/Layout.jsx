@@ -10,6 +10,36 @@ import TrackingCode from '../components/TrackingCode';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 
+const ARABIC_MENU_FALLBACKS = {
+  Solutions: 'الحلول', Industries: 'القطاعات', Work: 'أعمالنا', Products: 'منتجاتنا', Company: 'الشركة', Resources: 'المصادر',
+  Build: 'البناء', Scale: 'التوسع', Create: 'الإبداع', Explore: 'استكشف', 'Industry Experience': 'الخبرة القطاعية',
+  'MC1 Products': 'منتجات MC1', 'About MC1': 'عن MC1', Connect: 'تواصل', Legal: 'قانوني',
+  'AI Solutions & Intelligent Automation': 'حلول الذكاء الاصطناعي والأتمتة الذكية',
+  'Custom Software & Business Platforms': 'البرمجيات المخصصة ومنصات الأعمال',
+  'Application Development': 'تطوير التطبيقات', 'SaaS Product Engineering': 'هندسة منتجات SaaS',
+  'Digital Marketing & Growth': 'التسويق الرقمي والنمو', 'Cloud, IT & Managed Support': 'السحابة وتقنية المعلومات والدعم المُدار',
+  'Creative Content & Production': 'المحتوى الإبداعي والإنتاج', 'Automotive & Auctions': 'السيارات والمزادات',
+  'Logistics, Shipping & Freight': 'الخدمات اللوجستية والشحن', 'Entertainment & Escape Rooms': 'الترفيه وغرف الهروب',
+  Gaming: 'الألعاب', 'Food, Beverage & Hospitality': 'الأغذية والمشروبات والضيافة', 'Media & News': 'الإعلام والأخبار',
+  'Legal & Professional Services': 'الخدمات القانونية والمهنية', 'Other Custom Business Workflows': 'مسارات عمل مخصصة أخرى',
+  'Featured Case Studies': 'دراسات حالة مميزة', 'Client Projects': 'مشاريع العملاء', 'All Projects': 'جميع المشاريع',
+  'How We Work': 'كيف نعمل', 'Our Team': 'فريقنا', Contact: 'تواصل معنا',
+  'Free Business Tools': 'أدوات أعمال مجانية', FAQs: 'الأسئلة الشائعة', 'Privacy Policy': 'سياسة الخصوصية', 'Terms of Service': 'شروط الخدمة'
+};
+
+const ARABIC_DESCRIPTION_FALLBACKS = {
+  'Practical AI and workflow automation.': 'ذكاء اصطناعي عملي وأتمتة لمسارات العمل.',
+  'ERP, portals and operational systems.': 'أنظمة ERP وبوابات وأنظمة تشغيلية.',
+  'Web, mobile and desktop applications.': 'تطبيقات الويب والجوال وسطح المكتب.',
+  'Multi-tenant SaaS products and MVPs.': 'منتجات SaaS متعددة المستأجرين ونماذج أولية قابلة للتشغيل.',
+  'SEO, paid media and social growth.': 'تحسين محركات البحث والإعلانات المدفوعة والنمو الاجتماعي.',
+  'Infrastructure, security and support.': 'البنية التحتية والأمن والدعم.',
+  'Brand, campaign and video production.': 'إنتاج العلامة التجارية والحملات والفيديو.',
+  'See MC1 solutions in action.': 'شاهد حلول MC1 أثناء العمل.',
+  'MC1 business workflow SaaS platform': 'منصة SaaS من MC1 لإدارة مسارات العمل',
+  'An MC1-owned digital product': 'منتج رقمي مملوك لـ MC1'
+};
+
 export default function Layout({ children, currentPageName }) {
   const { t, i18n } = useTranslation();
   const location = useLocation();
@@ -108,7 +138,10 @@ export default function Layout({ children, currentPageName }) {
 
   const getLocalized = (obj, key) => {
     if (!obj) return '';
-    return isRTL ? (obj[`${key}_ar`] || obj[key]) : obj[key];
+    if (!isRTL) return obj[key];
+    if (obj[`${key}_ar`]) return obj[`${key}_ar`];
+    if (key === 'description') return ARABIC_DESCRIPTION_FALLBACKS[obj[key]] || obj[key];
+    return ARABIC_MENU_FALLBACKS[obj[key]] || obj[key];
   };
 
   const fallbackServices = [
@@ -169,7 +202,7 @@ export default function Layout({ children, currentPageName }) {
 
   const isExternalHref = (href) => /^https?:\/\//i.test(href || '');
   const groupMenuChildren = (children = []) => Object.entries(children.reduce((groups, child) => {
-    const group = child.group || t('nav.explore', 'Explore');
+    const group = getLocalized(child, 'group') || t('nav.explore', 'Explore');
     groups[group] = [...(groups[group] || []), child];
     return groups;
   }, {}));

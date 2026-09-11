@@ -270,8 +270,8 @@ export default function Contact() {
                   <div className="mt-8 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center" style={{ minHeight: '350px', height: '350px' }}>
                     <div className="text-center p-6">
                       <MapPin className="w-12 h-12 mx-auto mb-3 text-slate-400" />
-                      <p className="text-sm text-slate-600 font-medium">Map not configured</p>
-                      <p className="text-xs text-slate-400 mt-1">Add Google Maps Embed URL in Admin → Site Settings</p>
+                      <p className="text-sm text-slate-600 font-medium">{t('contact.map_not_configured')}</p>
+                      <p className="text-xs text-slate-400 mt-1">{t('contact.map_admin_hint')}</p>
                     </div>
                   </div>
                 );
@@ -296,7 +296,7 @@ export default function Contact() {
               ) : (
                 <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
                   <div className="absolute -left-[10000px] h-px w-px overflow-hidden" aria-hidden="true">
-                    <Label htmlFor="website">Website</Label>
+                    <Label htmlFor="website">{t('contact.website')}</Label>
                     <Input id="website" tabIndex={-1} autoComplete="off" {...register('website')} />
                   </div>
                   <h2 className="text-2xl font-bold text-slate-900 mb-2">
