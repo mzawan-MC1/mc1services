@@ -72,7 +72,7 @@ export default function IndustryDetail() {
 
   useEffect(() => {
     if (!industry || !name) return;
-    const metaDescription = description || t('industries.meta_fallback', 'Explore MC1 experience and digital solutions for this industry.');
+    const metaDescription = description || t('industries.meta_fallback', 'Explore MCS experience and digital solutions for this industry.');
     document.title = `${name} Solutions | MCS Consultancy`;
     setMetaContent('meta[name="description"]', 'name', 'description', metaDescription);
     setMetaContent('meta[property="og:title"]', 'property', 'og:title', `${name} Solutions | MCS Consultancy`);

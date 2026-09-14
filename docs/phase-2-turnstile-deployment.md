@@ -14,7 +14,7 @@ The admin continues to read, update, and delete enquiries from `public.contact_s
 
 1. Sign in to the Cloudflare dashboard.
 2. Open **Turnstile** and choose **Add widget**.
-3. Name it `MC1 Contact Form`.
+3. Name it `MCS Contact Form`.
 4. Add the hostnames `mc1services.com` and `www.mc1services.com`.
 5. Select Cloudflare's managed widget mode.
 6. Create the widget.
@@ -28,7 +28,7 @@ The site key is designed for browser use. Do not put it into a database table or
 
 ## Zubair: store the secret without sharing it
 
-1. Open the MC1 Consultancy project in Supabase.
+1. Open the MCS Consultancy project in Supabase.
 2. Open **Edge Functions**, then **Secrets**.
 3. Add a secret named exactly:
 

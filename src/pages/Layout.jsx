@@ -13,7 +13,7 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 const ARABIC_MENU_FALLBACKS = {
   Solutions: 'الحلول', Industries: 'القطاعات', Work: 'أعمالنا', Products: 'منتجاتنا', Company: 'الشركة', Resources: 'المصادر',
   Build: 'البناء', Scale: 'التوسع', Create: 'الإبداع', Explore: 'استكشف', 'Industry Experience': 'الخبرة القطاعية',
-  'MC1 Products': 'منتجات MC1', 'About MC1': 'عن MC1', Connect: 'تواصل', Legal: 'قانوني',
+  'MCS Products': 'منتجات MCS', 'About MCS': 'عن MCS', Connect: 'تواصل', Legal: 'قانوني',
   'AI Solutions & Intelligent Automation': 'حلول الذكاء الاصطناعي والأتمتة الذكية',
   'Custom Software & Business Platforms': 'البرمجيات المخصصة ومنصات الأعمال',
   'Application Development': 'تطوير التطبيقات', 'SaaS Product Engineering': 'هندسة منتجات SaaS',
@@ -35,9 +35,9 @@ const ARABIC_DESCRIPTION_FALLBACKS = {
   'SEO, paid media and social growth.': 'تحسين محركات البحث والإعلانات المدفوعة والنمو الاجتماعي.',
   'Infrastructure, security and support.': 'البنية التحتية والأمن والدعم.',
   'Brand, campaign and video production.': 'إنتاج العلامة التجارية والحملات والفيديو.',
-  'See MC1 solutions in action.': 'شاهد حلول MC1 أثناء العمل.',
-  'MC1 business workflow SaaS platform': 'منصة SaaS من MC1 لإدارة مسارات العمل',
-  'An MC1-owned digital product': 'منتج رقمي مملوك لـ MC1'
+  'See MCS solutions in action.': 'شاهد حلول MCS أثناء العمل.',
+  'MCS business workflow SaaS platform': 'منصة SaaS من MCS لإدارة مسارات العمل',
+  'An MCS-owned digital product': 'منتج رقمي مملوك لـ MCS'
 };
 
 const MENU_PANEL_FALLBACKS = {
@@ -54,12 +54,12 @@ const MENU_PANEL_FALLBACKS = {
     ar: { title: 'استكشف ما قمنا ببنائه', description: 'منتجات ومنصات مصممة حول مسارات عمل واقعية ومتطلبة.', featured: 'أعمال مختارة' }
   },
   products: {
-    en: { title: 'Products engineered by MC1', description: 'Scalable platforms created, operated and continuously improved by our team.', featured: 'MC1 product' },
-    ar: { title: 'منتجات طورتها MC1', description: 'منصات قابلة للتوسع ينشئها فريقنا ويديرها ويطورها باستمرار.', featured: 'منتج MC1' }
+    en: { title: 'Products engineered by MCS', description: 'Scalable platforms created, operated and continuously improved by our team.', featured: 'MCS product' },
+    ar: { title: 'منتجات طورتها MCS', description: 'منصات قابلة للتوسع ينشئها فريقنا ويديرها ويطورها باستمرار.', featured: 'منتج MCS' }
   },
   company: {
-    en: { title: 'Meet the team behind the work', description: 'Technology, strategy and creative execution under one roof.', featured: 'About MC1' },
-    ar: { title: 'تعرّف على الفريق خلف أعمالنا', description: 'التقنية والاستراتيجية والتنفيذ الإبداعي تحت سقف واحد.', featured: 'عن MC1' }
+    en: { title: 'Meet the team behind the work', description: 'Technology, strategy and creative execution under one roof.', featured: 'About MCS' },
+    ar: { title: 'تعرّف على الفريق خلف أعمالنا', description: 'التقنية والاستراتيجية والتنفيذ الإبداعي تحت سقف واحد.', featured: 'عن MCS' }
   },
   resources: {
     en: { title: 'Tools and resources for better decisions', description: 'Practical utilities, answers and important company information.', featured: 'Featured resource' },

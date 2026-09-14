@@ -122,7 +122,7 @@ export default function PortfolioDetail() {
 
   const headline = getLoc(portfolio, 'headline') || getLoc(portfolio, 'short_description');
   const projectTypeLabel = portfolio.project_type === 'mc1_product'
-    ? t('portfolio.mc1_product', 'MC1 Product')
+    ? t('portfolio.mc1_product', 'MCS Product')
     : t('portfolio.client_project', 'Client Project');
   const galleryOffset = portfolio.main_image_url ? 1 : 0;
   const categoryLabel = getPortfolioCategoryLabel(portfolioCategories, portfolio.category, i18n.language);

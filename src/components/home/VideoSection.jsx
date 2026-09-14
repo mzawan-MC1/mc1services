@@ -86,7 +86,7 @@ export default function VideoSection() {
                 />
               ) : (
                 <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-purple-900 p-8 text-center">
-                  <div><p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-300">MC1 Consultancy</p><p className="mt-3 text-2xl font-bold text-white">{t('home.video_section.operation_headline')}</p></div>
+                  <div><p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-300">MCS Consultancy</p><p className="mt-3 text-2xl font-bold text-white">{t('home.video_section.operation_headline')}</p></div>
                 </div>
               )}
               {isVideo && (

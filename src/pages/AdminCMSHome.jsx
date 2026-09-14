@@ -16,7 +16,7 @@ const HOME_SECTIONS = [
   { key: 'clients', label: 'Client Logos' },
   { key: 'video', label: 'Who We Are / Video' },
   { key: 'services', label: 'Solutions' },
-  { key: 'products', label: 'MC1 Products' },
+  { key: 'products', label: 'MCS Products' },
   { key: 'portfolio', label: 'Flagship Case Studies' },
   { key: 'industries', label: 'Industries' },
   { key: 'process', label: 'How We Work' },

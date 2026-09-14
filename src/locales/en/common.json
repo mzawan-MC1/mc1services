@@ -87,14 +87,14 @@
       "industry": "Industry Experience",
       "sectors": "sectors",
       "secure_scale": "Secure & Scalable",
-      "capability_system": "MC1 capability system",
+      "capability_system": "MCS capability system",
       "enabled": "enabled",
       "ready": "ready",
       "delivery_short": "delivery"
     },
     "pills": { "software": "Custom Software" },
     "products": {
-      "subtitle": "Built by MC1",
+      "subtitle": "Built by MCS",
       "title": "Products We Own and Operate",
       "description": "Platforms we continuously develop, operate and improve using the same standards we bring to client work.",
       "explore": "Explore product"
@@ -305,7 +305,7 @@
       "creative": "Creative"
     },
     "client": "Client",
-    "mc1_product": "MC1 Product",
+    "mc1_product": "MCS Product",
     "client_project": "Client Project",
     "featured": "Featured",
     "published_projects": "published projects",
@@ -377,7 +377,7 @@
     "start_conversation": "Start the conversation"
   },
   "industries": {
-    "meta_fallback": "Explore MC1 experience and digital solutions for this industry.",
+    "meta_fallback": "Explore MCS experience and digital solutions for this industry.",
     "load_error": "This industry page is temporarily unavailable",
     "not_found": "Industry not found",
     "not_found_description": "This industry may have moved or is not currently published.",

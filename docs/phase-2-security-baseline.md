@@ -111,7 +111,7 @@ Recorded before the local integration changes:
 
 ## Deployment progress
 
-- `submit-contact` Edge Function: deployed to the authorised MC1 Supabase project.
+- `submit-contact` Edge Function: deployed to the authorised MCS Supabase project.
 - Deployed-function negative test: passed; an invalid Turnstile token returned HTTP 400 and no insertion path was reached.
 - Pre-deployment local `dist` backup: `backups/pre-deploy-20260909-dist.zip`.
 - Backup SHA-256: `A67ADD8B70E67E56AE0A78BF95479E32EEC05153C684A3F3DCD238468EC7243E`.

@@ -307,7 +307,7 @@ export default function AdminPortfolioEdit() {
                   <Select value={formData.project_type} onValueChange={(v) => setFormData(p => ({ ...p, project_type: v }))}>
                     <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="mc1_product">MC1 Product</SelectItem>
+                      <SelectItem value="mc1_product">MCS Product</SelectItem>
                       <SelectItem value="client_project">Client Project</SelectItem>
                       <SelectItem value="internal_demo">Internal Demonstration</SelectItem>
                       <SelectItem value="confidential_project">Confidential Project</SelectItem>
@@ -341,7 +341,7 @@ export default function AdminPortfolioEdit() {
                   <div><Label>Long Description</Label><Textarea value={formData.long_description} onChange={(e) => setFormData(p => ({ ...p, long_description: e.target.value }))} className="mt-1" rows={6} /></div>
                   <div><Label>Project Overview</Label><Textarea value={formData.project_overview} onChange={(e) => setFormData(p => ({ ...p, project_overview: e.target.value }))} className="mt-1" rows={4} /></div>
                   <div><Label>Business Challenge</Label><Textarea value={formData.challenges} onChange={(e) => setFormData(p => ({ ...p, challenges: e.target.value }))} className="mt-1" rows={4} /></div>
-                  <div><Label>MC1 Solution</Label><Textarea value={formData.solutions} onChange={(e) => setFormData(p => ({ ...p, solutions: e.target.value }))} className="mt-1" rows={4} /></div>
+                  <div><Label>MCS Solution</Label><Textarea value={formData.solutions} onChange={(e) => setFormData(p => ({ ...p, solutions: e.target.value }))} className="mt-1" rows={4} /></div>
                   <div><Label>Results and Outcomes</Label><Textarea value={formData.results} onChange={(e) => setFormData(p => ({ ...p, results: e.target.value }))} className="mt-1" rows={4} /></div>
                 </TabsContent>
 

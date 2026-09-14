@@ -15,7 +15,7 @@ const uid = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice
 
 const blueprintArabic = {
   Build: 'البناء', Scale: 'التوسع', Create: 'الإبداع', Explore: 'استكشف', 'Industry Experience': 'الخبرة القطاعية',
-  'MC1 Products': 'منتجات MC1', 'About MC1': 'عن MC1', Connect: 'تواصل', Resources: 'المصادر', Legal: 'قانوني',
+  'MCS Products': 'منتجات MCS', 'About MCS': 'عن MCS', Connect: 'تواصل', Resources: 'المصادر', Legal: 'قانوني',
   'AI Solutions & Intelligent Automation': 'حلول الذكاء الاصطناعي والأتمتة الذكية', 'Custom Software & Business Platforms': 'البرمجيات المخصصة ومنصات الأعمال',
   'Application Development': 'تطوير التطبيقات', 'SaaS Product Engineering': 'هندسة منتجات SaaS', 'Digital Marketing & Growth': 'التسويق الرقمي والنمو',
   'Cloud, IT & Managed Support': 'السحابة وتقنية المعلومات والدعم المُدار', 'Creative Content & Production': 'المحتوى الإبداعي والإنتاج',
@@ -31,8 +31,8 @@ const blueprintArabicDescriptions = {
   'Practical AI and workflow automation.': 'ذكاء اصطناعي عملي وأتمتة لمسارات العمل.', 'ERP, portals and operational systems.': 'أنظمة ERP وبوابات وأنظمة تشغيلية.',
   'Web, mobile and desktop applications.': 'تطبيقات الويب والجوال وسطح المكتب.', 'Multi-tenant SaaS products and MVPs.': 'منتجات SaaS متعددة المستأجرين ونماذج أولية قابلة للتشغيل.',
   'SEO, paid media and social growth.': 'تحسين محركات البحث والإعلانات المدفوعة والنمو الاجتماعي.', 'Infrastructure, security and support.': 'البنية التحتية والأمن والدعم.',
-  'Brand, campaign and video production.': 'إنتاج العلامة التجارية والحملات والفيديو.', 'See MC1 solutions in action.': 'شاهد حلول MC1 أثناء العمل.',
-  'MC1 business workflow SaaS platform': 'منصة SaaS من MC1 لإدارة مسارات العمل', 'An MC1-owned digital product': 'منتج رقمي مملوك لـ MC1'
+  'Brand, campaign and video production.': 'إنتاج العلامة التجارية والحملات والفيديو.', 'See MCS solutions in action.': 'شاهد حلول MCS أثناء العمل.',
+  'MCS business workflow SaaS platform': 'منصة SaaS من MCS لإدارة مسارات العمل', 'An MCS-owned digital product': 'منتج رقمي مملوك لـ MCS'
 };
 
 const blueprint = [
@@ -55,23 +55,23 @@ const blueprint = [
   },
   {
     id: 'work', label: 'Work', label_ar: 'أعمالنا', menu_type: 'mega', href: '/Portfolio', children: [
-      { id: uid(), group: 'Explore', label: 'Featured Case Studies', href: '/Portfolio', description: 'See MC1 solutions in action.' },
+      { id: uid(), group: 'Explore', label: 'Featured Case Studies', href: '/Portfolio', description: 'See MCS solutions in action.' },
       { id: uid(), group: 'Explore', label: 'Client Projects', href: '/Portfolio?type=client_project', description: '' },
-      { id: uid(), group: 'Explore', label: 'MC1 Products', href: '/Portfolio?type=mc1_product', description: '' },
+      { id: uid(), group: 'Explore', label: 'MCS Products', href: '/Portfolio?type=mc1_product', description: '' },
       { id: uid(), group: 'Explore', label: 'All Projects', href: '/Portfolio', description: '' }
     ]
   },
   {
     id: 'products', label: 'Products', label_ar: 'منتجاتنا', menu_type: 'mega', href: '', children: [
-      { id: uid(), group: 'MC1 Products', label: 'Proflow 360', href: 'https://proflow360.cloud', description: 'MC1 business workflow SaaS platform', open_new_tab: true },
-      { id: uid(), group: 'MC1 Products', label: 'Smart Pocket', href: 'https://1smartpocket.com', description: 'An MC1-owned digital product', open_new_tab: true }
+      { id: uid(), group: 'MCS Products', label: 'Proflow 360', href: 'https://proflow360.cloud', description: 'MCS business workflow SaaS platform', open_new_tab: true },
+      { id: uid(), group: 'MCS Products', label: 'Smart Pocket', href: 'https://1smartpocket.com', description: 'An MCS-owned digital product', open_new_tab: true }
     ]
   },
   {
     id: 'company', label: 'Company', label_ar: 'الشركة', menu_type: 'mega', href: '/About', children: [
-      { id: uid(), group: 'About MC1', label: 'About MC1', href: '/About', description: '' },
-      { id: uid(), group: 'About MC1', label: 'How We Work', href: '/About', description: '' },
-      { id: uid(), group: 'About MC1', label: 'Our Team', href: '/About', description: '' },
+      { id: uid(), group: 'About MCS', label: 'About MCS', href: '/About', description: '' },
+      { id: uid(), group: 'About MCS', label: 'How We Work', href: '/About', description: '' },
+      { id: uid(), group: 'About MCS', label: 'Our Team', href: '/About', description: '' },
       { id: uid(), group: 'Connect', label: 'Contact', href: '/Contact', description: '' }
     ]
   },
@@ -203,7 +203,7 @@ export default function AdminNavigation() {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div><h1 className="text-2xl font-bold text-slate-900">Navigation & Mega-Menu</h1><p className="mt-1 text-slate-600">Every public menu label, link, description and image is controlled here.</p></div>
           <div className="flex gap-2">
-            <Button type="button" variant="outline" onClick={() => { if (window.confirm('Replace the current menu editor values with the approved MC1 blueprint? Save is still required.')) { const nextItems = blueprint.map(localizeBlueprintItem); setItems(nextItems); setExpandedItemId(nextItems[0]?.id || null); } }}><Sparkles className="mr-2 h-4 w-4" />Load MC1 Blueprint</Button>
+            <Button type="button" variant="outline" onClick={() => { if (window.confirm('Replace the current menu editor values with the approved MCS blueprint? Save is still required.')) { const nextItems = blueprint.map(localizeBlueprintItem); setItems(nextItems); setExpandedItemId(nextItems[0]?.id || null); } }}><Sparkles className="mr-2 h-4 w-4" />Load MCS Blueprint</Button>
             <Button type="button" variant="outline" onClick={linkManagedRecords} title="Connect labels and links to managed content without replacing uploaded menu images"><Link2 className="mr-2 h-4 w-4" />Link Records — Keep Images</Button>
             <Button type="button" onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending} className="bg-blue-600 text-white hover:bg-blue-700">{saveMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}Save Navigation</Button>
           </div>

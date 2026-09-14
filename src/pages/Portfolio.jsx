@@ -70,7 +70,7 @@ export default function Portfolio() {
               {t('portfolio.hero.title', 'Business systems designed to do real work')}
             </h1>
             <p className="mx-auto max-w-3xl text-lg leading-relaxed text-slate-300 md:text-xl">
-              {t('portfolio.hero.desc', 'Explore how MC1 turns operational workflows into software, SaaS products, automation and measurable digital experiences.')}
+              {t('portfolio.hero.desc', 'Explore how MCS turns operational workflows into software, SaaS products, automation and measurable digital experiences.')}
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200 backdrop-blur"><Layers3 className="h-4 w-4 text-blue-300" />{portfolios.length} {t('portfolio.published_projects', 'published projects')}</span>
@@ -89,7 +89,7 @@ export default function Portfolio() {
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">{t('portfolio.find_relevant_experience', 'Find the experience most relevant to your business')}</h2>
           </div>
           <div className="mb-5 flex flex-wrap justify-center gap-3">
-            {[['all', 'All Work'], ['client_project', 'Client Projects'], ['mc1_product', 'MC1 Products']].map(([value, label]) => (
+            {[['all', 'All Work'], ['client_project', 'Client Projects'], ['mc1_product', 'MCS Products']].map(([value, label]) => (
               <button
                 key={value}
                 onClick={() => setActiveType(value)}

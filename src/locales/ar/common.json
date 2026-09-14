@@ -87,14 +87,14 @@
       "industry": "الخبرة القطاعية",
       "sectors": "قطاعات",
       "secure_scale": "آمن وقابل للتوسع",
-      "capability_system": "منظومة قدرات MC1",
+      "capability_system": "منظومة قدرات MCS",
       "enabled": "مدعوم",
       "ready": "جاهز",
       "delivery_short": "إنجاز"
     },
     "pills": { "software": "البرمجيات المخصصة" },
     "products": {
-      "subtitle": "من تطوير MC1",
+      "subtitle": "من تطوير MCS",
       "title": "منتجات نملكها ونديرها",
       "description": "منصات نطورها ونديرها ونحسنها باستمرار وفق المعايير نفسها التي نطبقها في مشاريع عملائنا.",
       "explore": "استكشف المنتج"
@@ -305,7 +305,7 @@
       "creative": "الإبداع"
     },
     "client": "العميل",
-    "mc1_product": "منتج من MC1",
+    "mc1_product": "منتج من MCS",
     "client_project": "مشروع عميل",
     "featured": "مميز",
     "published_projects": "مشروعاً منشوراً",
@@ -377,7 +377,7 @@
     "start_conversation": "ابدأ المحادثة"
   },
   "industries": {
-    "meta_fallback": "استكشف خبرات MC1 وحلولها الرقمية لهذا القطاع.",
+    "meta_fallback": "استكشف خبرات MCS وحلولها الرقمية لهذا القطاع.",
     "load_error": "صفحة هذا القطاع غير متاحة مؤقتاً",
     "not_found": "لم يتم العثور على القطاع",
     "not_found_description": "ربما تم نقل هذا القطاع أو أنه غير منشور حالياً.",

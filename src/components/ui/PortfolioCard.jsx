@@ -17,7 +17,7 @@ export default function PortfolioCard({ portfolio, index = 0, masonry = false })
   const description = getLoc(portfolio, 'short_description') || getLoc(portfolio, 'description');
   const headline = getLoc(portfolio, 'headline') || description;
   const clientName = portfolio.client_name; // Assuming client name is usually same, or we could add _ar if needed but usually names are proper nouns.
-  const projectType = portfolio.project_type === 'mc1_product' ? t('portfolio.mc1_product', 'MC1 Product') : t('portfolio.client_project', 'Client Project');
+  const projectType = portfolio.project_type === 'mc1_product' ? t('portfolio.mc1_product', 'MCS Product') : t('portfolio.client_project', 'Client Project');
 
   return (
     <motion.div

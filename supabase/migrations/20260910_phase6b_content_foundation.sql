@@ -4,7 +4,7 @@
 
 begin;
 
--- Portfolio stays the single source for MC1 products and client projects.
+-- Portfolio stays the single source for MCS products and client projects.
 alter table public.portfolio
   add column if not exists slug text,
   add column if not exists project_type text not null default 'client_project',

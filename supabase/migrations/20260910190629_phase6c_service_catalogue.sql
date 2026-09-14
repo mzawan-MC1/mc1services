@@ -1,4 +1,4 @@
--- Phase 6C canonical MC1 service catalogue.
+-- Phase 6C canonical MCS service catalogue.
 -- Prepared locally on 2026-09-10. Review and back up before applying to production.
 -- Reuses the four existing service records and inserts only the three missing services.
 
