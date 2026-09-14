@@ -50,13 +50,13 @@ export default function AdminPortfolioEdit() {
 
   const { data: portfolioCategories = [] } = usePortfolioCategories();
 
-  const { data: savedIndustryIds = [] } = useQuery({
+  const { data: savedIndustryIds } = useQuery({
     queryKey: ['portfolio-industry-ids', id],
     queryFn: () => dataLayer.portfolioTaxonomy.getIndustryIds(id),
     enabled: isEditing
   });
 
-  const { data: savedServiceIds = [] } = useQuery({
+  const { data: savedServiceIds } = useQuery({
     queryKey: ['portfolio-service-ids', id],
     queryFn: () => dataLayer.portfolioTaxonomy.getServiceIds(id),
     enabled: isEditing
@@ -79,7 +79,6 @@ export default function AdminPortfolioEdit() {
     main_image_url: '',
     short_description: '',
     long_description: '',
-    industry: '',
     project_date: '',
     completion_date: '',
     project_overview: '',
@@ -105,8 +104,17 @@ export default function AdminPortfolioEdit() {
     categoryOptions.push({ value: formData.category, label: formatPortfolioCategoryKey(formData.category), is_active: false });
   }
 
-  useEffect(() => setSelectedIndustryIds(savedIndustryIds), [savedIndustryIds]);
-  useEffect(() => setSelectedServiceIds(savedServiceIds), [savedServiceIds]);
+  useEffect(() => {
+    if (isEditing && Array.isArray(savedIndustryIds)) {
+      setSelectedIndustryIds(savedIndustryIds);
+    }
+  }, [isEditing, savedIndustryIds]);
+
+  useEffect(() => {
+    if (isEditing && Array.isArray(savedServiceIds)) {
+      setSelectedServiceIds(savedServiceIds);
+    }
+  }, [isEditing, savedServiceIds]);
 
   useEffect(() => {
     if (project) {
@@ -137,7 +145,6 @@ export default function AdminPortfolioEdit() {
         main_image_url: project.main_image_url || '',
         short_description: project.short_description || '',
         long_description: project.long_description || '',
-        industry: project.industry || '',
         project_date: toISO(project.project_date) || '',
         completion_date: toISO(project.completion_date) || '',
         project_overview: project.project_overview || '',
@@ -194,7 +201,7 @@ export default function AdminPortfolioEdit() {
         title: data.title,
         headline: data.headline,
         slug: data.slug.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
-        client_name: data.client_name,
+        client_name: data.project_type === 'mc1_product' ? 'MCS Consultancy' : data.client_name,
         category: data.category,
         project_type: data.project_type,
         confidentiality: data.confidentiality,
@@ -204,7 +211,6 @@ export default function AdminPortfolioEdit() {
         main_image_url: data.main_image_url,
         short_description: data.short_description,
         long_description: data.long_description,
-        industry: data.industry,
         project_date: normalizeDate(data.project_date),
         completion_date: normalizeDate(data.completion_date),
         project_overview: data.project_overview,
@@ -304,7 +310,15 @@ export default function AdminPortfolioEdit() {
 
               <div className="grid gap-4 md:grid-cols-3">
                 <div><Label>Project Type</Label>
-                  <Select value={formData.project_type} onValueChange={(v) => setFormData(p => ({ ...p, project_type: v }))}>
+                  <Select value={formData.project_type} onValueChange={(v) => setFormData((previous) => ({
+                    ...previous,
+                    project_type: v,
+                    client_name: v === 'mc1_product'
+                      ? 'MCS Consultancy'
+                      : previous.project_type === 'mc1_product' && previous.client_name === 'MCS Consultancy'
+                        ? ''
+                        : previous.client_name
+                  }))}>
                     <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="mc1_product">MCS Product</SelectItem>
@@ -359,7 +373,16 @@ export default function AdminPortfolioEdit() {
 
               <div className="border-t pt-4 mt-4 space-y-4">
                 <h3 className="font-medium">Common Details</h3>
-                <div><Label>Client Name</Label><Input value={formData.client_name} onChange={(e) => setFormData(p => ({ ...p, client_name: e.target.value }))} className="mt-1" /></div>
+                <div>
+                  <Label>{formData.project_type === 'mc1_product' ? 'Owner / Company' : 'Client Name'}</Label>
+                  <Input
+                    value={formData.project_type === 'mc1_product' ? 'MCS Consultancy' : formData.client_name}
+                    onChange={(e) => setFormData((previous) => ({ ...previous, client_name: e.target.value }))}
+                    readOnly={formData.project_type === 'mc1_product'}
+                    className={`mt-1 ${formData.project_type === 'mc1_product' ? 'bg-slate-100 font-medium text-slate-700' : ''}`}
+                  />
+                  {formData.project_type === 'mc1_product' && <p className="mt-1 text-xs text-slate-500">Automatically assigned to MCS-owned products.</p>}
+                </div>
 
                 <div>
                     <Label>Main Image</Label>
@@ -373,8 +396,7 @@ export default function AdminPortfolioEdit() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
-                    <div><Label>Industry</Label><Input value={formData.industry} onChange={(e) => setFormData(p => ({ ...p, industry: e.target.value }))} className="mt-1" /></div>
+                <div className="grid gap-4 md:grid-cols-2">
                     <div><Label>Project Date</Label><Input type="date" value={formData.project_date} onChange={(e) => setFormData(p => ({ ...p, project_date: e.target.value }))} className="mt-1" /></div>
                     <div><Label>Completed Date</Label><Input type="date" value={formData.completion_date} onChange={(e) => setFormData(p => ({ ...p, completion_date: e.target.value }))} className="mt-1" /></div>
                 </div>
@@ -399,8 +421,8 @@ export default function AdminPortfolioEdit() {
                 <p className="mb-3 text-xs text-slate-500">Choose every industry this project demonstrates.</p>
                 <div className="space-y-2 rounded-lg border p-3">
                   {industries.map((industryItem) => (
-                    <label key={industryItem.id} className="flex items-center gap-2 text-sm">
-                      <input type="checkbox" checked={selectedIndustryIds.includes(industryItem.id)} onChange={(e) => setSelectedIndustryIds((current) => e.target.checked ? [...current, industryItem.id] : current.filter((value) => value !== industryItem.id))} />
+                    <label key={industryItem.id} className={`flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors ${selectedIndustryIds.includes(industryItem.id) ? 'bg-blue-50 font-medium text-blue-900' : 'hover:bg-slate-50'}`}>
+                      <input type="checkbox" className="h-4 w-4 accent-blue-600" checked={selectedIndustryIds.includes(industryItem.id)} onChange={(e) => setSelectedIndustryIds((current) => e.target.checked ? [...new Set([...current, industryItem.id])] : current.filter((value) => value !== industryItem.id))} />
                       {industryItem.name}
                     </label>
                   ))}
@@ -412,8 +434,8 @@ export default function AdminPortfolioEdit() {
                 <p className="mb-3 text-xs text-slate-500">These relationships power filters and dynamic menus.</p>
                 <div className="max-h-64 space-y-2 overflow-y-auto rounded-lg border p-3">
                   {services.map((serviceItem) => (
-                    <label key={serviceItem.id} className="flex items-center gap-2 text-sm">
-                      <input type="checkbox" checked={selectedServiceIds.includes(serviceItem.id)} onChange={(e) => setSelectedServiceIds((current) => e.target.checked ? [...current, serviceItem.id] : current.filter((value) => value !== serviceItem.id))} />
+                    <label key={serviceItem.id} className={`flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors ${selectedServiceIds.includes(serviceItem.id) ? 'bg-blue-50 font-medium text-blue-900' : 'hover:bg-slate-50'}`}>
+                      <input type="checkbox" className="h-4 w-4 accent-blue-600" checked={selectedServiceIds.includes(serviceItem.id)} onChange={(e) => setSelectedServiceIds((current) => e.target.checked ? [...new Set([...current, serviceItem.id])] : current.filter((value) => value !== serviceItem.id))} />
                       {serviceItem.title}
                     </label>
                   ))}
