@@ -1,4 +1,5 @@
 import { supabase, supabaseHelpers, storageHelpers } from './supabaseClient';
+import { PORTFOLIO_CATEGORIES_SETTING_KEY, normalizePortfolioCategories, serializePortfolioCategories } from '../config/portfolioCategories';
 
 // Unified data layer that routes all data calls through Supabase
 export const dataLayer = {
@@ -9,6 +10,19 @@ export const dataLayer = {
     create: (data) => supabaseHelpers.create('site_settings', data),
     update: (id, data) => supabaseHelpers.update('site_settings', id, data),
     upsert: (data) => supabaseHelpers.upsert('site_settings', data, 'setting_key'),
+  },
+
+  portfolioCategories: {
+    getAll: async () => {
+      const rows = await supabaseHelpers.getByKey('site_settings', 'setting_key', PORTFOLIO_CATEGORIES_SETTING_KEY);
+      return normalizePortfolioCategories(rows[0]?.setting_value);
+    },
+    save: (categories) => supabaseHelpers.upsert('site_settings', {
+      setting_key: PORTFOLIO_CATEGORIES_SETTING_KEY,
+      setting_value: serializePortfolioCategories(categories),
+      setting_category: 'portfolio',
+      display_name: 'Portfolio Categories'
+    }, 'setting_key')
   },
 
   // Header/Footer Settings

@@ -68,6 +68,7 @@ export default function AdminSiteSettings() {
   });
 
   const getCategoryForKey = (key) => {
+    if (key === 'portfolio_categories') return 'portfolio';
     if (key.startsWith('who_we_are')) return 'content';
     if (key.includes('logo') || key.includes('favicon') || key.includes('company')) return 'branding';
     if (key.includes('facebook') || key.includes('twitter') || key.includes('linkedin') || key.includes('instagram') || key.includes('youtube') || key.includes('reddit') || key.includes('snapchat')) return 'social';

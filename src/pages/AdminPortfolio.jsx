@@ -10,16 +10,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { toast } from 'sonner';
 import AdminLayout from '../components/admin/AdminLayout';
 import AdminRoute from '../components/AdminRoute';
-
-const categoryLabels = {
-  web_development: 'Web Development',
-  app_development: 'App Development',
-  marketing: 'Marketing',
-  branding: 'Branding',
-  it_services: 'IT Services',
-  automation: 'Automation',
-  creative: 'Creative'
-};
+import PortfolioCategoryManager from '../components/admin/PortfolioCategoryManager';
+import { getPortfolioCategoryLabel, usePortfolioCategories } from '../hooks/usePortfolioCategories';
 
 export default function AdminPortfolio() {
   const queryClient = useQueryClient();
@@ -28,6 +20,8 @@ export default function AdminPortfolio() {
     queryKey: ['admin-portfolio'],
     queryFn: () => dataLayer.portfolio.getAll()
   });
+
+  const { data: categories = [] } = usePortfolioCategories();
 
   const deleteMutation = useMutation({
     mutationFn: (id) => dataLayer.portfolio.deleteWithFiles(id),
@@ -47,17 +41,20 @@ export default function AdminPortfolio() {
     <AdminRoute>
     <AdminLayout currentPage="AdminPortfolio">
       <div className="p-6 lg:p-8">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl font-bold text-slate-900">Portfolio Management</h1>
             <p className="text-slate-600 mt-1">Manage your portfolio projects</p>
           </div>
-          <Link to={createPageUrl('AdminPortfolioEdit')}>
-            <Button className="bg-gradient-to-r from-blue-600 to-purple-600">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Project
-            </Button>
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <PortfolioCategoryManager categories={categories} portfolios={portfolios} />
+            <Link to={createPageUrl('AdminPortfolioEdit')}>
+              <Button className="bg-gradient-to-r from-blue-600 to-purple-600">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Project
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {isLoading ? (
@@ -94,7 +91,7 @@ export default function AdminPortfolio() {
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-semibold text-slate-900 truncate">{portfolio.title}</h3>
                       <Badge variant="secondary" className="text-xs">
-                        {categoryLabels[portfolio.category] || portfolio.category}
+                        {getPortfolioCategoryLabel(categories, portfolio.category)}
                       </Badge>
                     </div>
                     <p className="text-sm text-slate-600 truncate">{portfolio.description}</p>

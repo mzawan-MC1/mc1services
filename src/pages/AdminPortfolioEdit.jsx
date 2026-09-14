@@ -17,6 +17,7 @@ import FileUpload from '../components/FileUpload';
 import GalleryUpload from '../components/GalleryUpload';
 import AdminLayout from '../components/admin/AdminLayout';
 import AdminRoute from '../components/AdminRoute';
+import { formatPortfolioCategoryKey, usePortfolioCategories } from '../hooks/usePortfolioCategories';
 
 export default function AdminPortfolioEdit() {
   const [searchParams] = useSearchParams();
@@ -46,6 +47,8 @@ export default function AdminPortfolioEdit() {
     queryKey: ['admin-services'],
     queryFn: () => dataLayer.services.getAll()
   });
+
+  const { data: portfolioCategories = [] } = usePortfolioCategories();
 
   const { data: savedIndustryIds = [] } = useQuery({
     queryKey: ['portfolio-industry-ids', id],
@@ -96,6 +99,11 @@ export default function AdminPortfolioEdit() {
     solutions_ar: '',
     results_ar: ''
   });
+
+  const categoryOptions = portfolioCategories.filter((category) => category.is_active || category.value === formData.category);
+  if (formData.category && !categoryOptions.some((category) => category.value === formData.category)) {
+    categoryOptions.push({ value: formData.category, label: formatPortfolioCategoryKey(formData.category), is_active: false });
+  }
 
   useEffect(() => setSelectedIndustryIds(savedIndustryIds), [savedIndustryIds]);
   useEffect(() => setSelectedServiceIds(savedServiceIds), [savedServiceIds]);
@@ -278,18 +286,10 @@ export default function AdminPortfolioEdit() {
                   <Select value={formData.category} onValueChange={(v) => setFormData(p => ({ ...p, category: v }))}>
                     <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="web_development">Web Development</SelectItem>
-                      <SelectItem value="app_development">App Development</SelectItem>
-                      <SelectItem value="digital_marketing">Digital Marketing</SelectItem>
-                      <SelectItem value="production">Production</SelectItem>
-                      <SelectItem value="it_services">IT Services</SelectItem>
-                      <SelectItem value="development">Development</SelectItem>
-                      <SelectItem value="apps">Apps</SelectItem>
-                      <SelectItem value="marketing">Marketing</SelectItem>
-                      <SelectItem value="branding">Branding</SelectItem>
-                      <SelectItem value="creative">Creative</SelectItem>
+                      {categoryOptions.map((category) => <SelectItem key={category.value} value={category.value}>{category.label}</SelectItem>)}
                     </SelectContent>
                   </Select>
+                  <p className="mt-1 text-xs text-slate-500">Single primary classification. Manage options from Portfolio Management.</p>
                 </div>
                 <div><Label>Status</Label>
                   <Select value={formData.status} onValueChange={(v) => setFormData(p => ({ ...p, status: v }))}>

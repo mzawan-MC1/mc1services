@@ -13,9 +13,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { getPortfolioCategoryLabel, usePortfolioCategories } from '../hooks/usePortfolioCategories';
 
 export default function PortfolioDetail() {
   const { t, i18n } = useTranslation();
+  const { data: portfolioCategories = [] } = usePortfolioCategories();
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get('id');
 
@@ -123,6 +125,7 @@ export default function PortfolioDetail() {
     ? t('portfolio.mc1_product', 'MC1 Product')
     : t('portfolio.client_project', 'Client Project');
   const galleryOffset = portfolio.main_image_url ? 1 : 0;
+  const categoryLabel = getPortfolioCategoryLabel(portfolioCategories, portfolio.category, i18n.language);
 
   return (
     <div>
@@ -139,7 +142,7 @@ export default function PortfolioDetail() {
           </Link>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl">
             <div className="mb-5 flex flex-wrap gap-2">
-              <Badge className="border border-white/10 bg-white/10 text-blue-200 hover:bg-white/10">{t(`portfolio.categories.${portfolio.category}`, portfolio.category)}</Badge>
+              <Badge className="border border-white/10 bg-white/10 text-blue-200 hover:bg-white/10">{categoryLabel}</Badge>
               <Badge className="border border-white/10 bg-white/10 text-slate-100 hover:bg-white/10">{projectTypeLabel}</Badge>
               {portfolio.is_featured && <Badge className="border border-purple-300/20 bg-purple-500/20 text-purple-100 hover:bg-purple-500/20"><Sparkles className="mr-1 h-3 w-3" />{t('portfolio.featured_case_study', 'Featured case study')}</Badge>}
             </div>
@@ -319,7 +322,7 @@ export default function PortfolioDetail() {
                   <h3 className="font-bold text-slate-900 mb-4">{t('portfolio.detail.project_overview', 'Project Details')}</h3>
                   <div className="space-y-4">
                     {portfolio.client_name && <div><p className="text-sm text-slate-500">{t('portfolio.client', 'Client')}</p><p className="font-medium">{portfolio.client_name}</p></div>}
-                    <div><p className="text-sm text-slate-500">{t('nav.portfolio', 'Category')}</p><p className="font-medium">{t(`portfolio.categories.${portfolio.category}`, portfolio.category)}</p></div>
+                    <div><p className="text-sm text-slate-500">{t('nav.portfolio', 'Category')}</p><p className="font-medium">{categoryLabel}</p></div>
                     {portfolio.completion_date && <div><p className="text-sm text-slate-500">{t('portfolio.detail.completed', 'Completed')}</p><p className="font-medium">{format(new Date(portfolio.completion_date), 'MMMM yyyy')}</p></div>}
                   </div>
                 </motion.div>

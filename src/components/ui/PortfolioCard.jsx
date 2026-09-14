@@ -5,16 +5,13 @@ import { ArrowUpRight, Building2, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedValue } from '../../utils';
+import { getPortfolioCategoryLabel, usePortfolioCategories } from '../../hooks/usePortfolioCategories';
 
 export default function PortfolioCard({ portfolio, index = 0, masonry = false }) {
   const { t, i18n } = useTranslation();
+  const { data: portfolioCategories = [] } = usePortfolioCategories();
 
   const getLoc = (obj, key) => getLocalizedValue(obj, key, i18n.language);
-
-  // We can use the translation keys we added to common.json
-  const getCategoryLabel = (cat) => {
-    return t(`portfolio.categories.${cat}`, cat);
-  };
 
   const title = getLoc(portfolio, 'title');
   const description = getLoc(portfolio, 'short_description') || getLoc(portfolio, 'description');
@@ -57,7 +54,7 @@ export default function PortfolioCard({ portfolio, index = 0, masonry = false })
           </div>
         </div>
         <div className="flex flex-1 flex-col p-5 md:p-6">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">{getCategoryLabel(portfolio.category)}</p>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">{getPortfolioCategoryLabel(portfolioCategories, portfolio.category, i18n.language)}</p>
           <h3 className="line-clamp-2 text-xl font-bold leading-tight text-slate-950 md:text-2xl">{title}</h3>
           {headline && <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-slate-600">{headline}</p>}
           {clientName && <p className="mt-auto flex items-center gap-2 border-t border-slate-100 pt-4 text-xs font-medium text-slate-500"><Building2 className="h-3.5 w-3.5 text-blue-500" />{clientName}</p>}
