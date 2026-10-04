@@ -139,7 +139,7 @@ export default function IndustryDetail() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl"><p className="text-sm font-bold uppercase tracking-[0.22em] text-blue-600">{t('industries.relevant_capabilities', 'Relevant capabilities')}</p><h2 className="mt-3 text-3xl font-black tracking-tight text-slate-950 md:text-5xl">{t('industries.solutions_for_sector', 'Solutions connected to this sector')}</h2></div>
             <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-              {services.slice(0, 6).map((service, index) => {
+              {services.map((service, index) => {
                 const serviceName = getLocalizedValue(service, 'title', i18n.language);
                 const serviceDescription = getLocalizedValue(service, 'description', i18n.language);
                 return <motion.div key={service.id} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.05 }}><Link to={`/solutions/${service.slug}`} className="group block h-full rounded-3xl border border-slate-200 bg-slate-50 p-7 transition hover:-translate-y-1 hover:border-blue-200 hover:bg-white hover:shadow-xl"><Sparkles className="h-7 w-7 text-blue-600" /><h3 className="mt-5 text-xl font-bold text-slate-950">{serviceName}</h3>{serviceDescription && <p className="mt-3 line-clamp-3 leading-7 text-slate-600">{serviceDescription}</p>}<span className="mt-6 inline-flex items-center gap-2 font-semibold text-blue-700">{t('industries.explore_solution', 'Explore solution')}<ArrowRight className="h-4 w-4 transition group-hover:translate-x-1 rtl:rotate-180" /></span></Link></motion.div>;

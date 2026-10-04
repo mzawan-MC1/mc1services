@@ -15,6 +15,20 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { getPortfolioCategoryLabel, usePortfolioCategories } from '../hooks/usePortfolioCategories';
 
+const setMetaContent = (selector, attributeName, attributeValue, content) => {
+  let element = document.querySelector(selector);
+  if (!content) {
+    element?.remove();
+    return;
+  }
+  if (!element) {
+    element = document.createElement('meta');
+    element.setAttribute(attributeName, attributeValue);
+    document.head.appendChild(element);
+  }
+  element.content = content;
+};
+
 export default function PortfolioDetail() {
   const { t, i18n } = useTranslation();
   const { data: portfolioCategories = [] } = usePortfolioCategories();
@@ -45,6 +59,34 @@ export default function PortfolioDetail() {
   });
 
   const testimonial = testimonials[0];
+
+  // Dynamic SEO for this case-study page (title, description, OG tags, canonical with ?id=)
+  useEffect(() => {
+    if (isLoading) return;
+    if (!portfolio) {
+      document.title = 'Project Not Found | MCS Consultancy';
+      setMetaContent('meta[name="robots"]', 'name', 'robots', 'noindex, nofollow');
+      return;
+    }
+    const seoTitle = getLoc(portfolio, 'title');
+    const metaDescription =
+      getLoc(portfolio, 'short_description') ||
+      getLoc(portfolio, 'project_overview') ||
+      'Case study by MCS Consultancy.';
+    const pageTitle = `${seoTitle} | MCS Consultancy`;
+    const canonicalUrl = `${window.location.origin}/PortfolioDetail?id=${id}`;
+    document.title = pageTitle;
+    setMetaContent('meta[name="description"]', 'name', 'description', metaDescription);
+    setMetaContent('meta[name="robots"]', 'name', 'robots', 'index, follow');
+    setMetaContent('meta[property="og:title"]', 'property', 'og:title', pageTitle);
+    setMetaContent('meta[property="og:description"]', 'property', 'og:description', metaDescription);
+    setMetaContent('meta[property="og:url"]', 'property', 'og:url', canonicalUrl);
+    setMetaContent('meta[property="og:image"]', 'property', 'og:image', portfolio.main_image_url);
+    setMetaContent('meta[name="twitter:title"]', 'name', 'twitter:title', pageTitle);
+    setMetaContent('meta[name="twitter:description"]', 'name', 'twitter:description', metaDescription);
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.href = canonicalUrl;
+  }, [portfolio, isLoading, id, i18n.language]);
 
   const { data: industries = [] } = useQuery({ queryKey: ['active-industries'], queryFn: () => dataLayer.industries.getActive() });
   const { data: services = [] } = useQuery({ queryKey: ['active-services'], queryFn: () => dataLayer.services.getActive() });

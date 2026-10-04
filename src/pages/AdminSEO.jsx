@@ -14,19 +14,26 @@ import AdminLayout from '../components/admin/AdminLayout';
 import FileUpload from '../components/FileUpload';
 
 const commonPages = [
-  { id: 'home', name: 'Home Page' },
-  { id: 'about', name: 'About Us' },
-  { id: 'contact', name: 'Contact' },
-  { id: 'portfolio', name: 'Portfolio' },
-  { id: 'tools', name: 'Tools Hub' },
-  { id: 'web-development', name: 'Web Development' },
-  { id: 'app-development', name: 'App Development' },
-  { id: 'digital-marketing', name: 'Digital Marketing' },
-  { id: 'automation', name: 'Automation' },
-  { id: 'production', name: 'Production' },
-  { id: 'it-services', name: 'IT Services' },
-  { id: 'marketing-services', name: 'Marketing Services' },
-  { id: 'development-services', name: 'Development Services' },
+  { id: 'home', name: 'Home Page', url: '/' },
+  { id: 'about', name: 'About Us', url: '/About' },
+  { id: 'contact', name: 'Contact', url: '/Contact' },
+  { id: 'portfolio', name: 'Portfolio', url: '/Portfolio' },
+  { id: 'tools', name: 'Tools Hub', url: '/Tools' },
+  { id: 'web-development', name: 'Web Development', url: '/WebDevelopment' },
+  { id: 'app-development', name: 'App Development', url: '/AppDevelopment' },
+  { id: 'digital-marketing', name: 'Digital Marketing', url: '/DigitalMarketing' },
+  { id: 'automation', name: 'Automation', url: '/Automation' },
+  { id: 'production', name: 'Production', url: '/Production' },
+  { id: 'it-services', name: 'IT Services', url: '/ITServices' },
+  { id: 'marketing-services', name: 'Marketing Services', url: '/MarketingServices' },
+  { id: 'development-services', name: 'Development Services', url: '/DevelopmentServices' },
+  { id: 'privacy-policy', name: 'Privacy Policy', url: '/privacy-policy' },
+  { id: 'terms-of-service', name: 'Terms of Service', url: '/terms-of-service' },
+  { id: 'salary-loan-calculator', name: 'Salary Loan Calculator', url: '/SalaryLoanCalculator' },
+  { id: 'traffic-fines-checker', name: 'Traffic Fines Checker', url: '/TrafficFinesChecker' },
+  { id: 'visa-overstay-calculator', name: 'Visa Overstay Calculator', url: '/VisaOverstayCalculator' },
+  { id: 'toll-estimator', name: 'Toll Estimator', url: '/TollEstimator' },
+  { id: 'currency-converter', name: 'Currency Converter', url: '/CurrencyConverter' },
 ];
 
 export default function AdminSEO() {
@@ -149,15 +156,33 @@ export default function AdminSEO() {
     }
   };
 
-  const generateSitemap = () => {
+  const generateSitemap = async () => {
     const baseUrl = window.location.origin;
-    const pages = commonPages.map(p => `${baseUrl}/${p.id}`);
+    const today = new Date().toISOString().split('T')[0];
+    const urls = commonPages.map(p => `${baseUrl}${p.url || `/${p.id}`}`);
+
+    // Include dynamic pages: solutions, industries and published portfolio case studies
+    try {
+      const [services, industries, projects] = await Promise.all([
+        dataLayer.services.getAll().catch(() => []),
+        dataLayer.industries.getAll().catch(() => []),
+        dataLayer.portfolio.getPublished().catch(() => []),
+      ]);
+      (services || []).forEach(s => { if (s.slug) urls.push(`${baseUrl}/solutions/${s.slug}`); });
+      (industries || []).forEach(i => { if (i.slug) urls.push(`${baseUrl}/industries/${i.slug}`); });
+      (projects || []).forEach(p => { if (p.id) urls.push(`${baseUrl}/PortfolioDetail?id=${p.id}`); });
+    } catch (e) {
+      console.error('Sitemap dynamic URL fetch failed, using static pages only.', e);
+    }
+
+    const escapeXml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const uniqueUrls = [...new Set(urls)];
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages.map(url => `  <url>
-    <loc>${url}</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+${uniqueUrls.map(url => `  <url>
+    <loc>${escapeXml(url)}</loc>
+    <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>`).join('\n')}
