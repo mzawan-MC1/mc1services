@@ -10,6 +10,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { dataLayer } from '../components/dataLayer';
 import PortfolioCard from '../components/ui/PortfolioCard';
+import { BreadcrumbJsonLd, FaqJsonLd } from '../components/StructuredData';
 import { getLocalizedValue } from '../utils';
 
 const iconMap = {
@@ -136,12 +137,18 @@ export default function SolutionDetail() {
 
   return (
     <main>
+      <BreadcrumbJsonLd items={[
+        { name: t('nav.home', 'Home'), url: 'https://mc1services.com/' },
+        { name: t('nav.solutions', 'Solutions') },
+        { name: title },
+      ]} />
+      <FaqJsonLd faqs={faqs} />
       <section className="relative overflow-hidden bg-slate-950 py-20 text-white md:py-28">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(37,99,235,0.3),transparent_35%),radial-gradient(circle_at_85%_70%,rgba(147,51,234,0.24),transparent_34%)]" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.08fr_0.92fr] lg:px-8">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}>
             <nav aria-label="Breadcrumb" className="mb-7 flex items-center gap-2 text-sm text-slate-300">
-              <Link to="/Home" className="hover:text-white">{t('nav.home', 'Home')}</Link><span>/</span><span>{t('nav.solutions', 'Solutions')}</span>
+              <Link to="/" className="hover:text-white">{t('nav.home', 'Home')}</Link><span>/</span><span>{t('nav.solutions', 'Solutions')}</span>
             </nav>
             {category && <p className="mb-5 text-sm font-bold uppercase tracking-[0.22em] text-cyan-300">{category}</p>}
             <h1 className="max-w-4xl text-4xl font-black tracking-tight sm:text-5xl lg:text-7xl">{title}</h1>

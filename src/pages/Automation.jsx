@@ -9,6 +9,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import SEOHead from '../components/SEOHead';
+import { FaqJsonLd } from '../components/StructuredData';
 import { useTranslation } from 'react-i18next';
 
 export default function Automation() {
@@ -76,6 +77,7 @@ export default function Automation() {
   return (
     <div>
       <SEOHead pageIdentifier="automation" />
+      <FaqJsonLd faqs={faqs} />
       {/* Hero */}
       <section className="relative py-24 bg-gradient-to-br from-slate-900 via-amber-900/20 to-slate-900 overflow-hidden">
         <div className="absolute inset-0">

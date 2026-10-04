@@ -2,6 +2,11 @@
 
 
 export function createPageUrl(pageName: string) {
+    // 'Home' is a legacy alias of the canonical homepage at '/'.
+    if (pageName.toLowerCase() === 'home') {
+        const qIndex = pageName.indexOf('?');
+        return qIndex === -1 ? '/' : '/' + pageName.slice(qIndex);
+    }
     if (pageName.includes('?')) {
         const [path, search] = pageName.split('?');
         return '/' + path + '?' + search;

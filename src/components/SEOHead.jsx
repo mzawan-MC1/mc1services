@@ -4,6 +4,8 @@ import { dataLayer } from './dataLayer';
 import { useTranslation } from 'react-i18next';
 import { getSeoDefaults } from '../config/seoDefaults';
 
+const DEFAULT_OG_IMAGE = 'https://mc1services.com/og-cover.jpg';
+
 const setMeta = (selector, attribute, value) => {
   let element = document.querySelector(selector);
   if (!value) {
@@ -64,7 +66,10 @@ export default function SEOHead({ pageIdentifier }) {
     setMeta('meta[property="og:title"]', ['property', 'og:title'], ogTitle);
     setMeta('meta[property="og:description"]', ['property', 'og:description'], ogDescription);
     setMeta('meta[property="og:url"]', ['property', 'og:url'], canonical.href);
-    setMeta('meta[property="og:image"]', ['property', 'og:image'], seoData?.og_image || '');
+    const ogImage = getVal('og_image_ar', 'og_image') || DEFAULT_OG_IMAGE;
+    setMeta('meta[property="og:image"]', ['property', 'og:image'], ogImage);
+    setMeta('meta[name="twitter:image"]', ['name', 'twitter:image'], ogImage);
+    setMeta('meta[name="twitter:card"]', ['name', 'twitter:card'], 'summary_large_image');
     setMeta('meta[name="twitter:title"]', ['name', 'twitter:title'], ogTitle);
     setMeta('meta[name="twitter:description"]', ['name', 'twitter:description'], ogDescription);
   }, [seoData, isFetched, i18n.language, pageIdentifier]);

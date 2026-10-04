@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import SEOHead from '../components/SEOHead';
+import { FaqJsonLd } from '../components/StructuredData';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedValue } from '../utils';
 import { getLocalizedFaqQuestion, getLocalizedFaqAnswer } from '../utils/faqMapping';
@@ -158,6 +159,7 @@ export default function Contact() {
   return (
     <div>
       <SEOHead pageIdentifier="contact" />
+      <FaqJsonLd faqs={displayFaqs} />
       {/* Hero */}
       <section className="relative py-24 bg-slate-900 overflow-hidden">
         <div className="absolute inset-0">

@@ -120,7 +120,7 @@ const AdminTaskDetailsPage = lazy(() => import("./AdminTaskDetailsPage"));
 import AdminRoute from "../components/AdminRoute";
 import AdminLayout from "../components/admin/AdminLayout";
 
-import { BrowserRouter as Router, Link, Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Link, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 
 const PAGES = {
     
@@ -288,7 +288,7 @@ function NotFound() {
                 <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-600">404</p>
                 <h1 className="mt-3 text-3xl font-bold text-slate-900">{t('common.page_not_found')}</h1>
                 <p className="mt-3 text-slate-600">{t('common.page_not_found_description')}</p>
-                <Link to="/Home" className="mt-6 inline-flex rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
+                <Link to="/" className="mt-6 inline-flex rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
                     {t('common.return_home')}
                 </Link>
             </div>
@@ -336,12 +336,15 @@ function PagesContent() {
             <Suspense fallback={<PageLoading />}>
             <Routes>
                 <Route path="/" element={<Home />} />
+                {/* /Home and /home are legacy aliases of the homepage: redirect to the canonical / to avoid duplicate content. */}
+                <Route path="/Home" element={<Navigate to="/" replace />} />
+                <Route path="/home" element={<Navigate to="/" replace />} />
                 <Route path="/solutions/:slug" element={<SolutionDetail />} />
                 <Route path="/industries/:slug" element={<IndustryDetail />} />
 
-                {/* Public pages retain their existing canonical and lowercase URLs. */}
+                {/* Public pages retain their existing canonical and lowercase URLs. Home is excluded: it is served at / only. */}
                 {Object.keys(PAGES)
-                    .filter(pageName => !pageName.startsWith('Admin') || pageName === 'AdminLogin')
+                    .filter(pageName => (!pageName.startsWith('Admin') || pageName === 'AdminLogin') && pageName !== 'Home')
                     .map(pageName => {
                         const Component = PAGES[pageName];
                         return (

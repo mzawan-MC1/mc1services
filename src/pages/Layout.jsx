@@ -448,7 +448,7 @@ export default function Layout({ children, currentPageName }) {
                               {previewChild && <div className="relative flex min-h-0 flex-col overflow-hidden bg-slate-950 p-7 text-white xl:p-8">
                                 <AnimatePresence mode="wait">
                                   <motion.div key={previewChild.id || previewChild.href} initial={{ opacity: 0.35, scale: 1.02 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.24 }} className="absolute inset-0">
-                                    {previewChild.image_url ? <img src={previewChild.image_url} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,.7),transparent_36%),radial-gradient(circle_at_15%_75%,rgba(124,58,237,.55),transparent_42%),linear-gradient(135deg,#020617,#0f2557,#2e1065)]" />}
+                                    {previewChild.image_url ? <img src={previewChild.image_url} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,.7),transparent_36%),radial-gradient(circle_at_15%_75%,rgba(124,58,237,.55),transparent_42%),linear-gradient(135deg,#020617,#0f2557,#2e1065)]" />}
                                   </motion.div>
                                 </AnimatePresence>
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/10" />

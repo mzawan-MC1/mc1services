@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { BreadcrumbJsonLd } from '../components/StructuredData';
 import { getPortfolioCategoryLabel, usePortfolioCategories } from '../hooks/usePortfolioCategories';
 
 const setMetaContent = (selector, attributeName, attributeValue, content) => {
@@ -171,10 +172,15 @@ export default function PortfolioDetail() {
 
   return (
     <div>
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: 'https://mc1services.com/' },
+        { name: 'Portfolio', url: 'https://mc1services.com/Portfolio' },
+        { name: portfolio.title },
+      ]} />
       {/* Hero */}
       <section className="relative overflow-hidden bg-slate-950 py-24 md:py-32">
         <div className="absolute inset-0">
-          {portfolio.main_image_url && <img src={portfolio.main_image_url} alt="" className="h-full w-full scale-105 object-cover opacity-30 blur-[1px]" />}
+          {portfolio.main_image_url && <img src={portfolio.main_image_url} alt={`${portfolio.title} — project cover`} className="h-full w-full scale-105 object-cover opacity-30 blur-[1px]" />}
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/55" />
           <div className="absolute -right-20 top-12 h-72 w-72 rounded-full bg-blue-500/20 blur-[100px]" />
         </div>
@@ -266,7 +272,7 @@ export default function PortfolioDetail() {
                         {media.type === 'video' ? (
                           <div className="w-full h-full bg-slate-800 flex items-center justify-center"><Play className="w-6 h-6 text-white" /></div>
                         ) : (
-                          <img src={media.url} alt="" className="w-full h-full object-cover" />
+                          <img src={media.url} alt={`${portfolio.title} — screenshot ${i + 1}`} className="w-full h-full object-cover" />
                         )}
                       </button>
                     ))}

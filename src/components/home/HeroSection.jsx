@@ -32,8 +32,8 @@ export default function HeroSection() {
 
   const getLoc = (key) => getLocalizedValue(heroContent, key, i18n.language, false);
 
-  const title = getLoc('title') || t('home.hero_title_default', 'Practical Digital Solutions Built Around Your Business');
-  const description = getLoc('description') || t('home.hero_desc_default', 'Websites, custom software, mobile apps, automation, digital marketing, and IT support delivered by one accountable team.');
+  const title = getLoc('title') || t('home.hero_title_default', 'Custom Software, Web & AI Solutions for UAE Businesses');
+  const description = getLoc('description') || t('home.hero_desc_default', 'Websites, custom software, mobile apps, automation, digital marketing, and IT support — delivered by one accountable team in the UAE.');
   const buttonText = getLoc('button_text') || t('home.book_consultation', 'Book Consultation');
   const buttonLink = heroContent?.button_link || 'Contact';
   const buttonTextSecondary = getLoc('button_text_secondary') || t('home.view_work', 'Explore Our Services');

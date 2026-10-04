@@ -10,6 +10,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { dataLayer } from '../components/dataLayer';
 import PortfolioCard from '../components/ui/PortfolioCard';
+import { BreadcrumbJsonLd } from '../components/StructuredData';
 import { getLocalizedValue } from '../utils';
 
 const iconMap = {
@@ -111,13 +112,18 @@ export default function IndustryDetail() {
 
   return (
     <main>
+      <BreadcrumbJsonLd items={[
+        { name: t('nav.home', 'Home'), url: 'https://mc1services.com/' },
+        { name: t('nav.industries', 'Industries') },
+        { name: name },
+      ]} />
       <section className="relative min-h-[38rem] overflow-hidden bg-slate-950 text-white">
-        {industry.image_url ? <img src={industry.image_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40" /> : <div className="absolute inset-0 bg-gradient-to-br from-blue-950 via-slate-950 to-purple-950" />}
+        {industry.image_url ? <img src={industry.image_url} alt={`${name} — industry cover`} className="absolute inset-0 h-full w-full object-cover opacity-40" /> : <div className="absolute inset-0 bg-gradient-to-br from-blue-950 via-slate-950 to-purple-950" />}
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/35" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_30%,rgba(34,211,238,0.18),transparent_32%)]" />
         <div className="relative mx-auto flex min-h-[38rem] max-w-7xl items-center px-4 py-20 sm:px-6 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl">
-            <nav aria-label="Breadcrumb" className="mb-7 flex items-center gap-2 text-sm text-slate-300"><Link to="/Home" className="hover:text-white">{t('nav.home', 'Home')}</Link><span>/</span><span>{t('nav.industries', 'Industries')}</span></nav>
+            <nav aria-label="Breadcrumb" className="mb-7 flex items-center gap-2 text-sm text-slate-300"><Link to="/" className="hover:text-white">{t('nav.home', 'Home')}</Link><span>/</span><span>{t('nav.industries', 'Industries')}</span></nav>
             <span className="inline-flex h-16 w-16 items-center justify-center rounded-2xl border border-white/15 bg-white/10 backdrop-blur"><IndustryIcon className="h-8 w-8 text-cyan-200" /></span>
             <p className="mt-7 text-sm font-bold uppercase tracking-[0.22em] text-cyan-300">{t('industries.industry_experience', 'Industry experience')}</p>
             <h1 className="mt-4 text-4xl font-black tracking-tight sm:text-6xl lg:text-7xl">{name}</h1>
