@@ -15,7 +15,12 @@ const categoryColors = {
   development: 'bg-blue-100 text-blue-700',
   marketing: 'bg-purple-100 text-purple-700',
   pricing: 'bg-green-100 text-green-700',
-  process: 'bg-orange-100 text-orange-700'
+  process: 'bg-orange-100 text-orange-700',
+  ai_automation: 'bg-cyan-100 text-cyan-700',
+  application_development: 'bg-indigo-100 text-indigo-700',
+  saas_engineering: 'bg-violet-100 text-violet-700',
+  it_services: 'bg-teal-100 text-teal-700',
+  production: 'bg-rose-100 text-rose-700'
 };
 
 export default function AdminFAQs() {

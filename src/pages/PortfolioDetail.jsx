@@ -272,7 +272,7 @@ export default function PortfolioDetail() {
                         {media.type === 'video' ? (
                           <div className="w-full h-full bg-slate-800 flex items-center justify-center"><Play className="w-6 h-6 text-white" /></div>
                         ) : (
-                          <img src={media.url} alt={`${portfolio.title} — screenshot ${i + 1}`} className="w-full h-full object-cover" />
+                          <img src={media.url} alt={media.alt || `${portfolio.title} — screenshot ${i + 1}`} className="w-full h-full object-cover" />
                         )}
                       </button>
                     ))}

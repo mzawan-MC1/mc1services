@@ -102,6 +102,11 @@ export default function AdminFAQEdit() {
                       <SelectItem value="marketing">Marketing</SelectItem>
                       <SelectItem value="pricing">Pricing</SelectItem>
                       <SelectItem value="process">Process</SelectItem>
+                      <SelectItem value="ai_automation">AI & Automation</SelectItem>
+                      <SelectItem value="application_development">App Development</SelectItem>
+                      <SelectItem value="saas_engineering">SaaS Engineering</SelectItem>
+                      <SelectItem value="it_services">Cloud & IT</SelectItem>
+                      <SelectItem value="production">Creative Production</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
