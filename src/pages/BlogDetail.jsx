@@ -54,6 +54,16 @@ export default function BlogDetail() {
     queryFn: async () => { try { return await dataLayer.blog.getAll(); } catch { return []; } },
   });
 
+  const { data: settingsRows = [] } = useQuery({
+    queryKey: ['blog-settings'],
+    queryFn: async () => { try { return await dataLayer.siteSettings.getAll(); } catch { return []; } },
+    staleTime: 10 * 60 * 1000,
+  });
+  const logoUrl = useMemo(() => {
+    const row = (settingsRows || []).find((s) => s?.setting_key === 'logo_url');
+    return row?.setting_value || 'https://qcnxmagbeymybjtfbtzn.supabase.co/storage/v1/object/public/public/branding/1789078710707_MCS-Consultancy---logo.png';
+  }, [settingsRows]);
+
   const title = post ? (getLocalizedValue(post, 'title', lang) || post.title) : '';
   const excerpt = post ? (getLocalizedValue(post, 'excerpt', lang) || post.excerpt || '') : '';
   const content = post ? (getLocalizedValue(post, 'content', lang) || post.content || '') : '';
@@ -109,7 +119,7 @@ export default function BlogDetail() {
   };
 
   if (isLoading) {
-    return <div className="mx-auto max-w-3xl px-4 py-20"><div className="h-10 w-2/3 animate-pulse rounded bg-slate-200" /><div className="mt-6 aspect-[16/9] animate-pulse rounded-3xl bg-slate-200" /><div className="mt-8 space-y-3">{[1, 2, 3, 4].map((i) => <div key={i} className="h-4 animate-pulse rounded bg-slate-200" />)}</div></div>;
+    return <div className="mx-auto max-w-4xl px-4 py-20"><div className="h-10 w-2/3 animate-pulse rounded bg-slate-200" /><div className="mt-6 aspect-[16/9] animate-pulse rounded-3xl bg-slate-200" /><div className="mt-8 space-y-3">{[1, 2, 3, 4].map((i) => <div key={i} className="h-4 animate-pulse rounded bg-slate-200" />)}</div></div>;
   }
 
   if (!post) {
@@ -129,7 +139,7 @@ export default function BlogDetail() {
       </div>
       <BreadcrumbJsonLd items={[{ name: 'Home', url: 'https://mc1services.com/' }, { name: 'Blog', url: 'https://mc1services.com/Blog' }, { name: title }]} />
 
-      <article className="mx-auto max-w-3xl px-4 pb-16 pt-10 sm:px-6 md:pt-14">
+      <article className="mx-auto max-w-4xl px-4 pb-16 pt-10 sm:px-6 md:pt-14">
         <nav className="flex items-center gap-1.5 text-sm text-slate-400">
           <Link to="/" className="hover:text-blue-600">Home</Link>
           <ChevronRight className="h-3.5 w-3.5 rtl:rotate-180" />
@@ -144,7 +154,13 @@ export default function BlogDetail() {
 
         <div className="mt-7 flex flex-wrap items-center justify-between gap-4 border-y border-slate-100 py-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-teal-500 text-sm font-bold text-white">{(post.author_name || 'M').slice(0, 1)}</span>
+            {logoUrl ? (
+              <span className="flex h-11 items-center justify-center rounded-xl bg-white px-2.5 ring-1 ring-slate-200">
+                <img src={optimizeImageUrl(logoUrl, 200)} alt={post.author_name || 'MCS Consultancy'} className="h-7 w-auto object-contain" />
+              </span>
+            ) : (
+              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-teal-500 text-sm font-bold text-white">{(post.author_name || 'M').slice(0, 1)}</span>
+            )}
             <div>
               <p className="text-sm font-semibold text-slate-900">{post.author_name || 'MCS Consultancy'}</p>
               <p className="flex items-center gap-3 text-xs text-slate-400">
@@ -167,7 +183,7 @@ export default function BlogDetail() {
           <img src={optimizeImageUrl(post.cover_image_url, 1100)} alt={title} className="mt-8 aspect-[16/9] w-full rounded-3xl object-cover shadow-md" />
         )}
 
-        <div className="text-[1.05rem]">{renderMarkdown(content)}</div>
+        <div className="text-lg">{renderMarkdown(content)}</div>
 
         {Array.isArray(post.tags) && post.tags.length > 0 && (
           <div className="mt-10 flex flex-wrap gap-2">
