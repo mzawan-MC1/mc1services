@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowDown, ArrowUp, Calculator, ExternalLink, Loader2, Plus, RotateCcw, Save, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, Calculator, ChevronDown, ExternalLink, Loader2, Plus, RotateCcw, Save, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { dataLayer } from '../components/dataLayer';
 import { DEFAULT_ESTIMATOR_CONFIG, ESTIMATOR_ICON_KEYS, normalizeEstimatorConfig } from '../config/estimatorConfig';
@@ -18,12 +18,17 @@ function Field({ label, children, className = '' }) {
   );
 }
 
-function Section({ title, hint, children }) {
+function Section({ title, hint, open, onToggle, children }) {
   return (
-    <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/70 md:p-6">
-      <h2 className="text-base font-bold text-slate-900">{title}</h2>
-      {hint && <p className="mt-0.5 text-xs text-slate-400">{hint}</p>}
-      <div className="mt-4">{children}</div>
+    <section className={`rounded-2xl bg-white shadow-sm ring-1 transition ${open ? 'ring-slate-300' : 'ring-slate-200/70'}`}>
+      <button type="button" onClick={onToggle} aria-expanded={open} className="flex w-full items-start justify-between gap-3 p-5 text-left md:px-6">
+        <span>
+          <span className="block text-base font-bold text-slate-900">{title}</span>
+          {hint && <span className="mt-0.5 block text-xs font-normal text-slate-400">{hint}</span>}
+        </span>
+        <ChevronDown className={`mt-1 h-5 w-5 shrink-0 text-slate-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && <div className="px-5 pb-5 md:px-6 md:pb-6">{children}</div>}
     </section>
   );
 }
@@ -56,6 +61,8 @@ export default function AdminEstimator() {
   });
   const [cfg, setCfg] = useState(null);
   const [dirty, setDirty] = useState(false);
+  const [openSection, setOpenSection] = useState(0);
+  const toggleSection = (i) => setOpenSection((cur) => (cur === i ? -1 : i));
 
   useEffect(() => { if (remote && !cfg) setCfg(normalizeEstimatorConfig(remote)); }, [remote, cfg]);
 
@@ -91,7 +98,7 @@ export default function AdminEstimator() {
       </div>
 
       {/* ── Page texts ─────────────────────────────────────────── */}
-      <Section title="Page texts" hint="The hero at the top of /ProjectCostEstimator and the line under the estimator.">
+      <Section title="Page texts" open={openSection === 0} onToggle={() => toggleSection(0)} hint="The hero at the top of /ProjectCostEstimator and the line under the estimator.">
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Badge"><input className={inputCls} value={cfg.hero.badge} onChange={(e) => update({ hero: { ...cfg.hero, badge: e.target.value } })} /></Field>
           <Field label="Title"><input className={inputCls} value={cfg.hero.title} onChange={(e) => update({ hero: { ...cfg.hero, title: e.target.value } })} /></Field>
@@ -121,7 +128,7 @@ export default function AdminEstimator() {
       </Section>
 
       {/* ── Step & result texts ────────────────────────────────── */}
-      <Section title="Step headings & result texts">
+      <Section title="Step headings & result texts"> open={openSection === 1} onToggle={() => toggleSection(1)}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Field label="Step 1 heading"><input className={inputCls} value={cfg.texts.step1} onChange={(e) => update({ texts: { ...cfg.texts, step1: e.target.value } })} /></Field>
           <Field label="Step 2 heading"><input className={inputCls} value={cfg.texts.step2} onChange={(e) => update({ texts: { ...cfg.texts, step2: e.target.value } })} /></Field>
@@ -142,7 +149,7 @@ export default function AdminEstimator() {
       </Section>
 
       {/* ── Project types ──────────────────────────────────────── */}
-      <Section title="Step 1 — Project types" hint="Each card on the first step. “From” price on the card = the base price (low). Monthly types (retainers) hide the features step.">
+      <Section title="Step 1 — Project types" open={openSection === 2} onToggle={() => toggleSection(2)} hint="Each card on the first step. “From” price on the card = the base price (low). Monthly types (retainers) hide the features step.">
         <div className="space-y-3">
           {cfg.types.map((t, i) => {
             const Icon = ESTIMATOR_ICONS[t.icon];
@@ -177,7 +184,7 @@ export default function AdminEstimator() {
       </Section>
 
       {/* ── Sizes ──────────────────────────────────────────────── */}
-      <Section title="Step 2 — Sizes" hint="The size multiplies the base price. The two “weeks” factors stretch or shrink the timeline (1 = no change).">
+      <Section title="Step 2 — Sizes" open={openSection === 3} onToggle={() => toggleSection(3)} hint="The size multiplies the base price. The two “weeks” factors stretch or shrink the timeline (1 = no change).">
         <div className="space-y-3">
           {cfg.sizes.map((s, i) => (
             <div key={s.id} className="rounded-xl border border-slate-200 p-4">
@@ -205,7 +212,7 @@ export default function AdminEstimator() {
       </Section>
 
       {/* ── Features ───────────────────────────────────────────── */}
-      <Section title="Step 2 — Features" hint="Ticked features add their price range on top. Delete them all and the features question disappears from the estimator.">
+      <Section title="Step 2 — Features" open={openSection === 4} onToggle={() => toggleSection(4)} hint="Ticked features add their price range on top. Delete them all and the features question disappears from the estimator.">
         <div className="space-y-2">
           {cfg.features.map((f, i) => (
             <div key={f.id} className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 p-3">
@@ -220,7 +227,7 @@ export default function AdminEstimator() {
       </Section>
 
       {/* ── Speeds ─────────────────────────────────────────────── */}
-      <Section title="Step 2 — Speed" hint="The speed multiplies the final price (below 1 = discount for flexible timing, above 1 = rush premium).">
+      <Section title="Step 2 — Speed" open={openSection === 5} onToggle={() => toggleSection(5)} hint="The speed multiplies the final price (below 1 = discount for flexible timing, above 1 = rush premium).">
         <div className="space-y-3">
           {cfg.speeds.map((s, i) => (
             <div key={s.id} className="rounded-xl border border-slate-200 p-4">
@@ -242,7 +249,7 @@ export default function AdminEstimator() {
       </Section>
 
       {/* ── Sticky save bar ────────────────────────────────────── */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur">
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur lg:left-64">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
           <span className="text-sm text-slate-500">{dirty ? 'You have unsaved changes.' : 'All changes saved.'}</span>
           <div className="ms-auto flex items-center gap-2">

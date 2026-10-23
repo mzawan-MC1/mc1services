@@ -116,7 +116,7 @@ function AdminShell({ children }) {
 
   return (
     <AdminLayoutContext.Provider value={true}>
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-slate-100 flex">
       {/* Sidebar */}
       <aside id="admin-sidebar" className={`fixed inset-y-0 left-0 z-50 w-64 flex-shrink-0 transform border-r border-slate-200 bg-white transition-transform duration-300 lg:static lg:translate-x-0 ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="h-full flex flex-col">
@@ -189,8 +189,10 @@ function AdminShell({ children }) {
           <div className="w-10" />
         </header>
 
-        {/* Page Content */}
-        <main className="flex-1 overflow-auto">
+        {/* Page Content — the shell owns the outer spacing so every
+            admin page keeps the same gap from the sidebar, the top
+            and the window edge. */}
+        <main className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">
           {children}
         </main>
       </div>
