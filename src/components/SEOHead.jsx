@@ -4,7 +4,7 @@ import { dataLayer } from './dataLayer';
 import { useTranslation } from 'react-i18next';
 import { getSeoDefaults } from '../config/seoDefaults';
 
-const DEFAULT_OG_IMAGE = 'https://mc1services.com/og-cover.jpg';
+const DEFAULT_OG_IMAGE = 'https://qcnxmagbeymybjtfbtzn.supabase.co/storage/v1/object/public/public/seo/1792758087843_MCS---og-cover.jpg';
 
 const setMeta = (selector, attribute, value) => {
   let element = document.querySelector(selector);

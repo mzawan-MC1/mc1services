@@ -182,7 +182,7 @@ export default function PortfolioDetail() {
         { name: portfolio.title },
       ]} />
       {/* Hero */}
-      <section className="relative overflow-hidden bg-slate-950 py-24 md:py-32">
+      <section className="relative overflow-hidden bg-slate-950 py-10 md:py-16">
         <div className="absolute inset-0">
           {portfolio.main_image_url && <img src={optimizeImageUrl(portfolio.main_image_url, 1600)} alt={`${portfolio.title} — project cover`} className="h-full w-full scale-105 object-cover opacity-30 blur-[1px]" />}
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/55" />
@@ -218,7 +218,7 @@ export default function PortfolioDetail() {
         </div>
       </section>
 
-      <nav aria-label={t('portfolio.detail.case_study_sections', 'Case study sections')} className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
+      <nav aria-label={t('portfolio.detail.case_study_sections', 'Case study sections')} className="sticky top-20 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl overflow-x-auto px-4 py-3 [scrollbar-width:none] sm:justify-center sm:px-6 lg:px-8 [&::-webkit-scrollbar]:hidden">
           <div className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-slate-950/95 p-1.5 shadow-xl shadow-slate-950/25 ring-1 ring-white/5">
             <a href="#experience" className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-600/30 transition hover:brightness-110"><Sparkles className="h-4 w-4" />{t('portfolio.detail.experience', 'Experience')}</a>
@@ -231,12 +231,12 @@ export default function PortfolioDetail() {
       </nav>
 
       {/* Content */}
-      <section className="bg-gradient-to-b from-white to-slate-50 py-16 md:py-20">
+      <section className="bg-gradient-to-b from-white to-slate-50 py-8 md:py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Media Carousel */}
           {allMedia.length > 0 && (
-            <motion.div id="experience" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-16 scroll-mt-24">
+            <motion.div id="experience" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 scroll-mt-40">
               <div className="relative overflow-hidden rounded-[2rem] bg-slate-100 shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/10">
                 <div className="relative aspect-[16/9] overflow-hidden bg-slate-950">
                   <AnimatePresence mode="wait">
@@ -289,8 +289,8 @@ export default function PortfolioDetail() {
           )}
 
           {/* Project Details */}
-          <div id="story" className="grid scroll-mt-24 gap-12 lg:grid-cols-3">
-            <div className="space-y-12 lg:col-span-2">
+          <div id="story" className="grid scroll-mt-40 gap-10 lg:grid-cols-3">
+            <div className="space-y-10 lg:col-span-2">
               {/* Overview */}
               {getLoc(portfolio, 'project_overview') && (
                 <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
@@ -325,7 +325,7 @@ export default function PortfolioDetail() {
 
               {/* Solutions */}
               {getLoc(portfolio, 'solutions') && (
-                <motion.div id="solution" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="scroll-mt-24 rounded-2xl border border-blue-100 bg-blue-50 p-8">
+                <motion.div id="solution" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="scroll-mt-40 rounded-2xl border border-blue-100 bg-blue-50 p-8">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
                       <Lightbulb className="w-5 h-5 text-blue-600" />
@@ -338,7 +338,7 @@ export default function PortfolioDetail() {
 
               {/* Results */}
               {getLoc(portfolio, 'results') && (
-                <motion.div id="results" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="scroll-mt-24 rounded-2xl border border-emerald-100 bg-emerald-50 p-8">
+                <motion.div id="results" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="scroll-mt-40 rounded-2xl border border-emerald-100 bg-emerald-50 p-8">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
                       <Trophy className="w-5 h-5 text-green-600" />
@@ -413,7 +413,7 @@ export default function PortfolioDetail() {
 
           {/* Gallery */}
           {gallery?.length > 0 && (
-            <motion.div id="gallery" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-20 scroll-mt-24">
+            <motion.div id="gallery" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-12 scroll-mt-40">
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">{t('portfolio.detail.product_experience', 'Product experience')}</p>
               <h2 className="mb-6 mt-2 text-3xl font-bold text-slate-900">{t('portfolio.detail.screenshots', 'Screenshots and walkthroughs')}</h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
@@ -429,7 +429,7 @@ export default function PortfolioDetail() {
             </motion.div>
           )}
 
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-20 overflow-hidden rounded-[2rem] bg-slate-950 px-6 py-12 text-center text-white md:px-12">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-12 overflow-hidden rounded-[2rem] bg-slate-950 px-6 py-12 text-center text-white md:px-12">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-300">{t('portfolio.detail.next_system', 'Your workflow could be next')}</p>
             <h2 className="mx-auto mt-3 max-w-3xl text-3xl font-bold tracking-tight md:text-4xl">{t('portfolio.detail.cta_title', 'Have a complex process that should work better?')}</h2>
             <p className="mx-auto mt-4 max-w-2xl text-slate-300">{t('portfolio.detail.cta_description', 'Show us how your business operates today. We will help you map the opportunity and turn it into a practical digital solution.')}</p>
