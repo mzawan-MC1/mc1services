@@ -64,6 +64,8 @@ const AdminBlog = lazy(() => import("./AdminBlog"));
 
 const AdminBlogEdit = lazy(() => import("./AdminBlogEdit"));
 
+const AdminEstimator = lazy(() => import("./AdminEstimator"));
+
 const AdminFAQEdit = lazy(() => import("./AdminFAQEdit"));
 
 const AdminClientLogos = lazy(() => import("./AdminClientLogos"));
@@ -191,6 +193,8 @@ const PAGES = {
     AdminBlog: AdminBlog,
 
     AdminBlogEdit: AdminBlogEdit,
+
+    AdminEstimator: AdminEstimator,
     
     AdminFAQEdit: AdminFAQEdit,
     
@@ -264,6 +268,7 @@ const ALT_ROUTE_MAP = {
     '/admin/faq': 'AdminFAQs',
     '/admin/blog': 'AdminBlog',
     '/admin/blog/edit': 'AdminBlogEdit',
+    '/admin/estimator': 'AdminEstimator',
     '/admin/team': 'AdminTeam',
     '/admin/inquiries': 'AdminContacts',
     '/admin/testimonials': 'AdminTestimonials',

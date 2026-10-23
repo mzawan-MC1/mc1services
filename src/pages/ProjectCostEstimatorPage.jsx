@@ -3,8 +3,12 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Calculator, CheckCircle2 } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import ProjectCostEstimator from '../components/tools/ProjectCostEstimator';
+import { useEstimatorConfig } from '../hooks/useEstimatorConfig';
 
 export default function ProjectCostEstimatorPage() {
+  const cfg = useEstimatorConfig();
+  const hero = cfg.hero;
+
   return (
     <div className="min-h-screen bg-slate-50">
       <SEOHead pageIdentifier="project-cost-estimator" />
@@ -16,14 +20,12 @@ export default function ProjectCostEstimatorPage() {
             <ArrowLeft className="h-4 w-4" /> All tools
           </Link>
           <p className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-blue-200 ring-1 ring-white/15">
-            <Calculator className="h-3.5 w-3.5" /> Free instant estimate
+            <Calculator className="h-3.5 w-3.5" /> {hero.badge}
           </p>
-          <h1 className="mt-5 max-w-3xl text-4xl font-extrabold leading-tight text-white md:text-5xl">Project Cost Estimator</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-slate-300">
-            Answer three quick questions and get an honest ballpark for your website, app or software project — cost and timeline, based on real UAE project ranges.
-          </p>
+          <h1 className="mt-5 max-w-3xl text-4xl font-extrabold leading-tight text-white md:text-5xl">{hero.title}</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-slate-300">{hero.subtitle}</p>
           <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-300">
-            {['No sign-up needed', 'Takes about a minute', 'Fixed quote after a free consultation'].map((point) => (
+            {hero.points.map((point) => (
               <span key={point} className="inline-flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-teal-400" />{point}</span>
             ))}
           </div>
@@ -35,7 +37,7 @@ export default function ProjectCostEstimatorPage() {
           <ProjectCostEstimator />
         </div>
         <p className="mt-6 text-center text-sm text-slate-400">
-          Prefer to talk it through? <Link to="/BookConsultation" className="font-semibold text-blue-600">Book a free consultation</Link> or browse <Link to="/Portfolio" className="font-semibold text-blue-600">our recent work</Link> first.
+          {hero.footerPrefix} <Link to="/BookConsultation" className="font-semibold text-blue-600">{hero.footerConsult}</Link> {hero.footerMid} <Link to="/Portfolio" className="font-semibold text-blue-600">{hero.footerWork}</Link> {hero.footerSuffix}
         </p>
       </main>
     </div>
