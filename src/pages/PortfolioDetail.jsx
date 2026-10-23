@@ -40,6 +40,7 @@ export default function PortfolioDetail() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [activeSection, setActiveSection] = useState('experience');
 
   const getLoc = (obj, key) => getLocalizedValue(obj, key, i18n.language);
 
@@ -144,6 +145,25 @@ export default function PortfolioDetail() {
     return () => clearInterval(interval);
   }, [allMedia, currentSlide]);
 
+  // Scroll-spy: highlight the case-study tab whose section is in view
+  useEffect(() => {
+    if (!portfolio) return;
+    const ids = ['experience', 'story', 'solution', 'results', 'gallery']
+      .filter((id) => document.getElementById(id));
+    if (!ids.length) return;
+    setActiveSection((prev) => (ids.includes(prev) ? prev : ids[0]));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        });
+      },
+      { rootMargin: '-45% 0px -50% 0px' }
+    );
+    ids.forEach((id) => observer.observe(document.getElementById(id)));
+    return () => observer.disconnect();
+  }, [portfolio, gallery, allMedia]);
+
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % allMedia.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + allMedia.length) % allMedia.length);
   const openLightbox = (index) => { setLightboxIndex(index); setLightboxOpen(true); };
@@ -173,6 +193,21 @@ export default function PortfolioDetail() {
     : t('portfolio.client_project', 'Client Project');
   const galleryOffset = portfolio.main_image_url ? 1 : 0;
   const categoryLabel = getPortfolioCategoryLabel(portfolioCategories, portfolio.category, i18n.language);
+
+  // Case-study tabs: only sections this project actually has
+  const hasStory = !!(getLoc(portfolio, 'project_overview') || getLoc(portfolio, 'long_description') || getLoc(portfolio, 'challenges'));
+  const navItems = [
+    allMedia.length > 0 && { id: 'experience', label: t('portfolio.detail.experience', 'Experience'), Icon: Sparkles },
+    hasStory && { id: 'story', label: t('portfolio.detail.project_story', 'Project story'), Icon: BookOpen },
+    getLoc(portfolio, 'solutions') && { id: 'solution', label: t('portfolio.detail.solution', 'Solution'), Icon: Lightbulb },
+    getLoc(portfolio, 'results') && { id: 'results', label: t('portfolio.detail.results', 'Results'), Icon: Trophy },
+    gallery.length > 0 && { id: 'gallery', label: t('portfolio.detail.media', 'Media'), Icon: Images },
+  ].filter(Boolean);
+  const goToSection = (e, id) => {
+    e.preventDefault();
+    setActiveSection(id);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
     <div>
@@ -218,17 +253,26 @@ export default function PortfolioDetail() {
         </div>
       </section>
 
+      {navItems.length > 1 && (
       <nav aria-label={t('portfolio.detail.case_study_sections', 'Case study sections')} className="sticky top-20 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl overflow-x-auto px-4 py-3 [scrollbar-width:none] sm:justify-center sm:px-6 lg:px-8 [&::-webkit-scrollbar]:hidden">
-          <div className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-slate-950/95 p-1.5 shadow-xl shadow-slate-950/25 ring-1 ring-white/5">
-            <a href="#experience" className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-600/30 transition hover:brightness-110"><Sparkles className="h-4 w-4" />{t('portfolio.detail.experience', 'Experience')}</a>
-            <a href="#story" className="inline-flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"><BookOpen className="h-4 w-4 text-cyan-300" />{t('portfolio.detail.project_story', 'Project story')}</a>
-            <a href="#solution" className="inline-flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"><Lightbulb className="h-4 w-4 text-cyan-300" />{t('portfolio.detail.solution', 'Solution')}</a>
-            <a href="#results" className="inline-flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"><Trophy className="h-4 w-4 text-cyan-300" />{t('portfolio.detail.results', 'Results')}</a>
-            <a href="#gallery" className="inline-flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"><Images className="h-4 w-4 text-cyan-300" />{t('portfolio.detail.media', 'Media')}</a>
+        <div className="mx-auto flex max-w-7xl justify-center px-3 py-2.5 sm:px-6 sm:py-3 lg:px-8">
+          <div className="flex flex-wrap items-center justify-center gap-1 rounded-[1.75rem] border border-white/10 bg-slate-950/95 p-1.5 shadow-xl shadow-slate-950/25 ring-1 ring-white/5 sm:rounded-full">
+            {navItems.map(({ id, label, Icon }) => (
+              <a
+                key={id}
+                href={`#${id}`}
+                onClick={(e) => goToSection(e, id)}
+                aria-current={activeSection === id ? 'true' : undefined}
+                className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold transition sm:gap-2 sm:px-4 sm:py-2 sm:text-sm ${activeSection === id ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-600/30 hover:brightness-110' : 'text-slate-300 hover:bg-white/10 hover:text-white'}`}
+              >
+                <Icon className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${activeSection === id ? 'text-white' : 'text-cyan-300'}`} />
+                {label}
+              </a>
+            ))}
           </div>
         </div>
       </nav>
+      )}
 
       {/* Content */}
       <section className="bg-gradient-to-b from-white to-slate-50 py-8 md:py-12">
@@ -236,7 +280,7 @@ export default function PortfolioDetail() {
 
           {/* Media Carousel */}
           {allMedia.length > 0 && (
-            <motion.div id="experience" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 scroll-mt-40">
+            <motion.div id="experience" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 scroll-mt-44 lg:scroll-mt-40">
               <div className="relative overflow-hidden rounded-[2rem] bg-slate-100 shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/10">
                 <div className="relative aspect-[16/9] overflow-hidden bg-slate-950">
                   <AnimatePresence mode="wait">
@@ -289,7 +333,7 @@ export default function PortfolioDetail() {
           )}
 
           {/* Project Details */}
-          <div id="story" className="grid scroll-mt-40 gap-10 lg:grid-cols-3">
+          <div id="story" className="grid scroll-mt-44 lg:scroll-mt-40 gap-10 lg:grid-cols-3">
             <div className="space-y-10 lg:col-span-2">
               {/* Overview */}
               {getLoc(portfolio, 'project_overview') && (
@@ -325,7 +369,7 @@ export default function PortfolioDetail() {
 
               {/* Solutions */}
               {getLoc(portfolio, 'solutions') && (
-                <motion.div id="solution" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="scroll-mt-40 rounded-2xl border border-blue-100 bg-blue-50 p-8">
+                <motion.div id="solution" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="scroll-mt-44 lg:scroll-mt-40 rounded-2xl border border-blue-100 bg-blue-50 p-8">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
                       <Lightbulb className="w-5 h-5 text-blue-600" />
@@ -338,7 +382,7 @@ export default function PortfolioDetail() {
 
               {/* Results */}
               {getLoc(portfolio, 'results') && (
-                <motion.div id="results" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="scroll-mt-40 rounded-2xl border border-emerald-100 bg-emerald-50 p-8">
+                <motion.div id="results" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="scroll-mt-44 lg:scroll-mt-40 rounded-2xl border border-emerald-100 bg-emerald-50 p-8">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
                       <Trophy className="w-5 h-5 text-green-600" />
@@ -413,7 +457,7 @@ export default function PortfolioDetail() {
 
           {/* Gallery */}
           {gallery?.length > 0 && (
-            <motion.div id="gallery" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-12 scroll-mt-40">
+            <motion.div id="gallery" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-12 scroll-mt-44 lg:scroll-mt-40">
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">{t('portfolio.detail.product_experience', 'Product experience')}</p>
               <h2 className="mb-6 mt-2 text-3xl font-bold text-slate-900">{t('portfolio.detail.screenshots', 'Screenshots and walkthroughs')}</h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
