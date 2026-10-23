@@ -68,6 +68,27 @@ const MENU_PANEL_FALLBACKS = {
   }
 };
 
+const LAYOUT_CACHE_KEY = 'mc1-layout-cache-v1';
+const DEFAULT_SITE_SETTINGS = {
+  logo_url: 'https://qcnxmagbeymybjtfbtzn.supabase.co/storage/v1/object/public/public/branding/1789078710707_MCS-Consultancy---logo.png',
+  company_name: 'MCS Consultancy'
+};
+const readLayoutCache = () => {
+  try {
+    const raw = window.localStorage.getItem(LAYOUT_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+const writeLayoutCache = (data) => {
+  try {
+    window.localStorage.setItem(LAYOUT_CACHE_KEY, JSON.stringify(data));
+  } catch {
+    /* storage unavailable/full — caching is best-effort */
+  }
+};
+
 export default function Layout({ children, currentPageName }) {
   const { t, i18n } = useTranslation();
   const location = useLocation();
@@ -79,10 +100,11 @@ export default function Layout({ children, currentPageName }) {
   const [openMenu, setOpenMenu] = useState(null);
   const [activeMenuChild, setActiveMenuChild] = useState({});
   const [isAdmin, setIsAdmin] = useState(false);
-  const [siteSettings, setSiteSettings] = useState({});
-  const [headerSettings, setHeaderSettings] = useState(null);
-  const [footerSettings, setFooterSettings] = useState(null);
-  const [menuSources, setMenuSources] = useState({ services: [], industries: [], projects: [] });
+  const [initialCache] = useState(readLayoutCache);
+  const [siteSettings, setSiteSettings] = useState(() => initialCache?.settings || DEFAULT_SITE_SETTINGS);
+  const [headerSettings, setHeaderSettings] = useState(() => initialCache?.header || null);
+  const [footerSettings, setFooterSettings] = useState(() => initialCache?.footer || null);
+  const [menuSources, setMenuSources] = useState(() => initialCache?.sources || { services: [], industries: [], projects: [] });
   const [navigationReady, setNavigationReady] = useState(false);
 
   useEffect(() => {
@@ -103,7 +125,12 @@ export default function Layout({ children, currentPageName }) {
 
     const loadSettings = async () => {
       try {
-        const settings = await dataLayer.siteSettings.getAll();
+        // Fetch settings + header/footer in ONE parallel round (was sequential —
+        // the header waited for every round before showing the logo and menu).
+        const [settings, headerFooter] = await Promise.all([
+          dataLayer.siteSettings.getAll(),
+          isAdminPage ? Promise.resolve([]) : dataLayer.headerFooter.getAll()
+        ]);
         const settingsObj = {};
         settings.forEach(s => {
           settingsObj[s.setting_key] = s.setting_value;
@@ -112,7 +139,6 @@ export default function Layout({ children, currentPageName }) {
         setSiteSettings(settingsObj);
 
         if (!isAdminPage) {
-          const headerFooter = await dataLayer.headerFooter.getAll();
           const header = headerFooter.find(s => s.setting_key === 'header');
           const footer = headerFooter.find(s => s.setting_key === 'footer');
           setHeaderSettings(header);
@@ -123,7 +149,9 @@ export default function Layout({ children, currentPageName }) {
               dataLayer.industries.getActive(),
               dataLayer.portfolio.getPublished()
             ]);
-            setMenuSources({ services: managedServices, industries: managedIndustries, projects: managedProjects });
+            const sources = { services: managedServices, industries: managedIndustries, projects: managedProjects };
+            setMenuSources(sources);
+            writeLayoutCache({ settings: settingsObj, header, footer, sources });
           } catch (sourceError) {
             console.error('Failed to load managed menu sources:', sourceError);
           }
@@ -224,7 +252,7 @@ export default function Layout({ children, currentPageName }) {
           : []
       }))
     : [];
-  const navLinks = navigationReady ? (configuredNavLinks.length ? configuredNavLinks : fallbackNavLinks) : [];
+  const navLinks = configuredNavLinks.length ? configuredNavLinks : fallbackNavLinks;
   const footerServices = (navLinks.find((item) => item.id === 'solutions' || item.name === t('nav.services', 'Services'))?.children || fallbackServices).slice(0, 6);
 
   // Preload mega-menu images in the background once navigation data is ready,
