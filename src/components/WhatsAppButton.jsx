@@ -18,7 +18,7 @@ export default function WhatsAppButton() {
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        className="fixed bottom-6 right-8 sm:right-6 z-50"
+        className="fixed bottom-24 right-8 sm:right-6 sm:bottom-6 z-50"
       >
         <div className="relative">
           {/* Pulse Animation */}
@@ -41,7 +41,7 @@ export default function WhatsAppButton() {
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            className="fixed bottom-24 right-8 sm:right-6 z-50 w-80 max-w-[calc(100vw-4rem)] bg-white rounded-2xl shadow-2xl overflow-hidden"
+            className="fixed bottom-[10.5rem] right-8 sm:right-6 sm:bottom-24 z-50 w-80 max-w-[calc(100vw-4rem)] bg-white rounded-2xl shadow-2xl overflow-hidden"
           >
             {/* Header */}
             <div className="bg-green-500 text-white p-4">

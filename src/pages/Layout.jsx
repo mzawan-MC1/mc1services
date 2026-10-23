@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronDown, ArrowRight, Phone, Mail, Linkedin, Twitter, Facebook, Instagram, Youtube } from 'lucide-react';
 import { dataLayer } from '../components/dataLayer';
 import WhatsAppButton from '../components/WhatsAppButton';
+import AssistantWidget from '../components/AssistantWidget';
 import ScrollToTop from '../components/ScrollToTop';
 import TrackingCode from '../components/TrackingCode';
 import { useTranslation } from 'react-i18next';
@@ -360,6 +361,21 @@ export default function Layout({ children, currentPageName }) {
       ) : (
         <>
           <WhatsAppButton />
+          <AssistantWidget />
+          {/* Mobile sticky action bar: quote + booking shortcuts, always
+              within thumb reach. Hidden on the pages it points to. */}
+          {!/^\/(contact|bookconsultation)/i.test(location.pathname) && (
+            <>
+              <div className="fixed inset-x-0 bottom-0 z-40 flex items-stretch gap-2 border-t border-slate-200 bg-white/95 px-3 pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-2.5 shadow-[0_-6px_24px_rgba(15,23,42,0.10)] backdrop-blur md:hidden">
+                <Link to="/Tools" className="flex flex-1 items-center justify-center rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white">
+                  Get a Cost Estimate
+                </Link>
+                <Link to="/BookConsultation" className="flex flex-1 items-center justify-center rounded-full bg-blue-600 px-4 py-3 text-sm font-semibold text-white">
+                  Book Free Consultation
+                </Link>
+              </div>
+            </>
+          )}
           {/* Top Bar */}
           <div className="bg-slate-900 text-white py-2 px-4 text-sm hidden md:block">
             <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -822,6 +838,8 @@ export default function Layout({ children, currentPageName }) {
               </div>
             </div>
           </footer>
+          {/* Spacer so the fixed mobile action bar never covers the footer */}
+          <div className="h-[4.5rem] md:hidden" />
         </>
       )}
     </div>

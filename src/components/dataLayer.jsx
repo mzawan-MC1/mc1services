@@ -291,6 +291,17 @@ export const dataLayer = {
     upsert: (data) => supabaseHelpers.upsert('contact_page_content', data, 'section_key'),
   },
 
+  // Blog Posts (table created by blog-setup.sql; RLS serves published
+  // posts to the public and everything to signed-in admins)
+  blog: {
+    getAll: () => supabaseHelpers.getAll('blog_posts', 'published_at', false),
+    getById: (id) => supabaseHelpers.getById('blog_posts', id),
+    getBySlug: (slug) => supabaseHelpers.getByKey('blog_posts', 'slug', slug),
+    create: (data) => supabaseHelpers.create('blog_posts', data),
+    update: (id, data) => supabaseHelpers.update('blog_posts', id, { ...data, updated_at: new Date().toISOString() }),
+    delete: (id) => supabaseHelpers.delete('blog_posts', id),
+  },
+
   // Contact Submissions
   contactSubmissions: {
     getAll: () => supabaseHelpers.getAll('contact_submissions', 'created_at', false),

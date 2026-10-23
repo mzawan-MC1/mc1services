@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CopyButton, ResetButton, SavePrefsButton, loadPrefs, ShareButtons } from './ToolHelpers';
 import { RefreshCw, Loader2 } from 'lucide-react';
+import ProjectCostEstimator from './ProjectCostEstimator';
 
 export default function BusinessTools({ activeTool }) {
   // Gratuity
@@ -382,6 +383,10 @@ export default function BusinessTools({ activeTool }) {
         </div>
       </div>
     );
+  }
+
+  if (activeTool === 'project-cost') {
+    return <ProjectCostEstimator />;
   }
 
   return null;

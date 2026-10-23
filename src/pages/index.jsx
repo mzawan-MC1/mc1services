@@ -52,6 +52,16 @@ const AdminPricingEdit = lazy(() => import("./AdminPricingEdit"));
 
 const AdminFAQs = lazy(() => import("./AdminFAQs"));
 
+const Blog = lazy(() => import("./Blog"));
+
+const BlogDetail = lazy(() => import("./BlogDetail"));
+
+const BookConsultation = lazy(() => import("./BookConsultation"));
+
+const AdminBlog = lazy(() => import("./AdminBlog"));
+
+const AdminBlogEdit = lazy(() => import("./AdminBlogEdit"));
+
 const AdminFAQEdit = lazy(() => import("./AdminFAQEdit"));
 
 const AdminClientLogos = lazy(() => import("./AdminClientLogos"));
@@ -169,6 +179,14 @@ const PAGES = {
     AdminPricingEdit: AdminPricingEdit,
     
     AdminFAQs: AdminFAQs,
+
+    Blog: Blog,
+
+    BookConsultation: BookConsultation,
+
+    AdminBlog: AdminBlog,
+
+    AdminBlogEdit: AdminBlogEdit,
     
     AdminFAQEdit: AdminFAQEdit,
     
@@ -240,6 +258,8 @@ const ALT_ROUTE_MAP = {
     '/admin/industries': 'AdminIndustries',
     '/admin/navigation': 'AdminNavigation',
     '/admin/faq': 'AdminFAQs',
+    '/admin/blog': 'AdminBlog',
+    '/admin/blog/edit': 'AdminBlogEdit',
     '/admin/team': 'AdminTeam',
     '/admin/inquiries': 'AdminContacts',
     '/admin/testimonials': 'AdminTestimonials',
@@ -341,6 +361,7 @@ function PagesContent() {
                 <Route path="/home" element={<Navigate to="/" replace />} />
                 <Route path="/solutions/:slug" element={<SolutionDetail />} />
                 <Route path="/industries/:slug" element={<IndustryDetail />} />
+                <Route path="/blog/:slug" element={<BlogDetail />} />
 
                 {/* Public pages retain their existing canonical and lowercase URLs. Home is excluded: it is served at / only. */}
                 {Object.keys(PAGES)

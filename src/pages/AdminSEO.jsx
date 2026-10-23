@@ -19,6 +19,8 @@ const commonPages = [
   { id: 'contact', name: 'Contact', url: '/Contact' },
   { id: 'portfolio', name: 'Portfolio', url: '/Portfolio' },
   { id: 'tools', name: 'Tools Hub', url: '/Tools' },
+  { id: 'blog', name: 'Blog', url: '/Blog' },
+  { id: 'book-consultation', name: 'Book a Consultation', url: '/BookConsultation' },
   { id: 'web-development', name: 'Web Development', url: '/WebDevelopment' },
   { id: 'app-development', name: 'App Development', url: '/AppDevelopment' },
   { id: 'digital-marketing', name: 'Digital Marketing', url: '/DigitalMarketing' },
@@ -163,14 +165,16 @@ export default function AdminSEO() {
 
     // Include dynamic pages: solutions, industries and published portfolio case studies
     try {
-      const [services, industries, projects] = await Promise.all([
+      const [services, industries, projects, posts] = await Promise.all([
         dataLayer.services.getAll().catch(() => []),
         dataLayer.industries.getAll().catch(() => []),
         dataLayer.portfolio.getPublished().catch(() => []),
+        dataLayer.blog.getAll().catch(() => []),
       ]);
       (services || []).forEach(s => { if (s.slug) urls.push(`${baseUrl}/solutions/${s.slug}`); });
       (industries || []).forEach(i => { if (i.slug) urls.push(`${baseUrl}/industries/${i.slug}`); });
       (projects || []).forEach(p => { if (p.id) urls.push(`${baseUrl}/PortfolioDetail?id=${p.id}`); });
+      (posts || []).forEach(p => { if (p.slug && p.is_published) urls.push(`${baseUrl}/blog/${p.slug}`); });
     } catch (e) {
       console.error('Sitemap dynamic URL fetch failed, using static pages only.', e);
     }
