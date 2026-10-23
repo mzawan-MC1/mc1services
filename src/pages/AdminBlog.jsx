@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
-import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff, Star, TriangleAlert } from 'lucide-react';
+import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff, Star, TriangleAlert, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -89,6 +89,11 @@ export default function AdminBlog() {
                     </div>
                     <Badge className={post.is_published ? 'bg-green-100 text-green-700 hover:bg-green-100' : 'bg-slate-100 text-slate-600 hover:bg-slate-100'}>{post.is_published ? 'Published' : 'Draft'}</Badge>
                     <div className="flex items-center gap-1.5">
+                      {post.is_published && (
+                        <a href={`/blog/${post.slug}`} target="_blank" rel="noopener noreferrer" title="View live article">
+                          <Button variant="outline" size="sm"><ExternalLink className="h-4 w-4" /></Button>
+                        </a>
+                      )}
                       <Button variant="outline" size="sm" onClick={() => togglePublish.mutate(post)} title={post.is_published ? 'Unpublish' : 'Publish'}>
                         {post.is_published ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>

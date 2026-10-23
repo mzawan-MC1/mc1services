@@ -130,8 +130,11 @@ export default function AdminBlogEdit() {
                       <Label>Content</Label>
                       <Button type="button" variant="ghost" size="sm" onClick={() => setShowPreview((v) => !v)}><Eye className="mr-1.5 h-4 w-4" />{showPreview ? 'Hide preview' : 'Preview'}</Button>
                     </div>
-                    <Textarea className="mt-1 bg-white font-mono text-sm" rows={16} value={form.content} onChange={set('content')} placeholder={'Write the article here.\n\nFormatting: ## Heading, ### Sub-heading, - bullet list, > quote, **bold**, *italic*, [link text](https://…)\nLeave a blank line between paragraphs.'} />
-                    <p className="mt-1 text-xs text-slate-400">Tip: 800–1,500 words with headings every few paragraphs reads best and ranks best.</p>
+                    <Textarea className="mt-1 bg-white font-mono text-sm" rows={22} value={form.content} onChange={set('content')} placeholder={'Write the article here.\n\nFormatting: ## Heading, ### Sub-heading, - bullet list, > quote, **bold**, *italic*, [link text](https://…)\nLeave a blank line between paragraphs.'} />
+                    <p className="mt-1 flex items-center justify-between text-xs text-slate-400">
+                      <span>Tip: 800–1,500 words with headings every few paragraphs reads best and ranks best.</span>
+                      <span className="font-semibold text-slate-500">{(form.content || '').trim() ? (form.content || '').trim().split(/\s+/).length : 0} words</span>
+                    </p>
                   </div>
                   {showPreview && (
                     <div className="rounded-xl border border-slate-200 bg-white p-5">
@@ -183,6 +186,23 @@ export default function AdminBlogEdit() {
                   <div><Label>Meta Description</Label><Textarea className="mt-1 bg-white" rows={3} value={form.meta_description} onChange={set('meta_description')} placeholder="Leave empty to use the summary. Aim for ~150 characters." /></div>
                 </CardContent>
               </Card>
+            </div>
+          </div>
+
+          {/* Sticky action bar: saving never requires scrolling back to the top */}
+          <div className="sticky bottom-4 z-10 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-slate-900 px-5 py-3.5 shadow-2xl">
+            <p className="text-sm text-slate-300">
+              {form.is_published
+                ? <>Status: <span className="font-semibold text-green-400">Published</span>{form.slug && <span className="text-slate-400"> · /blog/{form.slug}</span>}</>
+                : <>Status: <span className="font-semibold text-amber-300">Draft</span><span className="text-slate-400"> — switch Published on (right column) to make it live</span></>}
+            </p>
+            <div className="flex items-center gap-2">
+              {isEditing && form.is_published && form.slug && (
+                <a href={`/blog/${form.slug}`} target="_blank" rel="noopener noreferrer" className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20">View live article</a>
+              )}
+              <Button type="submit" disabled={saveMutation.isPending} className="bg-blue-600 hover:bg-blue-500">
+                {saveMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />} Save Article
+              </Button>
             </div>
           </div>
         </form>

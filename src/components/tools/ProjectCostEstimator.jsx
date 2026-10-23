@@ -112,7 +112,7 @@ export default function ProjectCostEstimator() {
   const waText = encodeURIComponent(`Hi MCS, I used your project cost estimator. Here is my estimate:\n\n${summaryText()}\n\nI'd like to discuss it.`);
 
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70 md:p-8">
+    <div>
       <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
         {[1, 2, 3].map((s) => (
           <React.Fragment key={s}>

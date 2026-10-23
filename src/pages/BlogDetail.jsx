@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -26,6 +26,18 @@ export default function BlogDetail() {
   const { i18n } = useTranslation();
   const lang = i18n.language;
   const BackArrow = lang === 'ar' ? ArrowRight : ArrowLeft;
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const el = document.documentElement;
+      const total = el.scrollHeight - el.clientHeight;
+      setProgress(total > 0 ? Math.min(100, (el.scrollTop / total) * 100) : 0);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const { data: post, isLoading } = useQuery({
     queryKey: ['blog-post', slug],
@@ -112,6 +124,9 @@ export default function BlogDetail() {
 
   return (
     <div className="min-h-screen bg-white">
+      <div className="fixed inset-x-0 top-0 z-[60] h-1" aria-hidden="true">
+        <div className="h-full bg-gradient-to-r from-blue-600 to-teal-500 transition-[width] duration-150" style={{ width: `${progress}%` }} />
+      </div>
       <BreadcrumbJsonLd items={[{ name: 'Home', url: 'https://mc1services.com/' }, { name: 'Blog', url: 'https://mc1services.com/Blog' }, { name: title }]} />
 
       <article className="mx-auto max-w-3xl px-4 pb-16 pt-10 sm:px-6 md:pt-14">
