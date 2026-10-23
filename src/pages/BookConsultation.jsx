@@ -34,7 +34,7 @@ export default function BookConsultation() {
 
   const submit = async (e) => {
     e.preventDefault();
-    if (!topic) { toast.error('Please choose what you'd like to discuss'); return; }
+    if (!topic) { toast.error('Please choose what you would like to discuss'); return; }
     if (!date || !slot) { toast.error('Please pick a date and a time slot'); return; }
     if (!form.name.trim() || !form.email.trim()) { toast.error('Please add your name and email'); return; }
     if (!turnstileToken) { toast.error('Please complete the security verification'); return; }
