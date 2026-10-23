@@ -133,8 +133,8 @@ export default function AssistantWidget() {
         email: isEmail ? capture.contact.trim().toLowerCase() : email,
         phone: isEmail ? null : capture.contact.trim(),
         company: null,
-        service_interest: 'Website Assistant',
-        message: `Lead from the website assistant chat.\nContact: ${capture.contact.trim()}\n\n${capture.message.trim() || '(no message written)'}\n\nConversation:\n${messages.map((m) => `${m.from === 'user' ? 'Visitor' : 'Assistant'}: ${m.text}`).join('\n')}`,
+        service_interest: 'other',
+        message: `Lead from the website assistant chat.\nContact: ${capture.contact.trim()}\n\n${capture.message.trim() || '(no message written)'}\n\nConversation:\n${messages.map((m) => `${m.from === 'user' ? 'Visitor' : 'Assistant'}: ${m.text}`).join('\n')}`.slice(0, 4900),
         status: 'new',
         subject: 'Website Assistant Lead',
       }, turnstileToken);

@@ -34,6 +34,21 @@ export default function BookConsultation() {
 
   const submit = async (e) => {
     e.preventDefault();
+    // The submission service only accepts a fixed set of service codes —
+    // map the chosen topic to the closest one (the true topic travels in
+    // the message itself).
+    const topicCode = (() => {
+      const t = topic.toLowerCase();
+      if (t.includes('app')) return 'app_development';
+      if (t.includes('web')) return 'web_development';
+      if (t.includes('marketing') || t.includes('growth')) return 'digital_marketing';
+      if (t.includes('seo')) return 'seo';
+      if (t.includes('social')) return 'social_media';
+      if (t.includes('brand') || t.includes('creative') || t.includes('production')) return 'branding';
+      if (t.includes('cloud') || t.includes('it')) return 'it_consulting';
+      if (t.includes('software') || t.includes('saas') || t.includes('automation') || t.includes('ai')) return 'custom_software';
+      return 'other';
+    })();
     if (!topic) { toast.error('Please choose what you would like to discuss'); return; }
     if (!date || !slot) { toast.error('Please pick a date and a time slot'); return; }
     if (!form.name.trim() || !form.email.trim()) { toast.error('Please add your name and email'); return; }
@@ -45,7 +60,7 @@ export default function BookConsultation() {
         email: form.email.trim().toLowerCase(),
         phone: form.phone.trim() || null,
         company: form.company.trim() || null,
-        service_interest: topic,
+        service_interest: topicCode,
         message: `Consultation booking request\nTopic: ${topic}\nPreferred date: ${prettyDate} (${date})\nPreferred time: ${slot} (GST, UTC+4)\nFormat: Video call / phone\n\nNotes: ${form.notes.trim() || '—'}`,
         status: 'new',
         subject: `Consultation Booking: ${topic} — ${date} ${slot}`,

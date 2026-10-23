@@ -95,7 +95,7 @@ export default function ProjectCostEstimator() {
         email: lead.email.trim().toLowerCase(),
         phone: lead.phone.trim() || null,
         company: null,
-        service_interest: 'Project Cost Estimate',
+        service_interest: 'other',
         message: `A visitor used the Project Cost Estimator and asked for this estimate by email:\n\n${summaryText()}`,
         status: 'new',
         subject: 'Project Cost Estimate Request',
