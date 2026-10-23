@@ -3,6 +3,13 @@ import { LazyMotion } from 'framer-motion'
 import App from '@/App.jsx'
 import '@/index.css'
 import './i18n';
+import { reloadOnceForStaleChunks } from './utils/chunkReload';
+
+// If a preloaded chunk from a previous deploy has vanished, reload once
+// to fetch the current page shell and its matching chunks.
+window.addEventListener('vite:preloadError', (event) => {
+    if (reloadOnceForStaleChunks()) event.preventDefault();
+});
 
 // Load framer-motion's animation features lazily (domAnimation covers every
 // feature this site uses — animate/inView/exit/gestures; the app uses no
