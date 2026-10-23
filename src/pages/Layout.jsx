@@ -254,9 +254,12 @@ export default function Layout({ children, currentPageName }) {
       .map((item, index) => ({
         ...item,
         id: item.id || `menu-${index}`,
+        // Guard against stray spaces in admin-entered links (a leading
+        // space turns /Blog into /%20/Blog and a 404).
+        href: typeof item.href === 'string' ? item.href.trim() : item.href,
         name: getLocalized(item, 'label') || item.label,
         children: Array.isArray(item.children)
-          ? item.children.filter((child) => child?.is_visible !== false).sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0)).map(resolveReferencedChild).map((child) => ({ ...child, name: getLocalized(child, 'label') || child.label }))
+          ? item.children.filter((child) => child?.is_visible !== false).sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0)).map(resolveReferencedChild).map((child) => ({ ...child, href: typeof child.href === 'string' ? child.href.trim() : child.href, name: getLocalized(child, 'label') || child.label }))
           : []
       }))
     : [];

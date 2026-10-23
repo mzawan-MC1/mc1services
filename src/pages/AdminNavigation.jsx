@@ -141,10 +141,21 @@ export default function AdminNavigation() {
     if (header) setItems((header.menu_items || []).map(normalizeItem));
   }, [header]);
 
+  // Strip stray spaces from links before they are saved — a leading space
+  // in a Direct Link silently becomes /%20/... and a 404 on the live site.
+  const sanitizeItems = (list) => (list || []).map((item) => ({
+    ...item,
+    href: typeof item.href === 'string' ? item.href.trim() : item.href,
+    label: typeof item.label === 'string' ? item.label.trim() : item.label,
+    children: Array.isArray(item.children)
+      ? item.children.map((child) => ({ ...child, href: typeof child.href === 'string' ? child.href.trim() : child.href }))
+      : item.children,
+  }));
+
   const saveMutation = useMutation({
     mutationFn: () => header
-      ? dataLayer.headerFooter.update(header.id, { menu_items: items })
-      : dataLayer.headerFooter.create({ setting_key: 'header', menu_items: items }),
+      ? dataLayer.headerFooter.update(header.id, { menu_items: sanitizeItems(items) })
+      : dataLayer.headerFooter.create({ setting_key: 'header', menu_items: sanitizeItems(items) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['header-footer-settings'] });
       toast.success('Navigation saved');
