@@ -12,6 +12,7 @@ import { dataLayer } from '../components/dataLayer';
 import PortfolioCard from '../components/ui/PortfolioCard';
 import { BreadcrumbJsonLd, FaqJsonLd } from '../components/StructuredData';
 import { getLocalizedValue } from '../utils';
+import { optimizeImageUrl } from '../utils/optimizeImage';
 
 const iconMap = {
   Boxes, Clapperboard, CloudCog, Code, Code2, Megaphone, PanelsTopLeft,
@@ -161,7 +162,7 @@ export default function SolutionDetail() {
 
           <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.12 }} className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.07] p-5 shadow-2xl backdrop-blur-xl sm:p-7">
             {service.image_url ? (
-              <img src={service.image_url} alt="" className="aspect-[8/5] w-full rounded-[1.4rem] object-cover" />
+              <img src={optimizeImageUrl(service.image_url, 1200)} alt="" className="aspect-[8/5] w-full rounded-[1.4rem] object-cover" />
             ) : (
               <div className="flex aspect-[8/5] items-center justify-center rounded-[1.4rem] bg-gradient-to-br from-blue-600/40 via-cyan-400/10 to-purple-600/40">
                 <ServiceIcon className="h-24 w-24 text-cyan-200" strokeWidth={1.25} />

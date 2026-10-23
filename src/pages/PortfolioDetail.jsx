@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl, getLocalizedValue } from '../utils';
+import { optimizeImageUrl } from '../utils/optimizeImage';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
@@ -100,13 +101,16 @@ export default function PortfolioDetail() {
 
   // Combine main image, gallery images, and videos for the slider
   const allMedia = useMemo(() => portfolio ? [
-    ...(portfolio.main_image_url ? [{ type: 'image', url: portfolio.main_image_url }] : []),
-    ...gallery.map((media) => ({
-      type: media.media_type || (/\.(mp4|webm|ogg)(\?|$)/i.test(media.image_url) ? 'video' : 'image'),
-      url: media.image_url,
-      poster: media.poster_url,
-      alt: (i18n.language === 'ar' ? media.alt_text_ar || media.alt_text : media.alt_text) || (i18n.language === 'ar' ? portfolio.title_ar || portfolio.title : portfolio.title)
-    }))
+    ...(portfolio.main_image_url ? [{ type: 'image', url: optimizeImageUrl(portfolio.main_image_url, 1200) }] : []),
+    ...gallery.map((media) => {
+      const mediaType = media.media_type || (/\.(mp4|webm|ogg)(\?|$)/i.test(media.image_url) ? 'video' : 'image');
+      return {
+        type: mediaType,
+        url: mediaType === 'image' ? optimizeImageUrl(media.image_url, 1200) : media.image_url,
+        poster: media.poster_url,
+        alt: (i18n.language === 'ar' ? media.alt_text_ar || media.alt_text : media.alt_text) || (i18n.language === 'ar' ? portfolio.title_ar || portfolio.title : portfolio.title)
+      };
+    })
   ] : [], [portfolio, gallery, i18n.language]);
 
   const getEmbedUrl = (url) => {
@@ -180,7 +184,7 @@ export default function PortfolioDetail() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-slate-950 py-24 md:py-32">
         <div className="absolute inset-0">
-          {portfolio.main_image_url && <img src={portfolio.main_image_url} alt={`${portfolio.title} — project cover`} className="h-full w-full scale-105 object-cover opacity-30 blur-[1px]" />}
+          {portfolio.main_image_url && <img src={optimizeImageUrl(portfolio.main_image_url, 1600)} alt={`${portfolio.title} — project cover`} className="h-full w-full scale-105 object-cover opacity-30 blur-[1px]" />}
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/55" />
           <div className="absolute -right-20 top-12 h-72 w-72 rounded-full bg-blue-500/20 blur-[100px]" />
         </div>
@@ -350,7 +354,7 @@ export default function PortfolioDetail() {
                   <p className="text-lg leading-relaxed mb-6">&ldquo;{getLoc(testimonial, 'content')}&rdquo;</p>
                   <div className="flex items-center gap-4">
                     {testimonial.image_url ? (
-                      <img src={testimonial.image_url} alt={testimonial.client_name} className="w-12 h-12 rounded-full" />
+                      <img src={optimizeImageUrl(testimonial.image_url, 200)} alt={testimonial.client_name} className="w-12 h-12 rounded-full" />
                     ) : (
                       <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center font-bold">{testimonial.client_name?.[0]}</div>
                     )}
@@ -413,7 +417,7 @@ export default function PortfolioDetail() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
                 {gallery.map((img, i) => (
                   <button key={i} type="button" aria-label={`${t('portfolio.detail.open_media', 'Open media')} ${i + 1}`} onClick={() => openLightbox(i + galleryOffset)} className="relative group rounded-2xl overflow-hidden aspect-video bg-slate-900">
-                    {img.media_type === 'video' ? <video src={img.image_url} poster={img.poster_url || undefined} className="h-full w-full object-cover" muted /> : <img src={img.image_url} alt={getLoc(img, 'alt_text') || getLoc(portfolio, 'title')} className="w-full h-full object-cover" />}
+                    {img.media_type === 'video' ? <video src={img.image_url} poster={img.poster_url || undefined} className="h-full w-full object-cover" muted /> : <img src={optimizeImageUrl(img.image_url, 800)} alt={getLoc(img, 'alt_text') || getLoc(portfolio, 'title')} className="w-full h-full object-cover" />}
                     <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/40 transition-all flex items-center justify-center">
                       <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition" />
                     </div>

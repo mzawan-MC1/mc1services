@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { createPageUrl, getLocalizedValue } from '../../utils';
+import { optimizeImageUrl } from '../../utils/optimizeImage';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../dataLayer';
@@ -65,9 +66,9 @@ export default function HeroSection() {
       {/* Animated Background */}
       <div className="absolute inset-0">
         {heroContent?.background_video ? (
-          <video src={heroContent.background_video} poster={heroContent.background_image || undefined} autoPlay muted loop playsInline className="absolute inset-0 h-full w-full object-cover opacity-35" />
+          <video src={heroContent.background_video} poster={heroContent.background_image ? optimizeImageUrl(heroContent.background_image, 1200) : undefined} autoPlay muted loop playsInline className="absolute inset-0 h-full w-full object-cover opacity-35" />
         ) : heroContent?.background_image ? (
-          <img src={heroContent.background_image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-35" />
+          <img src={optimizeImageUrl(heroContent.background_image, 1920)} alt="" className="absolute inset-0 h-full w-full object-cover opacity-35" />
         ) : null}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-pink-600/20" />
         <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-blue-500/30 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 animate-pulse" />

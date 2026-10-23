@@ -12,6 +12,7 @@ import { dataLayer } from '../components/dataLayer';
 import PortfolioCard from '../components/ui/PortfolioCard';
 import { BreadcrumbJsonLd } from '../components/StructuredData';
 import { getLocalizedValue } from '../utils';
+import { optimizeImageUrl } from '../utils/optimizeImage';
 
 const iconMap = {
   BriefcaseBusiness, Building2, Car, Clapperboard, Factory, Gamepad2,
@@ -118,7 +119,7 @@ export default function IndustryDetail() {
         { name: name },
       ]} />
       <section className="relative min-h-[38rem] overflow-hidden bg-slate-950 text-white">
-        {industry.image_url ? <img src={industry.image_url} alt={`${name} — industry cover`} className="absolute inset-0 h-full w-full object-cover opacity-40" /> : <div className="absolute inset-0 bg-gradient-to-br from-blue-950 via-slate-950 to-purple-950" />}
+        {industry.image_url ? <img src={optimizeImageUrl(industry.image_url, 1600)} alt={`${name} — industry cover`} className="absolute inset-0 h-full w-full object-cover opacity-40" /> : <div className="absolute inset-0 bg-gradient-to-br from-blue-950 via-slate-950 to-purple-950" />}
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/35" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_30%,rgba(34,211,238,0.18),transparent_32%)]" />
         <div className="relative mx-auto flex min-h-[38rem] max-w-7xl items-center px-4 py-20 sm:px-6 lg:px-8">

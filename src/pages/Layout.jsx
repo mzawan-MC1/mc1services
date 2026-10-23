@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '../utils';
+import { optimizeImageUrl } from '../utils/optimizeImage';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronDown, ArrowRight, Phone, Mail, Linkedin, Twitter, Facebook, Instagram, Youtube } from 'lucide-react';
 import { dataLayer } from '../components/dataLayer';
@@ -391,7 +392,7 @@ export default function Layout({ children, currentPageName }) {
                       const selected = previewChild === child;
                       const content = <span className="flex min-w-0 items-center gap-3">
                         <span className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl border transition ${compact ? 'h-11 w-11' : 'h-12 w-12'} ${selected ? 'border-blue-200 bg-blue-50 text-blue-600' : 'border-slate-200 bg-white text-slate-500'}`}>
-                          {child.icon_image_url ? <img src={child.icon_image_url} alt="" className="h-full w-full object-cover" loading="lazy" /> : <span className="text-base font-black">{(child.name || child.label || '?').trim().charAt(0)}</span>}
+                          {child.icon_image_url ? <img src={optimizeImageUrl(child.icon_image_url, 96)} alt="" className="h-full w-full object-cover" loading="lazy" /> : <span className="text-base font-black">{(child.name || child.label || '?').trim().charAt(0)}</span>}
                         </span>
                         <span className="min-w-0 flex-1">
                           <span className={`block font-bold leading-snug ${selected ? 'text-blue-700' : 'text-slate-900'} ${compact ? 'text-sm' : 'text-[15px]'}`}>{child.name || child.label}</span>
@@ -448,7 +449,7 @@ export default function Layout({ children, currentPageName }) {
                               {previewChild && <div className="relative flex min-h-0 flex-col overflow-hidden bg-slate-950 p-7 text-white xl:p-8">
                                 <AnimatePresence mode="wait">
                                   <motion.div key={previewChild.id || previewChild.href} initial={{ opacity: 0.35, scale: 1.02 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.24 }} className="absolute inset-0">
-                                    {previewChild.image_url ? <img src={previewChild.image_url} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,.7),transparent_36%),radial-gradient(circle_at_15%_75%,rgba(124,58,237,.55),transparent_42%),linear-gradient(135deg,#020617,#0f2557,#2e1065)]" />}
+                                    {previewChild.image_url ? <img src={optimizeImageUrl(previewChild.image_url, 700)} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,.7),transparent_36%),radial-gradient(circle_at_15%_75%,rgba(124,58,237,.55),transparent_42%),linear-gradient(135deg,#020617,#0f2557,#2e1065)]" />}
                                   </motion.div>
                                 </AnimatePresence>
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/10" />
@@ -548,7 +549,7 @@ export default function Layout({ children, currentPageName }) {
                               {mobileSections.map(([group, children], sectionIndex) => <div key={group || `direct-${sectionIndex}`} className="space-y-2">{mobileHasCategories && <p className="px-1 pt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-blue-600">{group}</p>}{children.map((child) => {
                                 const childKey = child.id || child.href;
                                 const description = getLocalized(child, 'description');
-                                const content = <span className="flex min-w-0 flex-1 items-center gap-3">{child.icon_image_url ? <img src={child.icon_image_url} alt="" className="h-12 w-12 shrink-0 rounded-xl object-cover" loading="lazy" /> : <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 text-lg font-bold text-white">{(child.name || child.label || '?').trim().charAt(0)}</span>}<span className="min-w-0 flex-1"><span className="block text-sm font-semibold leading-snug text-slate-900">{child.name || child.label}</span>{description && <span className="mt-1 line-clamp-2 block text-xs leading-relaxed text-slate-500">{description}</span>}</span><ArrowRight className="h-4 w-4 shrink-0 text-blue-500 rtl:-scale-x-100" /></span>;
+                                const content = <span className="flex min-w-0 flex-1 items-center gap-3">{child.icon_image_url ? <img src={optimizeImageUrl(child.icon_image_url, 96)} alt="" className="h-12 w-12 shrink-0 rounded-xl object-cover" loading="lazy" /> : <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 text-lg font-bold text-white">{(child.name || child.label || '?').trim().charAt(0)}</span>}<span className="min-w-0 flex-1"><span className="block text-sm font-semibold leading-snug text-slate-900">{child.name || child.label}</span>{description && <span className="mt-1 line-clamp-2 block text-xs leading-relaxed text-slate-500">{description}</span>}</span><ArrowRight className="h-4 w-4 shrink-0 text-blue-500 rtl:-scale-x-100" /></span>;
                                 const className = 'block rounded-xl border border-slate-200 bg-white p-2.5 shadow-sm transition active:scale-[0.99] hover:border-blue-200 hover:shadow-md';
                                 return isExternalHref(child.href) ? <a key={childKey} href={child.href} target={child.open_new_tab ? '_blank' : undefined} rel={child.open_new_tab ? 'noopener noreferrer' : undefined} onClick={() => setMobileMenuOpen(false)} className={className}>{content}</a> : <Link key={childKey} to={resolveMenuHref(child.href)} onClick={() => setMobileMenuOpen(false)} className={className}>{content}</Link>;
                               })}</div>)}

@@ -5,6 +5,7 @@ import { ArrowUpRight, Building2, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedValue } from '../../utils';
+import { optimizeImageUrl } from '../../utils/optimizeImage';
 import { getPortfolioCategoryLabel, usePortfolioCategories } from '../../hooks/usePortfolioCategories';
 
 export default function PortfolioCard({ portfolio, index = 0, masonry = false }) {
@@ -33,7 +34,7 @@ export default function PortfolioCard({ portfolio, index = 0, masonry = false })
         <div className={`relative ${masonry ? 'aspect-[4/3]' : 'aspect-[16/10]'} overflow-hidden bg-slate-900`}>
           {portfolio.main_image_url || portfolio.image_url ? (
             <img
-              src={portfolio.main_image_url || portfolio.image_url}
+              src={optimizeImageUrl(portfolio.main_image_url || portfolio.image_url, 800)}
               alt={title}
               loading="lazy"
               decoding="async"

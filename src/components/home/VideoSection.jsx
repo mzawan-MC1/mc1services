@@ -5,6 +5,7 @@ import { dataLayer } from '../dataLayer';
 import { Play, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedValue } from '../../utils';
+import { optimizeImageUrl } from '../../utils/optimizeImage';
 
 export default function VideoSection() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -125,7 +126,7 @@ export default function VideoSection() {
             {/\.(mp4|webm|ogg)$/i.test(videoContent?.media_url || '') ? (
               <video src={videoContent.media_url} controls autoPlay className="w-full h-full" />
             ) : (
-              <img src={videoContent?.background_image} alt="Media" className="w-full h-full object-cover" />
+              <img src={optimizeImageUrl(videoContent?.background_image, 1200)} alt="Media" className="w-full h-full object-cover" />
             )}
           </div>
         </div>
