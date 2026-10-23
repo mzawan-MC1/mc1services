@@ -51,6 +51,8 @@ export default function ClientLogosSection() {
       <img
         src={logo.logo_url}
         alt={ariaHidden ? '' : logo.name}
+        width={176}
+        height={48}
         loading="eager"
         decoding="async"
         className="max-h-9 w-auto max-w-full object-contain grayscale brightness-75 contrast-125 transition duration-300 group-hover:grayscale-0 group-hover:brightness-100 group-hover:contrast-100 sm:max-h-11 lg:max-h-12"

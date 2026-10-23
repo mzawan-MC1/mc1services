@@ -71,9 +71,10 @@ export default function HeroSection() {
           <img src={optimizeImageUrl(heroContent.background_image, 1920)} alt="" className="absolute inset-0 h-full w-full object-cover opacity-35" />
         ) : null}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-pink-600/20" />
-        <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-blue-500/30 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 animate-pulse" />
-        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/30 rounded-full blur-[150px] translate-x-1/4 translate-y-1/4 animate-pulse" />
-        <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-pink-500/20 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
+        {/* Glow orbs as layered radial gradients: same look as the old
+            blur-[150px] divs, but with no filter repaint cost and no
+            pulsing animation for the compositor to chase. */}
+        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(800px 800px at 0% 0%, rgba(59,130,246,0.30), transparent 65%), radial-gradient(700px 700px at 100% 100%, rgba(168,85,247,0.30), transparent 65%), radial-gradient(500px 500px at 50% 50%, rgba(236,72,153,0.18), transparent 65%)' }} />
 
         {/* Grid Pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px]" />

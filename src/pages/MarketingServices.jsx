@@ -100,8 +100,7 @@ export default function MarketingServices() {
       {/* Hero */}
       <section className="relative py-24 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-purple-500/20 rounded-full blur-[150px]" />
-          <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-pink-500/20 rounded-full blur-[100px]" />
+          <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(700px 700px at 0% 0%, rgba(168,85,247,0.20), transparent 65%), radial-gradient(500px 500px at 100% 100%, rgba(236,72,153,0.20), transparent 65%)' }} />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div

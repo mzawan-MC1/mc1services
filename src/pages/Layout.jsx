@@ -165,7 +165,9 @@ export default function Layout({ children, currentPageName }) {
         if (settingsObj.favicon_url) {
           const link = document.querySelector("link[rel~='icon']") || document.createElement('link');
           link.rel = 'icon';
-          link.href = settingsObj.favicon_url;
+          // Serve a 64px transformed copy — the uploaded favicon file is a
+          // 512px PNG (~200KB); browsers only ever display it tiny.
+          link.href = optimizeImageUrl(settingsObj.favicon_url, 64);
           document.head.appendChild(link);
         }
       } catch (_err) {
@@ -281,15 +283,25 @@ export default function Layout({ children, currentPageName }) {
     const load = (u) => new Promise((resolve) => { const im = new Image(); im.onload = im.onerror = () => resolve(); im.src = u; });
     const run = async () => {
       await Promise.all(freshIcons.map(load));
-      for (let i = 0; i < freshPreviews.length; i += 4) {
-        await Promise.all(freshPreviews.slice(i, i + 4).map(load));
+      for (let i = 0; i < freshPreviews.length; i += 3) {
+        await Promise.all(freshPreviews.slice(i, i + 3).map(load));
+        if (i + 3 < freshPreviews.length) await new Promise((r) => setTimeout(r, 150));
       }
     };
-    if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(run, { timeout: 2500 });
-    } else {
-      setTimeout(run, 1200);
-    }
+    // Tamed scheduling: never fight the page for bandwidth. Skip entirely on
+    // data-saver / slow connections; otherwise wait until the page has fully
+    // loaded, then work during idle time in small batches.
+    const connection = navigator.connection;
+    if (connection?.saveData || ['slow-2g', '2g'].includes(connection?.effectiveType)) return;
+    const start = () => {
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(run, { timeout: 3000 });
+      } else {
+        run();
+      }
+    };
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start, { once: true });
   }, [navLinks]);
 
   const resolveMenuHref = (href) => {
@@ -335,7 +347,7 @@ export default function Layout({ children, currentPageName }) {
       `}</style>
 
       {/* Import Arabic Fonts */}
-      <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+      {/* Cairo/Tajawal fonts are loaded from index.html <head> with preconnect. */}
 
       {/*
          If the page is an Admin Page (starts with "Admin"), we do NOT render the public header/footer.
