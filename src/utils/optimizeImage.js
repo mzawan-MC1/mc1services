@@ -16,20 +16,22 @@ export function optimizeImageUrl(url, width = 800) {
   if (SKIP_EXT.test(url)) return url;
 
   // Supabase Storage: /storage/v1/object/public/... -> /storage/v1/render/image/public/...
+  // resize=contain is REQUIRED: with width only, the transform otherwise keeps the
+  // original height and center-crops the sides instead of scaling proportionally.
   if (url.includes('/storage/v1/object/public/')) {
     const base = url.replace('/storage/v1/object/public/', '/storage/v1/render/image/public/');
     const sep = base.includes('?') ? '&' : '?';
-    return `${base}${sep}width=${width}&quality=75&format=webp`;
+    return `${base}${sep}width=${width}&quality=75&format=webp&resize=contain`;
   }
 
-  // Unsplash CDN: cap the requested width/quality.
+  // Unsplash CDN: cap the requested width/quality (fit=max = proportional scale).
   if (url.includes('images.unsplash.com')) {
     try {
       const u = new URL(url);
       u.searchParams.set('w', String(width));
       u.searchParams.set('q', '75');
+      u.searchParams.set('fit', 'max');
       if (!u.searchParams.has('auto')) u.searchParams.set('auto', 'format');
-      if (!u.searchParams.has('fit')) u.searchParams.set('fit', 'crop');
       return u.toString();
     } catch {
       return url;
