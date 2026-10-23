@@ -346,7 +346,7 @@ export default function Layout({ children, currentPageName }) {
                 <Link to={createPageUrl('Home')} className="flex items-center gap-3" aria-label={t('nav.home', 'Home')}>
                   {siteSettings.logo_url ? (
                     <img
-                      src={siteSettings.logo_url}
+                      src={optimizeImageUrl(siteSettings.logo_url, 500)}
                       alt={siteSettings.company_name || 'MCS Consultancy'}
                       className="h-[4.5rem] w-auto object-contain"
                       onError={(e) => {
@@ -603,7 +603,7 @@ export default function Layout({ children, currentPageName }) {
                   <div className="flex items-center gap-3 mb-6">
                     {siteSettings.logo_url ? (
                       <img
-                        src={siteSettings.logo_url}
+                        src={optimizeImageUrl(siteSettings.logo_url, 500)}
                         alt={siteSettings.company_name || 'MCS Consultancy'}
                         className="h-24 w-auto object-contain"
                         onError={(e) => {

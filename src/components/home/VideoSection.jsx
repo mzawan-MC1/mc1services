@@ -81,7 +81,7 @@ export default function VideoSection() {
                 <video src={videoContent.media_url} className="w-full aspect-video object-cover" />
               ) : videoContent?.background_image ? (
                 <img
-                  src={videoContent.background_image}
+                  src={optimizeImageUrl(videoContent.background_image, 1000)}
                   alt={t('home.video_section.team_alt')}
                   className="w-full aspect-video object-cover"
                 />
