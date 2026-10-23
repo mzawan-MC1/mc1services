@@ -58,6 +58,8 @@ const BlogDetail = lazy(() => import("./BlogDetail"));
 
 const BookConsultation = lazy(() => import("./BookConsultation"));
 
+const ProjectCostEstimator = lazy(() => import("./ProjectCostEstimatorPage"));
+
 const AdminBlog = lazy(() => import("./AdminBlog"));
 
 const AdminBlogEdit = lazy(() => import("./AdminBlogEdit"));
@@ -183,6 +185,8 @@ const PAGES = {
     Blog: Blog,
 
     BookConsultation: BookConsultation,
+
+    ProjectCostEstimator: ProjectCostEstimator,
 
     AdminBlog: AdminBlog,
 

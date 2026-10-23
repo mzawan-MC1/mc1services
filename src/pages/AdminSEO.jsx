@@ -21,6 +21,7 @@ const commonPages = [
   { id: 'tools', name: 'Tools Hub', url: '/Tools' },
   { id: 'blog', name: 'Blog', url: '/Blog' },
   { id: 'book-consultation', name: 'Book a Consultation', url: '/BookConsultation' },
+  { id: 'project-cost-estimator', name: 'Project Cost Estimator', url: '/ProjectCostEstimator' },
   { id: 'web-development', name: 'Web Development', url: '/WebDevelopment' },
   { id: 'app-development', name: 'App Development', url: '/AppDevelopment' },
   { id: 'digital-marketing', name: 'Digital Marketing', url: '/DigitalMarketing' },

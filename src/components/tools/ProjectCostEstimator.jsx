@@ -201,7 +201,7 @@ export default function ProjectCostEstimator() {
                 <input value={lead.email} onChange={(e) => setLead({ ...lead, email: e.target.value })} placeholder="Email" type="email" className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-400" />
                 <input value={lead.phone} onChange={(e) => setLead({ ...lead, phone: e.target.value })} placeholder="Phone (optional)" className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-400" />
               </div>
-              <div className="mt-3"><TurnstileWidget onVerify={setTurnstileToken} resetKey={turnstileResetKey} /></div>
+              <div className="mt-3"><TurnstileWidget siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || ''} onVerify={setTurnstileToken} resetKey={turnstileResetKey} /></div>
               <button onClick={sendEstimate} disabled={sending} className="mt-3 inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-60">
                 {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />} Send my estimate
               </button>

@@ -370,7 +370,7 @@ export default function Layout({ children, currentPageName }) {
           {!/^\/(contact|bookconsultation)/i.test(location.pathname) && (
             <>
               <div className="fixed inset-x-0 bottom-0 z-40 flex items-stretch gap-2 border-t border-slate-200 bg-white/95 px-3 pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-2.5 shadow-[0_-6px_24px_rgba(15,23,42,0.10)] backdrop-blur md:hidden">
-                <Link to="/Tools" className="flex flex-1 items-center justify-center rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white">
+                <Link to="/ProjectCostEstimator" className="flex flex-1 items-center justify-center rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white">
                   Get a Cost Estimate
                 </Link>
                 <Link to="/BookConsultation" className="flex flex-1 items-center justify-center rounded-full bg-blue-600 px-4 py-3 text-sm font-semibold text-white">

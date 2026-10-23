@@ -127,7 +127,7 @@ export default function BookConsultation() {
               <textarea rows={4} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-400" placeholder="A few lines about your project, goals or questions…" />
             </div>
 
-            <TurnstileWidget onVerify={setTurnstileToken} resetKey={turnstileResetKey} />
+            <TurnstileWidget siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || ''} onVerify={setTurnstileToken} resetKey={turnstileResetKey} />
 
             <button type="submit" disabled={sending} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-blue-600 px-6 py-3.5 font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60 sm:w-auto">
               {sending ? <Loader2 className="h-5 w-5 animate-spin" /> : <CalendarCheck2 className="h-5 w-5" />} Request this slot

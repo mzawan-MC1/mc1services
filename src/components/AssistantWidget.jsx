@@ -73,7 +73,7 @@ export default function AssistantWidget() {
       return { text: "You can book a free 30-minute consultation and pick a time that suits you — we'll confirm personally, no obligation.", links: [{ label: 'Book a consultation', to: '/BookConsultation' }, { label: 'Leave your details', action: 'capture' }] };
     }
     if (includesAny(text, ['cost', 'price', 'pricing', 'quote', 'how much', 'budget', 'estimate'])) {
-      return { text: "Every project is scoped individually, but you can get an instant ballpark right now with our Project Cost Estimator — it takes about a minute. Or book a free consultation for an exact, fixed quote.", links: [{ label: 'Open the cost estimator', to: '/Tools' }, { label: 'Book a consultation', to: '/BookConsultation' }] };
+      return { text: "Every project is scoped individually, but you can get an instant ballpark right now with our Project Cost Estimator — it takes about a minute. Or book a free consultation for an exact, fixed quote.", links: [{ label: 'Open the cost estimator', to: '/ProjectCostEstimator' }, { label: 'Book a consultation', to: '/BookConsultation' }] };
     }
     if (includesAny(text, ['portfolio', 'work', 'projects', 'clients', 'case stud'])) {
       return { text: "We've delivered 80+ projects across the UAE — auction platforms, marketplaces, SaaS products and more. Take a look at the case studies:", links: [{ label: 'See our work', to: '/Portfolio' }] };
@@ -82,7 +82,7 @@ export default function AssistantWidget() {
       return { text: `We're based in Sharjah and work across the UAE & GCC. Phone/WhatsApp: ${phone} · Email: ${email}.`, links: [{ label: 'Contact page', to: '/Contact' }, { label: 'Chat on WhatsApp', href: `https://wa.me/${waNumber}`, external: true }] };
     }
     if (includesAny(text, ['how long', 'timeline', 'duration', 'delivery time', 'deadline'])) {
-      return { text: "Typical timelines: a business website in 3–6 weeks, e-commerce in 6–12 weeks, and custom platforms in 10–24 weeks depending on scope. The estimator gives a timeline range for your specific project.", links: [{ label: 'Try the estimator', to: '/Tools' }] };
+      return { text: "Typical timelines: a business website in 3–6 weeks, e-commerce in 6–12 weeks, and custom platforms in 10–24 weeks depending on scope. The estimator gives a timeline range for your specific project.", links: [{ label: 'Try the estimator', to: '/ProjectCostEstimator' }] };
     }
     if (includesAny(text, ['service', 'what do you do', 'offer', 'develop', 'build', 'app', 'website', 'software', 'ai', 'automation', 'marketing', 'seo'])) {
       const matched = services.find((s) => {
@@ -93,10 +93,10 @@ export default function AssistantWidget() {
         return words.length >= 2 && words.slice(0, 2).every((w) => text.includes(w));
       });
       if (matched) {
-        return { text: `${matched.title}: ${(matched.short_description || matched.description || '').slice(0, 220)}`, links: [{ label: `Explore ${matched.title}`, to: `/solutions/${matched.slug}` }, { label: 'Get an estimate', to: '/Tools' }] };
+        return { text: `${matched.title}: ${(matched.short_description || matched.description || '').slice(0, 220)}`, links: [{ label: `Explore ${matched.title}`, to: `/solutions/${matched.slug}` }, { label: 'Get an estimate', to: '/ProjectCostEstimator' }] };
       }
       const list = services.slice(0, 7).map((s) => `• ${s.title}`).join('\n');
-      return { text: `Here's what we do:\n${list || '• Software Development\n• AI & Automation\n• Mobile Apps\n• Digital Marketing\n• IT Services'}\n\nTell me which one you're interested in, or get an instant estimate.`, links: [{ label: 'Get an estimate', to: '/Tools' }, { label: 'Book a consultation', to: '/BookConsultation' }] };
+      return { text: `Here's what we do:\n${list || '• Software Development\n• AI & Automation\n• Mobile Apps\n• Digital Marketing\n• IT Services'}\n\nTell me which one you're interested in, or get an instant estimate.`, links: [{ label: 'Get an estimate', to: '/ProjectCostEstimator' }, { label: 'Book a consultation', to: '/BookConsultation' }] };
     }
     if (includesAny(text, ['hi', 'hello', 'hey', 'salam', 'good morning', 'good afternoon'])) {
       return { text: "Hello! Great to meet you. Are you planning a website, an app, or something with AI and automation? I can point you to examples, prices or a free consultation." };
@@ -199,7 +199,7 @@ export default function AssistantWidget() {
                 <input value={capture.name} onChange={(e) => setCapture({ ...capture, name: e.target.value })} placeholder="Your name" className="mt-3 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400" />
                 <input value={capture.contact} onChange={(e) => setCapture({ ...capture, contact: e.target.value })} placeholder="Email or phone / WhatsApp" className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400" />
                 <textarea value={capture.message} onChange={(e) => setCapture({ ...capture, message: e.target.value })} placeholder="What do you need? (optional)" rows={2} className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400" />
-                <div className="mt-2 origin-left scale-[0.85]"><TurnstileWidget onVerify={setTurnstileToken} resetKey={turnstileResetKey} /></div>
+                <div className="mt-2 origin-left scale-[0.85]"><TurnstileWidget siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || ''} onVerify={setTurnstileToken} resetKey={turnstileResetKey} /></div>
                 <div className="mt-1 flex gap-2">
                   <button onClick={submitCapture} disabled={sending} className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60">{sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />} Send</button>
                   <button onClick={() => setCapture(null)} className="rounded-full px-4 py-2 text-sm font-semibold text-slate-500 hover:bg-slate-100">Cancel</button>
