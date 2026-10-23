@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useMemo, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../dataLayer';
 import { useTranslation } from 'react-i18next';
@@ -30,34 +30,53 @@ export default function ClientLogosSection() {
 
   // Client names are trust signals, so only show entries managed in the CMS.
   const items = logos.filter((logo) => logo?.name);
-  const [itemsPerView, setItemsPerView] = useState(7);
-  const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [activeLogoId, setActiveLogoId] = useState(null);
 
-  useEffect(() => {
-    const updateItemsPerView = () => setItemsPerView(window.innerWidth < 640 ? 2 : window.innerWidth < 1024 ? 4 : 7);
-    updateItemsPerView();
-    window.addEventListener('resize', updateItemsPerView);
-    return () => window.removeEventListener('resize', updateItemsPerView);
-  }, []);
-
-  useEffect(() => {
-    if (paused || reduceMotion || items.length <= itemsPerView) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % items.length), 3200);
-    return () => clearInterval(id);
-  }, [items.length, itemsPerView, paused, reduceMotion]);
-
-  const visible = useMemo(() => {
-    if (items.length <= itemsPerView) return items;
-    const arr = [];
-    for (let i = 0; i < itemsPerView; i++) {
-      arr.push(items[(index + i) % items.length]);
-    }
-    return arr;
-  }, [items, index, itemsPerView]);
+  // One full set per half; the track loops seamlessly at -50%. Repeat small
+  // sets so a half is always wider than the screen.
+  const half = useMemo(() => {
+    if (items.length === 0) return [];
+    const repeat = Math.max(1, Math.ceil(10 / items.length));
+    return Array.from({ length: repeat }, () => items).flat();
+  }, [items]);
+  const sequence = useMemo(() => [...half, ...half], [half]);
+  // ~2.2s of travel per logo: brisk, but each logo stays readable.
+  const duration = Math.max(20, half.length * 2.2);
 
   if (items.length === 0) return null;
+
+  const renderLogo = (logo, key, ariaHidden = false) => {
+    const safeWebsiteUrl = getSafeWebsiteUrl(logo.website_url);
+    const logoContent = logo.logo_url ? (
+      <img
+        src={logo.logo_url}
+        alt={ariaHidden ? '' : logo.name}
+        loading="eager"
+        decoding="async"
+        className="max-h-9 w-auto max-w-full object-contain grayscale brightness-75 contrast-125 transition duration-300 group-hover:grayscale-0 group-hover:brightness-100 group-hover:contrast-100 sm:max-h-11 lg:max-h-12"
+      />
+    ) : (
+      <span className="font-bold text-slate-700">{logo.name}</span>
+    );
+    const cell = (
+      <div className="group relative flex h-16 w-28 flex-none items-center justify-center px-3 sm:h-20 sm:w-36 sm:px-4 lg:w-44" aria-hidden={ariaHidden || undefined}>
+        {safeWebsiteUrl ? (
+          <a
+            href={safeWebsiteUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            tabIndex={ariaHidden ? -1 : undefined}
+            aria-label={`${t('home.visit_company', 'Visit')} ${logo.name}`}
+            className="flex h-full w-full items-center justify-center rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
+          >
+            {logoContent}
+            <span className="pointer-events-none absolute -bottom-1 left-1/2 flex -translate-x-1/2 translate-y-2 items-center gap-1 whitespace-nowrap rounded-full bg-slate-950 px-3 py-1 text-[11px] font-semibold text-white opacity-0 shadow-lg transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">{logo.name}<ExternalLink className="h-3 w-3" /></span>
+          </a>
+        ) : logoContent}
+      </div>
+    );
+    return <div key={key} className="flex-none">{cell}</div>;
+  };
 
   return (
     <section className="relative overflow-hidden bg-slate-50 py-16">
@@ -73,67 +92,31 @@ export default function ClientLogosSection() {
             {getLocalizedValue(sectionContent, 'title', i18n.language, false) || (i18n.language === 'ar' ? 'موثوق به من قبل الشركات الرائدة' : t('home.trusted_by', 'Trusted by Leading Companies'))}
           </p>
         </motion.div>
+      </div>
 
+      {reduceMotion ? (
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center px-4 sm:px-6 lg:px-8" aria-label={t('home.client_logos', 'Client websites')}>
+          {items.map((logo, i) => renderLogo(logo, `static-${logo.id || logo.name}-${i}`))}
+        </div>
+      ) : (
         <div
-          className="relative flex min-h-36 items-center justify-center gap-3 sm:gap-4 lg:gap-5"
+          className={`relative overflow-hidden py-2 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] ${paused ? 'marquee-paused' : ''}`}
           onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => { setPaused(false); setActiveLogoId(null); }}
+          onMouseLeave={() => setPaused(false)}
           onTouchStart={() => setPaused(true)}
+          onTouchEnd={() => setPaused(false)}
           onFocusCapture={() => setPaused(true)}
           onBlurCapture={(event) => {
-            if (!event.currentTarget.contains(event.relatedTarget)) {
-              setPaused(false);
-              setActiveLogoId(null);
-            }
+            if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false);
           }}
           aria-label={t('home.client_logos', 'Client websites')}
         >
-          <AnimatePresence initial={false} mode="popLayout">
-          {visible.map((logo, i) => {
-            const itemId = logo.id || logo.name;
-            const isActive = activeLogoId === itemId;
-            const safeWebsiteUrl = getSafeWebsiteUrl(logo.website_url);
-            const logoContent = logo.logo_url ? (
-              <img
-                src={logo.logo_url}
-                alt={logo.name}
-                loading="lazy"
-                decoding="async"
-                className={`relative z-10 max-h-14 w-full object-contain transition-[filter] duration-500 sm:max-h-16 ${isActive ? 'grayscale-0 brightness-110 saturate-150 contrast-110' : 'grayscale brightness-75 contrast-125'}`}
-              />
-            ) : (
-              <span className="relative z-10 font-bold text-slate-700">{logo.name}</span>
-            );
-            return (
-            <motion.div
-              layout
-              key={itemId}
-              initial={{ opacity: 0, x: 18 }}
-              animate={{
-                opacity: activeLogoId ? (isActive ? 1 : 0.38) : 0.72,
-                scale: isActive && !reduceMotion ? 1.16 : activeLogoId ? 0.96 : 1,
-                y: isActive && !reduceMotion ? -5 : 0
-              }}
-              exit={{ opacity: 0, x: -18 }}
-              transition={{ layout: { type: 'spring', stiffness: 280, damping: 28 }, opacity: { duration: 0.28 }, delay: activeLogoId ? 0 : i * 0.025 }}
-              onMouseEnter={() => setActiveLogoId(itemId)}
-              onTouchStart={() => setActiveLogoId(itemId)}
-              className={`relative flex h-28 min-w-0 flex-1 items-center justify-center rounded-2xl px-3 sm:px-5 ${isActive ? 'z-20' : 'z-0'}`}
-            >
-              {isActive && <motion.span layoutId="client-logo-spotlight" className="absolute inset-0 rounded-2xl border border-blue-100 bg-white shadow-[0_18px_55px_-22px_rgba(37,99,235,0.65)]" transition={{ type: 'spring', stiffness: 320, damping: 30 }} />}
-              {safeWebsiteUrl ? (
-                <a href={safeWebsiteUrl} target="_blank" rel="noopener noreferrer" onFocus={() => setActiveLogoId(itemId)} onBlur={() => setActiveLogoId(null)} aria-label={`${t('home.visit_company', 'Visit')} ${logo.name}`} className="relative z-10 flex h-full w-full items-center justify-center rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">
-                  {logoContent}
-                  <span className={`absolute -bottom-1 left-1/2 flex -translate-x-1/2 items-center gap-1 whitespace-nowrap rounded-full bg-slate-950 px-3 py-1 text-[11px] font-semibold text-white shadow-lg transition duration-300 ${isActive ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-2 opacity-0'}`}>{logo.name}<ExternalLink className="h-3 w-3" /></span>
-                </a>
-              ) : <div className="relative z-10 flex h-full w-full items-center justify-center">{logoContent}</div>}
-            </motion.div>
-            );
-          })}
-          </AnimatePresence>
+          <div className="marquee-track" style={{ '--marquee-duration': `${duration}s` }}>
+            {sequence.map((logo, i) => renderLogo(logo, `mq-${logo.id || logo.name}-${i}`, i >= half.length))}
+          </div>
         </div>
-        {items.length > itemsPerView && <p className="mt-4 text-center text-xs text-slate-400">{t('home.logo_interaction_hint', 'Hover or focus to explore. The showcase pauses while you interact.')}</p>}
-      </div>
+      )}
+      {!reduceMotion && <p className="mt-4 text-center text-xs text-slate-400">{t('home.logo_interaction_hint', 'Hover or touch to pause the showcase.')}</p>}
     </section>
   );
 }
