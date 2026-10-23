@@ -8,7 +8,7 @@ import { dataLayer } from '../components/dataLayer';
 import {
   ArrowLeft, ExternalLink, Calendar, Building2, Loader2,
   ChevronLeft, ChevronRight, X, ZoomIn, Play, Target, Lightbulb, Trophy, Quote,
-  CheckCircle2, Layers3, Sparkles
+  CheckCircle2, Layers3, Sparkles, BookOpen, Images
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -218,13 +218,15 @@ export default function PortfolioDetail() {
         </div>
       </section>
 
-      <nav aria-label={t('portfolio.detail.case_study_sections', 'Case study sections')} className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl gap-6 overflow-x-auto px-4 py-4 text-sm font-semibold text-slate-600 sm:px-6 lg:px-8">
-          <a href="#experience" className="whitespace-nowrap hover:text-blue-600">{t('portfolio.detail.experience', 'Experience')}</a>
-          <a href="#story" className="whitespace-nowrap hover:text-blue-600">{t('portfolio.detail.project_story', 'Project story')}</a>
-          <a href="#solution" className="whitespace-nowrap hover:text-blue-600">{t('portfolio.detail.solution', 'Solution')}</a>
-          <a href="#results" className="whitespace-nowrap hover:text-blue-600">{t('portfolio.detail.results', 'Results')}</a>
-          <a href="#gallery" className="whitespace-nowrap hover:text-blue-600">{t('portfolio.detail.media', 'Media')}</a>
+      <nav aria-label={t('portfolio.detail.case_study_sections', 'Case study sections')} className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl overflow-x-auto px-4 py-3 [scrollbar-width:none] sm:justify-center sm:px-6 lg:px-8 [&::-webkit-scrollbar]:hidden">
+          <div className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-slate-950/95 p-1.5 shadow-xl shadow-slate-950/25 ring-1 ring-white/5">
+            <a href="#experience" className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-600/30 transition hover:brightness-110"><Sparkles className="h-4 w-4" />{t('portfolio.detail.experience', 'Experience')}</a>
+            <a href="#story" className="inline-flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"><BookOpen className="h-4 w-4 text-cyan-300" />{t('portfolio.detail.project_story', 'Project story')}</a>
+            <a href="#solution" className="inline-flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"><Lightbulb className="h-4 w-4 text-cyan-300" />{t('portfolio.detail.solution', 'Solution')}</a>
+            <a href="#results" className="inline-flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"><Trophy className="h-4 w-4 text-cyan-300" />{t('portfolio.detail.results', 'Results')}</a>
+            <a href="#gallery" className="inline-flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"><Images className="h-4 w-4 text-cyan-300" />{t('portfolio.detail.media', 'Media')}</a>
+          </div>
         </div>
       </nav>
 
@@ -236,35 +238,35 @@ export default function PortfolioDetail() {
           {allMedia.length > 0 && (
             <motion.div id="experience" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-16 scroll-mt-24">
               <div className="relative overflow-hidden rounded-[2rem] bg-slate-100 shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/10">
-                <div className="relative aspect-[16/9] overflow-hidden">
+                <div className="relative aspect-[16/9] overflow-hidden bg-slate-950">
                   <AnimatePresence mode="wait">
                     {allMedia[currentSlide]?.type === 'video' ? (
                       <motion.div key={currentSlide} className="w-full h-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                         {isEmbedVideo(allMedia[currentSlide].url) ? (
                           <iframe title={`${getLoc(portfolio, 'title')} video`} src={getEmbedUrl(allMedia[currentSlide].url)} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                         ) : (
-                          <video src={allMedia[currentSlide].url} poster={allMedia[currentSlide].poster || undefined} className="w-full h-full object-cover" controls />
+                          <video src={allMedia[currentSlide].url} poster={allMedia[currentSlide].poster || undefined} className="w-full h-full object-contain" controls />
                         )}
                       </motion.div>
                     ) : (
-                      <motion.img key={currentSlide} src={allMedia[currentSlide]?.url} alt={allMedia[currentSlide]?.alt || getLoc(portfolio, 'title')} className="w-full h-full object-cover" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
+                      <motion.img key={currentSlide} src={allMedia[currentSlide]?.url} alt={allMedia[currentSlide]?.alt || getLoc(portfolio, 'title')} onClick={() => openLightbox(currentSlide)} className="w-full h-full cursor-zoom-in object-contain" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
                     )}
                   </AnimatePresence>
 
                   {allMedia.length > 1 && (
                     <>
-                      <button type="button" aria-label="Previous project media" onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg rtl:right-4 rtl:left-auto">
-                        <ChevronLeft className="w-6 h-6 rtl:rotate-180" />
+                      <button type="button" aria-label="Previous project media" onClick={prevSlide} className="absolute left-4 top-1/2 z-10 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-xl backdrop-blur transition hover:scale-105 hover:bg-white md:h-16 md:w-16 rtl:left-auto rtl:right-4">
+                        <ChevronLeft className="h-8 w-8 text-slate-900 rtl:rotate-180" />
                       </button>
-                      <button type="button" aria-label="Next project media" onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg rtl:left-4 rtl:right-auto">
-                        <ChevronRight className="w-6 h-6 rtl:rotate-180" />
+                      <button type="button" aria-label="Next project media" onClick={nextSlide} className="absolute right-4 top-1/2 z-10 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-xl backdrop-blur transition hover:scale-105 hover:bg-white md:h-16 md:w-16 rtl:left-4 rtl:right-auto">
+                        <ChevronRight className="h-8 w-8 text-slate-900 rtl:rotate-180" />
                       </button>
                     </>
                   )}
 
                   {allMedia[currentSlide]?.type === 'image' && (
-                    <button type="button" aria-label="Open project image" onClick={() => openLightbox(currentSlide)} className="absolute bottom-4 right-4 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center shadow-lg rtl:right-auto rtl:left-4">
-                      <ZoomIn className="w-5 h-5" />
+                    <button type="button" aria-label="Open project image" onClick={() => openLightbox(currentSlide)} className="absolute bottom-4 right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 shadow-xl backdrop-blur transition hover:scale-105 hover:bg-white rtl:left-4 rtl:right-auto">
+                      <ZoomIn className="h-6 w-6 text-slate-900" />
                     </button>
                   )}
                 </div>
@@ -272,11 +274,11 @@ export default function PortfolioDetail() {
                 {allMedia.length > 1 && (
                   <div className="flex gap-2 p-4 bg-slate-50 overflow-x-auto">
                     {allMedia.map((media, i) => (
-                      <button type="button" aria-label={`Show project media ${i + 1}`} key={i} onClick={() => setCurrentSlide(i)} className={`relative flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 transition-all ${currentSlide === i ? 'border-blue-500 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'}`}>
+                      <button type="button" aria-label={`Show project media ${i + 1}`} key={i} onClick={() => setCurrentSlide(i)} className={`relative flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden bg-slate-900 border-2 transition-all ${currentSlide === i ? 'border-blue-500 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'}`}>
                         {media.type === 'video' ? (
                           <div className="w-full h-full bg-slate-800 flex items-center justify-center"><Play className="w-6 h-6 text-white" /></div>
                         ) : (
-                          <img src={media.url} alt={media.alt || `${portfolio.title} — screenshot ${i + 1}`} className="w-full h-full object-cover" />
+                          <img src={media.url} alt={media.alt || `${portfolio.title} — screenshot ${i + 1}`} className="w-full h-full object-contain" />
                         )}
                       </button>
                     ))}
@@ -417,7 +419,7 @@ export default function PortfolioDetail() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
                 {gallery.map((img, i) => (
                   <button key={i} type="button" aria-label={`${t('portfolio.detail.open_media', 'Open media')} ${i + 1}`} onClick={() => openLightbox(i + galleryOffset)} className="relative group rounded-2xl overflow-hidden aspect-video bg-slate-900">
-                    {img.media_type === 'video' ? <video src={img.image_url} poster={img.poster_url || undefined} className="h-full w-full object-cover" muted /> : <img src={optimizeImageUrl(img.image_url, 800)} alt={getLoc(img, 'alt_text') || getLoc(portfolio, 'title')} className="w-full h-full object-cover" />}
+                    {img.media_type === 'video' ? <video src={img.image_url} poster={img.poster_url || undefined} className="h-full w-full object-cover" muted /> : <img src={optimizeImageUrl(img.image_url, 800)} alt={getLoc(img, 'alt_text') || getLoc(portfolio, 'title')} className="w-full h-full object-contain" />}
                     <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/40 transition-all flex items-center justify-center">
                       <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition" />
                     </div>
