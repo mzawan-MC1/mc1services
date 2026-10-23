@@ -188,9 +188,9 @@ export default function SolutionDetail() {
           <div className="mt-12">
             <p className="mb-5 text-sm font-bold uppercase tracking-[0.22em] text-slate-500">{t('solutions.capabilities', 'Capabilities')}</p>
             {features.length ? (
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="flex flex-wrap justify-center gap-3">
                 {features.map((feature, index) => (
-                  <motion.div key={feature} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: (index % 4) * 0.05 }} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 transition duration-300 hover:-translate-y-0.5 hover:border-blue-300 hover:bg-white hover:shadow-lg hover:shadow-blue-600/10">
+                  <motion.div key={feature} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: (index % 4) * 0.05 }} className="flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 transition duration-300 hover:-translate-y-0.5 hover:border-blue-300 hover:bg-white hover:shadow-lg hover:shadow-blue-600/10 sm:w-[calc((100%-0.75rem)/2)] lg:w-[calc((100%-1.5rem)/3)] xl:w-[calc((100%-2.25rem)/4)]">
                     <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-purple-600 shadow-md shadow-blue-600/25"><CheckCircle2 className="h-4 w-4 text-white" /></span>
                     <p className="font-semibold leading-snug text-slate-900">{feature}</p>
                   </motion.div>
