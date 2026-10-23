@@ -362,7 +362,7 @@ export default function Layout({ children, currentPageName }) {
                 </a>
               </div>
               <div className="flex items-center gap-3">
-                <LanguageSwitcher />
+                <LanguageSwitcher tone="dark" />
                 <div className="w-px h-4 bg-slate-700 mx-1"></div>
                 {siteSettings.social_linkedin && (
                   <a href={siteSettings.social_linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition" aria-label="LinkedIn">
