@@ -46,12 +46,12 @@ export default function PortfolioCard({ portfolio, index = 0, masonry = false })
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/45 via-transparent to-slate-950/10" />
-          <div className="absolute left-4 right-4 top-4 flex items-start justify-between gap-3">
-            <div className="flex flex-wrap gap-2">
-              <Badge className="border border-white/15 bg-slate-950/70 text-white backdrop-blur-md hover:bg-slate-950/70">{projectType}</Badge>
-              {portfolio.is_featured && <Badge className="border border-blue-300/30 bg-blue-500/80 text-white backdrop-blur-md hover:bg-blue-500/80"><Sparkles className="mr-1 h-3 w-3" />{t('portfolio.featured', 'Featured')}</Badge>}
-            </div>
+          <div className="absolute end-4 top-4">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-slate-950 shadow-lg transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110"><ArrowUpRight className="h-5 w-5 rtl:-scale-x-100" /></span>
+          </div>
+          <div className="absolute bottom-4 end-4 flex flex-wrap justify-end gap-2">
+            <Badge className="border border-white/15 bg-slate-950/70 text-white backdrop-blur-md hover:bg-slate-950/70">{projectType}</Badge>
+            {portfolio.is_featured && <Badge className="border border-blue-300/30 bg-blue-500/80 text-white backdrop-blur-md hover:bg-blue-500/80"><Sparkles className="mr-1 h-3 w-3" />{t('portfolio.featured', 'Featured')}</Badge>}
           </div>
         </div>
         <div className="flex flex-1 flex-col p-5 md:p-6">
