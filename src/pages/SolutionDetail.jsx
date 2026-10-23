@@ -176,20 +176,23 @@ export default function SolutionDetail() {
         </div>
       </section>
 
-      <section className="bg-white py-20 md:py-28">
-        <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:px-8">
-          <div>
-            <p className="text-sm font-bold uppercase tracking-[0.22em] text-blue-600">{t('solutions.overview', 'Solution overview')}</p>
-            <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-950 md:text-5xl">{t('solutions.designed_around_business', 'Designed around your business, not a template')}</h2>
-            <p className="mt-6 whitespace-pre-line text-lg leading-8 text-slate-600">{fullDescription}</p>
+      <section className="bg-white py-16 md:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className={`grid gap-8 ${fullDescription ? 'lg:grid-cols-[1.05fr_0.95fr] lg:items-end' : ''}`}>
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.22em] text-blue-600">{t('solutions.overview', 'Solution overview')}</p>
+              <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-950 md:text-5xl">{t('solutions.designed_around_business', 'Designed around your business, not a template')}</h2>
+            </div>
+            {fullDescription && <p className="whitespace-pre-line text-lg leading-8 text-slate-600">{fullDescription}</p>}
           </div>
-          <div>
+          <div className="mt-12">
             <p className="mb-5 text-sm font-bold uppercase tracking-[0.22em] text-slate-500">{t('solutions.capabilities', 'Capabilities')}</p>
             {features.length ? (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {features.map((feature, index) => (
-                  <motion.div key={feature} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.05 }} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                    <CheckCircle2 className="h-6 w-6 text-blue-600" /><p className="mt-4 font-semibold leading-relaxed text-slate-900">{feature}</p>
+                  <motion.div key={feature} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: (index % 4) * 0.05 }} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 transition duration-300 hover:-translate-y-0.5 hover:border-blue-300 hover:bg-white hover:shadow-lg hover:shadow-blue-600/10">
+                    <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-purple-600 shadow-md shadow-blue-600/25"><CheckCircle2 className="h-4 w-4 text-white" /></span>
+                    <p className="font-semibold leading-snug text-slate-900">{feature}</p>
                   </motion.div>
                 ))}
               </div>
