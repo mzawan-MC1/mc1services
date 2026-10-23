@@ -89,6 +89,11 @@ const writeLayoutCache = (data) => {
   }
 };
 
+// Mega-menu image URLs already queued for background preloading this session.
+// Module-level on purpose: Layout re-renders on scroll, and the queue must
+// survive those re-renders instead of being cancelled by an effect cleanup.
+const preloadedMenuUrls = new Set();
+
 export default function Layout({ children, currentPageName }) {
   const { t, i18n } = useTranslation();
   const location = useLocation();
@@ -255,25 +260,36 @@ export default function Layout({ children, currentPageName }) {
   const navLinks = configuredNavLinks.length ? configuredNavLinks : fallbackNavLinks;
   const footerServices = (navLinks.find((item) => item.id === 'solutions' || item.name === t('nav.services', 'Services'))?.children || fallbackServices).slice(0, 6);
 
-  // Preload mega-menu images in the background once navigation data is ready,
-  // so the first hover/tap shows icons and previews instantly instead of blank boxes.
+  // Preload mega-menu images in the background once navigation data is ready:
+  // every item's icon AND preview picture (not just the first item's), so the
+  // first hover/tap on any menu shows its pictures instantly. Icons load
+  // first, then previews in small batches so the page itself is never starved.
   useEffect(() => {
     if (!navLinks.length) return;
-    const urls = new Set();
+    const icons = new Set();
+    const previews = new Set();
     navLinks.forEach((link) => {
-      (link.children || []).forEach((child, idx) => {
-        if (child.icon_image_url) urls.add(optimizeImageUrl(child.icon_image_url, 96));
-        if (idx === 0 && child.image_url) urls.add(optimizeImageUrl(child.image_url, 700));
+      (link.children || []).forEach((child) => {
+        if (child.icon_image_url) icons.add(optimizeImageUrl(child.icon_image_url, 96));
+        if (child.image_url) previews.add(optimizeImageUrl(child.image_url, 700));
       });
     });
-    if (!urls.size) return;
-    const preload = () => urls.forEach((u) => { const im = new Image(); im.src = u; });
+    const freshIcons = [...icons].filter((u) => !preloadedMenuUrls.has(u));
+    const freshPreviews = [...previews].filter((u) => !preloadedMenuUrls.has(u));
+    if (!freshIcons.length && !freshPreviews.length) return;
+    [...freshIcons, ...freshPreviews].forEach((u) => preloadedMenuUrls.add(u));
+    const load = (u) => new Promise((resolve) => { const im = new Image(); im.onload = im.onerror = () => resolve(); im.src = u; });
+    const run = async () => {
+      await Promise.all(freshIcons.map(load));
+      for (let i = 0; i < freshPreviews.length; i += 4) {
+        await Promise.all(freshPreviews.slice(i, i + 4).map(load));
+      }
+    };
     if ('requestIdleCallback' in window) {
-      const id = window.requestIdleCallback(preload, { timeout: 3000 });
-      return () => window.cancelIdleCallback && window.cancelIdleCallback(id);
+      window.requestIdleCallback(run, { timeout: 2500 });
+    } else {
+      setTimeout(run, 1200);
     }
-    const timer = setTimeout(preload, 1500);
-    return () => clearTimeout(timer);
   }, [navLinks]);
 
   const resolveMenuHref = (href) => {
