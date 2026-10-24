@@ -200,7 +200,7 @@ export default function AdminContacts() {
     if (source === 'booking') {
       const bk = parseBooking(contact.message);
       return (
-        <div className="mt-2 flex flex-wrap gap-2 text-xs">
+        <div className="mt-3 flex flex-wrap gap-2 text-xs">
           {bk.date && <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2.5 py-1 font-medium text-violet-700"><CalendarDays className="h-3.5 w-3.5" />{bk.date}</span>}
           {bk.time && <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2.5 py-1 font-medium text-violet-700"><Clock className="h-3.5 w-3.5" />{bk.time} GST</span>}
           {bk.topic && <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2.5 py-1 font-medium text-violet-700"><Tag className="h-3.5 w-3.5" />{bk.topic}</span>}
@@ -210,7 +210,7 @@ export default function AdminContacts() {
     if (source === 'estimator') {
       const est = parseEstimate(contact.message);
       return (
-        <div className="mt-2 flex flex-wrap gap-2 text-xs">
+        <div className="mt-3 flex flex-wrap gap-2 text-xs">
           {est.estimate && <span className="inline-flex items-center gap-1 rounded-full bg-cyan-50 px-2.5 py-1 font-medium text-cyan-700"><Banknote className="h-3.5 w-3.5" />{est.estimate}</span>}
           {est.timeline && <span className="inline-flex items-center gap-1 rounded-full bg-cyan-50 px-2.5 py-1 font-medium text-cyan-700"><Clock className="h-3.5 w-3.5" />{est.timeline}</span>}
           {est.project && <span className="inline-flex items-center gap-1 rounded-full bg-cyan-50 px-2.5 py-1 font-medium text-cyan-700"><Tag className="h-3.5 w-3.5" />{est.project}</span>}
@@ -220,34 +220,39 @@ export default function AdminContacts() {
     return null;
   };
 
+  // One calm system: contact actions are soft pills, and each card gets
+  // exactly ONE solid primary — Confirm booking for an open booking,
+  // otherwise Convert to task. Everything else stays quiet.
   const renderActions = (contact, source) => {
     const wa = waNumber(contact.phone);
+    const showConfirm = source === 'booking' && contact.status !== 'confirmed';
+    const soft = 'inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-semibold ring-1 transition';
     return (
-      <div className="mt-3 flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {wa && (
-          <a href={`https://wa.me/${wa}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full bg-green-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-green-700">
-            <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
+          <a href={`https://wa.me/${wa}`} target="_blank" rel="noreferrer" className={`${soft} bg-green-50 text-green-700 ring-green-200 hover:bg-green-100`}>
+            <MessageCircle className="h-3.5 w-3.5 text-green-600" /> WhatsApp
           </a>
         )}
         {contact.phone && (
-          <a href={`tel:${contact.phone}`} className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-200">
+          <a href={`tel:${contact.phone}`} className={`${soft} bg-white text-slate-600 ring-slate-200 hover:bg-slate-50`}>
             <Phone className="h-3.5 w-3.5" /> Call
           </a>
         )}
-        <a href={`mailto:${contact.email}`} className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-200">
+        <a href={`mailto:${contact.email}`} className={`${soft} bg-white text-slate-600 ring-slate-200 hover:bg-slate-50`}>
           <Mail className="h-3.5 w-3.5" /> Email
         </a>
-        {source === 'booking' && contact.status !== 'confirmed' && (
-          <button type="button" onClick={() => confirmMutation.mutate(contact)} disabled={confirmMutation.isPending} className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60">
+        {showConfirm && (
+          <button type="button" onClick={() => confirmMutation.mutate(contact)} disabled={confirmMutation.isPending} className={`${soft} bg-emerald-600 text-white ring-transparent hover:bg-emerald-700 disabled:opacity-60`}>
             <CalendarCheck className="h-3.5 w-3.5" /> Confirm booking
           </button>
         )}
         {contact.converted_task_id ? (
-          <Link to="/admin/tasks" className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 transition hover:bg-blue-100">
+          <Link to="/admin/tasks" className={`${soft} bg-blue-50 text-blue-700 ring-blue-200 hover:bg-blue-100`}>
             <ListTodo className="h-3.5 w-3.5" /> Task created
           </Link>
         ) : (
-          <button type="button" onClick={() => convertMutation.mutate(contact)} disabled={convertMutation.isPending} className="inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60">
+          <button type="button" onClick={() => convertMutation.mutate(contact)} disabled={convertMutation.isPending} className={`${soft} disabled:opacity-60 ${showConfirm ? 'bg-blue-50 text-blue-700 ring-blue-200 hover:bg-blue-100' : 'bg-blue-600 text-white ring-transparent hover:bg-blue-700'}`}>
             <ListTodo className="h-3.5 w-3.5" /> Convert to task
           </button>
         )}
@@ -304,7 +309,7 @@ export default function AdminContacts() {
                           <Badge className={meta.badge}>
                             <meta.Icon className="mr-1 h-3 w-3" />{meta.label}
                           </Badge>
-                          {contact.service_interest && (
+                          {contact.service_interest && source !== 'booking' && source !== 'estimator' && (
                             <Badge variant="outline">
                               {serviceLabels[contact.service_interest] || contact.service_interest}
                             </Badge>
@@ -326,10 +331,12 @@ export default function AdminContacts() {
                           )}
                         </div>
                         {renderDetailChips(contact, source)}
-                        {renderActions(contact, source)}
-                        <p className="mt-2 text-sm text-slate-500">
-                          {contact.created_at && format(new Date(contact.created_at), 'MMM d, yyyy h:mm a')}
-                        </p>
+                        <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-slate-100 pt-3.5">
+                          {renderActions(contact, source)}
+                          <p className="text-xs text-slate-400">
+                            {contact.created_at && <>Submitted {format(new Date(contact.created_at), 'MMM d, yyyy · h:mm a')}</>}
+                          </p>
+                        </div>
                       </div>
                       <div className="flex shrink-0 items-center gap-2">
                         <Select
