@@ -43,16 +43,16 @@ function StatCard({ to, icon: Icon, color, value, label, pill, pillClasses = 'bg
       <Link to={to} className="block h-full">
         <Card className="h-full transition hover:shadow-md hover:ring-1 hover:ring-slate-200">
           <CardContent className="flex h-full flex-col p-5">
-            <div className={`mb-3 flex h-10 w-10 items-center justify-center rounded-xl ${color}`}>
-              <Icon className="h-5 w-5 text-white" />
-            </div>
-            <p className="text-2xl font-bold leading-none text-slate-900">{value}</p>
-            <div className="mt-auto flex items-center justify-between gap-2 pt-2">
-              <p className="text-sm text-slate-600">{label}</p>
+            <div className="flex min-h-[40px] items-center gap-3">
+              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${color}`}>
+                <Icon className="h-5 w-5 text-white" />
+              </div>
+              <p className="text-[15px] font-bold leading-tight text-slate-900">{label}</p>
               {pill && (
-                <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${pillClasses}`}>{pill}</span>
+                <span className={`ml-auto shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${pillClasses}`}>{pill}</span>
               )}
             </div>
+            <p className="mt-auto pt-4 text-[28px] font-bold leading-none text-slate-900">{value}</p>
           </CardContent>
         </Card>
       </Link>
