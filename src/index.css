@@ -185,3 +185,35 @@ button:focus-visible {
 .marquee-paused .marquee-track {
   animation-play-state: paused;
 }
+
+/* Hero product stage: gentle float for the glass chips, a slow shimmer
+   across the headline's gradient word, and a one-shot draw-in for the
+   dashboard chart line. Transform/opacity only — compositor-friendly. */
+@keyframes float-y {
+  from { transform: translateY(-5px); }
+  to { transform: translateY(6px); }
+}
+.animate-float-y {
+  animation: float-y 6s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes shimmer-pan {
+  from { background-position: 0% 50%; }
+  to { background-position: 200% 50%; }
+}
+.animate-shimmer {
+  background-size: 200% auto;
+  animation: shimmer-pan 6s linear infinite;
+}
+.chart-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: chart-draw 2.2s ease-out 0.6s forwards;
+}
+@keyframes chart-draw {
+  to { stroke-dashoffset: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-y, .animate-shimmer { animation: none; }
+  .chart-draw { animation: none; stroke-dashoffset: 0; }
+}
