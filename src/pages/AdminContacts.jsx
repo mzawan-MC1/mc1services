@@ -196,28 +196,30 @@ export default function AdminContacts() {
     onError: (e) => toast.error(e.message || 'Could not send the acknowledgement')
   });
 
-  const renderDetailChips = (contact, source) => {
+  const renderDetailChips = (contact, source, inline = false) => {
+    let chips = null;
     if (source === 'booking') {
       const bk = parseBooking(contact.message);
-      return (
-        <div className="mt-3 flex flex-wrap gap-2 text-xs">
+      chips = (
+        <>
           {bk.date && <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2.5 py-1 font-medium text-violet-700"><CalendarDays className="h-3.5 w-3.5" />{bk.date}</span>}
           {bk.time && <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2.5 py-1 font-medium text-violet-700"><Clock className="h-3.5 w-3.5" />{bk.time} GST</span>}
           {bk.topic && <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2.5 py-1 font-medium text-violet-700"><Tag className="h-3.5 w-3.5" />{bk.topic}</span>}
-        </div>
+        </>
       );
-    }
-    if (source === 'estimator') {
+    } else if (source === 'estimator') {
       const est = parseEstimate(contact.message);
-      return (
-        <div className="mt-3 flex flex-wrap gap-2 text-xs">
+      chips = (
+        <>
           {est.estimate && <span className="inline-flex items-center gap-1 rounded-full bg-cyan-50 px-2.5 py-1 font-medium text-cyan-700"><Banknote className="h-3.5 w-3.5" />{est.estimate}</span>}
           {est.timeline && <span className="inline-flex items-center gap-1 rounded-full bg-cyan-50 px-2.5 py-1 font-medium text-cyan-700"><Clock className="h-3.5 w-3.5" />{est.timeline}</span>}
           {est.project && <span className="inline-flex items-center gap-1 rounded-full bg-cyan-50 px-2.5 py-1 font-medium text-cyan-700"><Tag className="h-3.5 w-3.5" />{est.project}</span>}
-        </div>
+        </>
       );
     }
-    return null;
+    if (!chips) return null;
+    if (inline) return <span className="inline-flex flex-wrap items-center gap-2 text-xs">{chips}</span>;
+    return <div className="mt-3 flex flex-wrap gap-2 text-xs">{chips}</div>;
   };
 
   // One calm system: contact actions are soft pills, and each card gets
@@ -315,7 +317,7 @@ export default function AdminContacts() {
                             </Badge>
                           )}
                         </div>
-                        <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600">
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-600">
                           <a href={`mailto:${contact.email}`} className="flex items-center gap-1 hover:text-blue-600">
                             <Mail className="h-4 w-4" />{contact.email}
                           </a>
@@ -329,9 +331,9 @@ export default function AdminContacts() {
                               <Building2 className="h-4 w-4" />{contact.company}
                             </span>
                           )}
+                          {renderDetailChips(contact, source, true)}
                         </div>
-                        {renderDetailChips(contact, source)}
-                        <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-slate-100 pt-3.5">
+                        <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-slate-100 pt-3">
                           {renderActions(contact, source)}
                           <p className="text-xs text-slate-400">
                             {contact.created_at && <>Submitted {format(new Date(contact.created_at), 'MMM d, yyyy · h:mm a')}</>}
