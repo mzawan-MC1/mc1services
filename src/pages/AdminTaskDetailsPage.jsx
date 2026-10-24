@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState, useMemo } from 'react'
 import AdminLayout from '../components/admin/AdminLayout'
-import AdminRoute from '../components/AdminRoute'
 import { useParams, useNavigate } from 'react-router-dom'
 import { dataLayer } from '../components/dataLayer'
 
@@ -329,14 +328,13 @@ export default function AdminTaskDetailsPage() {
 
   if (!task) {
     return (
-      <AdminRoute><AdminLayout currentPage="AdminTaskListPage">
+      <AdminLayout currentPage="AdminTaskListPage">
         <div className="p-8 text-slate-500">Loading task...</div>
-      </AdminLayout></AdminRoute>
+      </AdminLayout>
     )
   }
 
   return (
-    <AdminRoute>
       <AdminLayout currentPage="AdminTaskListPage">
         <div className="p-3 md:p-5 lg:p-8 space-y-5 max-w-[1400px] mx-auto">
           {/* Top nav */}
@@ -565,7 +563,6 @@ export default function AdminTaskDetailsPage() {
           </Tabs>
         </div>
       </AdminLayout>
-    </AdminRoute>
   )
 }
 

@@ -99,7 +99,11 @@ export default function Layout({ children, currentPageName }) {
   const { t, i18n } = useTranslation();
   const location = useLocation();
   const isRTL = i18n.language === 'ar';
-  const isAdminPage = currentPageName?.startsWith('Admin');
+  // Admin detection must come from the URL itself, not only the derived page
+  // name: nested admin routes like /admin/tasks/<id> have no page name of
+  // their own, and the name fallback used to misread them as public pages —
+  // which leaked the public header/footer/WhatsApp button into the admin.
+  const isAdminPage = location.pathname.toLowerCase().startsWith('/admin') || currentPageName?.startsWith('Admin');
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

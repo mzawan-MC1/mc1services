@@ -293,6 +293,15 @@ function _getCurrentPage(url) {
     if (ALT_ROUTE_MAP[lower]) {
         return ALT_ROUTE_MAP[lower];
     }
+    // Nested routes (e.g. /admin/tasks/<id>) belong to their parent page:
+    // resolve by the longest matching route prefix.
+    const segments = lower.split('/').filter(Boolean);
+    for (let i = segments.length - 1; i >= 1; i--) {
+        const prefix = '/' + segments.slice(0, i).join('/');
+        if (ALT_ROUTE_MAP[prefix]) {
+            return ALT_ROUTE_MAP[prefix];
+        }
+    }
     let urlLastPart = url.split('/').pop();
     if (urlLastPart.includes('?')) {
         urlLastPart = urlLastPart.split('?')[0];
