@@ -4,7 +4,7 @@ import { createPageUrl } from '../../utils';
 import {
   LayoutDashboard, FileText, Settings, Search, Image, Users, Mail,
   Menu, X, Eye, LogOut, PanelsTopLeft, Building2, BriefcaseBusiness,
-  CircleHelp, ContactRound, Home, ListTodo, MessageSquareQuote, ShieldCheck, UserCog, Newspaper, Calculator
+  CircleHelp, ContactRound, Home, ListTodo, MessageSquareQuote, ShieldCheck, UserCog, Newspaper, Calculator, Send
 } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import { Button } from '@/components/ui/button';
@@ -64,7 +64,8 @@ function AdminShell({ children }) {
       label: 'Business Operations',
       items: [
         { id: 'tasks', label: 'Tasks', icon: FileText, to: '/admin/tasks' },
-        { id: 'inquiries', label: 'Inquiries', icon: Mail, to: '/admin/inquiries' }
+        { id: 'inquiries', label: 'Inquiries', icon: Mail, to: '/admin/inquiries' },
+        { id: 'email', label: 'Email', icon: Send, to: '/admin/email' }
       ]
     },
     {

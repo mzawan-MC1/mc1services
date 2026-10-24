@@ -78,6 +78,8 @@ export default function BookConsultation() {
         company: form.company.trim() || null,
         service_interest: topicCode,
         message: `Consultation booking request\nTopic: ${topic}\nPreferred date: ${prettyDate} (${date})\nPreferred time: ${slot} (GST, UTC+4)\nFormat: Video call / phone\n\nNotes: ${form.notes.trim() || '—'}`,
+        source: 'booking',
+        context: { topic, date: `${prettyDate} (${date})`, time: slot },
         status: 'new',
         subject: `Consultation Booking: ${topic} — ${date} ${slot}`,
       }, turnstileToken);

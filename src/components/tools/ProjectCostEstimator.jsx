@@ -71,6 +71,12 @@ export default function ProjectCostEstimator() {
         company: null,
         service_interest: 'other',
         message: `A visitor used the Project Cost Estimator and asked for this estimate by email:\n\n${summaryText()}`,
+        source: 'estimator',
+        context: estimate && type ? {
+          project: `${type.label} (${size?.label || ''})`,
+          estimate: `${fmt(estimate.low)} – ${fmt(estimate.high)}${type.monthly ? ' / month' : ''}`,
+          timeline: `${estimate.weeksLow}–${estimate.weeksHigh} weeks`,
+        } : undefined,
         status: 'new',
         subject: 'Project Cost Estimate Request',
       }, turnstileToken);

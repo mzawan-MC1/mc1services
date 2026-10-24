@@ -333,6 +333,32 @@ export const dataLayer = {
     delete: (id) => supabaseHelpers.delete('contact_submissions', id),
   },
 
+  // Email system: SMTP settings, templates, sent log (admin-only tables).
+  email: {
+    getSettings: async () => {
+      try { return await supabaseHelpers.getById('email_settings', 1); } catch { return null; }
+    },
+    saveSettings: (data) => supabaseHelpers.upsert('email_settings', { id: 1, ...data, updated_at: new Date().toISOString() }, 'id'),
+    getTemplates: () => supabaseHelpers.getAll('email_templates', 'key', true),
+    updateTemplate: (key, data) => supabaseHelpers.updateByKey
+      ? supabaseHelpers.updateByKey('email_templates', 'key', key, { ...data, updated_at: new Date().toISOString() })
+      : supabase.from('email_templates').update({ ...data, updated_at: new Date().toISOString() }).eq('key', key).select().single().then(({ data: row, error }) => { if (error) throw error; return row; }),
+    getLogs: () => supabaseHelpers.getAll('email_logs', 'created_at', false),
+    invoke: async (body) => {
+      const { data, error } = await supabase.functions.invoke('admin-email', { body });
+      if (error) {
+        let message = 'Email request failed.';
+        try { const parsed = await error.context?.json?.(); if (parsed?.error) message = parsed.error; } catch { /* keep default */ }
+        throw new Error(message);
+      }
+      if (data && data.error) throw new Error(data.error);
+      return data;
+    },
+    sendTest: (to) => dataLayer.email.invoke({ action: 'test', to: to || undefined }),
+    confirmBooking: (submissionId) => dataLayer.email.invoke({ action: 'booking_confirmed', submission_id: submissionId }),
+    resendAck: (submissionId) => dataLayer.email.invoke({ action: 'resend_ack', submission_id: submissionId }),
+  },
+
   // Tools Page Content
   toolsContent: {
     getAll: () => supabaseHelpers.getAll('tools_page_content'),

@@ -1,4 +1,6 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
+// @ts-ignore: npm specifier without bundled types in the editor; deploys fine.
+import nodemailer from 'npm:nodemailer@6.9.14';
 
 const DEFAULT_ORIGINS = [
   'https://mc1services.com',
@@ -13,6 +15,16 @@ const SERVICE_INTERESTS = new Set([
   'web_development', 'app_development', 'custom_software', 'digital_marketing',
   'branding', 'seo', 'social_media', 'it_consulting', 'other'
 ]);
+
+const SOURCES = new Set(['contact', 'estimator', 'booking', 'assistant']);
+const SOURCE_LABELS: Record<string, string> = {
+  contact: 'Contact Form', estimator: 'Cost Estimate', booking: 'Booking', assistant: 'Website Assistant'
+};
+const SERVICE_LABELS: Record<string, string> = {
+  web_development: 'Web Development', app_development: 'App Development', custom_software: 'Custom Software',
+  digital_marketing: 'Digital Marketing', branding: 'Branding & Design', seo: 'SEO',
+  social_media: 'Social Media', it_consulting: 'IT Services & Consulting', other: 'Other'
+};
 
 const configuredList = (name: string, defaults: string[]) =>
   (Deno.env.get(name) || defaults.join(','))
@@ -98,6 +110,14 @@ Deno.serve(async (request) => {
   const company = optionalText(body.company, 160);
   const message = requiredText(body.message, 10, 5000);
   const serviceInterest = optionalText(body.service_interest, 80);
+  const source = typeof body.source === 'string' && SOURCES.has(body.source) ? body.source : 'contact';
+  const rawContext = (body.context && typeof body.context === 'object' && !Array.isArray(body.context))
+    ? body.context as Record<string, unknown> : {};
+  const context: Record<string, string> = {};
+  for (const key of ['date', 'time', 'topic', 'estimate', 'timeline', 'project']) {
+    const value = optionalText(rawContext[key], 300);
+    if (typeof value === 'string' && value) context[key] = value;
+  }
   const turnstileToken = requiredText(body.turnstileToken, 1, 2048);
   const emailIsValid = email && /^[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,}$/i.test(email);
 
@@ -155,7 +175,8 @@ Deno.serve(async (request) => {
       service_interest: serviceInterest,
       message,
       subject: `New Inquiry: ${serviceInterest || 'General'}`,
-      status: 'new'
+      status: 'new',
+      source
     })
     .select('id')
     .single();
@@ -165,6 +186,102 @@ Deno.serve(async (request) => {
     return jsonResponse(origin, 500, { error: 'Contact submission failed.' });
   }
 
+  // Best-effort emails: a mail failure must never fail the submission.
+  try {
+    await sendInquiryEmails(supabaseAdmin, {
+      id: data.id, name, email, phone, company, serviceInterest, message, source, context
+    });
+  } catch (emailError) {
+    console.error('Inquiry email step failed', emailError);
+  }
+
   return jsonResponse(origin, 201, { ok: true, id: data.id });
 });
+
+// ---------- Email helpers (settings/templates live in the database) ----------
+
+type AdminClient = ReturnType<typeof createClient>;
+
+const escapeHtml = (text: string) =>
+  text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+const htmlWrap = (text: string) =>
+  `<!doctype html><html><body style="font-family:Arial,Helvetica,sans-serif;color:#0f172a;line-height:1.6;font-size:15px">${escapeHtml(text).replace(/\n/g, '<br>')}</body></html>`;
+
+const renderTemplate = (text: string, vars: Record<string, string>) =>
+  text.replace(/\{(\w+)\}/g, (_match, key) => vars[key] ?? '');
+
+const parseBookingContext = (message: string) => {
+  const grab = (pattern: RegExp) => message.match(pattern)?.[1]?.trim() || '';
+  return {
+    topic: grab(/Topic:\s*(.+)/),
+    date: grab(/Preferred date:\s*(.+)/),
+    time: grab(/Preferred time:\s*(.+?)(?:\s*\(|$)/)
+  };
+};
+
+async function logEmail(admin: AdminClient, row: Record<string, unknown>) {
+  try { await admin.from('email_logs').insert(row); } catch { /* logging is best-effort */ }
+}
+
+async function sendInquiryEmails(admin: AdminClient, sub: {
+  id: string; name: string; email: string; phone: string | null; company: string | null;
+  serviceInterest: string | null; message: string; source: string; context: Record<string, string>;
+}) {
+  const { data: settings } = await admin.from('email_settings').select('*').eq('id', 1).maybeSingle();
+  if (!settings?.smtp_host || !settings?.smtp_user || !settings?.smtp_password) return; // email not configured yet
+
+  const { data: templateRows } = await admin.from('email_templates').select('*');
+  const templates = new Map((templateRows || []).map((row: Record<string, unknown>) => [row.key, row]));
+
+  const booking = sub.source === 'booking' ? parseBookingContext(sub.message) : { topic: '', date: '', time: '' };
+  const vars: Record<string, string> = {
+    name: sub.name,
+    email: sub.email,
+    phone: sub.phone || '—',
+    company: sub.company || '—',
+    service: SERVICE_LABELS[sub.serviceInterest || ''] || sub.serviceInterest || 'General',
+    source_label: SOURCE_LABELS[sub.source] || 'Inquiry',
+    message: sub.message,
+    topic: sub.context.topic || booking.topic || '',
+    date: sub.context.date || booking.date || '',
+    time: sub.context.time || booking.time || '',
+    estimate: sub.context.estimate || '',
+    timeline: sub.context.timeline || '',
+    project: sub.context.project || '',
+    admin_url: 'https://mc1services.com/admin/inquiries'
+  };
+
+  const transport = nodemailer.createTransport({
+    host: settings.smtp_host,
+    port: settings.smtp_port ?? 465,
+    secure: settings.smtp_secure !== false,
+    auth: { user: settings.smtp_user, pass: settings.smtp_password }
+  });
+  const fromName = String(settings.from_name || 'MCS Consultancy').replace(/"/g, '');
+  const from = settings.from_email ? `"${fromName}" <${settings.from_email}>` : settings.smtp_user;
+
+  const send = async (templateKey: string, to: string) => {
+    const template = templates.get(templateKey) as Record<string, unknown> | undefined;
+    if (!template || template.enabled === false || !to) return;
+    const subject = renderTemplate(String(template.subject || ''), vars);
+    const text = renderTemplate(String(template.body || ''), vars);
+    try {
+      await transport.sendMail({ from, to, subject, text, html: htmlWrap(text) });
+      await logEmail(admin, { to_email: to, subject, template_key: templateKey, submission_id: sub.id, status: 'sent' });
+    } catch (sendError) {
+      await logEmail(admin, {
+        to_email: to, subject, template_key: templateKey, submission_id: sub.id,
+        status: 'failed', error: String(sendError).slice(0, 500)
+      });
+    }
+  };
+
+  if (settings.notify_admin !== false) {
+    await send('admin_notification', settings.notify_email || settings.from_email || settings.smtp_user);
+  }
+  if (settings.ack_visitor !== false) {
+    await send(`ack_${sub.source}`, sub.email);
+  }
+}
 

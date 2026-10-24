@@ -122,6 +122,7 @@ export default function Contact() {
         company: data.company?.trim() || null,
         service_interest: data.service_interest,
         message: data.message.trim(),
+        source: 'contact',
         status: 'new',
         subject: `New Inquiry: ${data.service_interest || 'General'}`
       };
