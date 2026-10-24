@@ -369,12 +369,12 @@ export default function Layout({ children, currentPageName }) {
               within thumb reach. Hidden on the pages it points to. */}
           {!/^\/(contact|bookconsultation)/i.test(location.pathname) && (
             <>
-              <div className="fixed inset-x-0 bottom-0 z-40 flex items-stretch gap-2 border-t border-slate-200 bg-white/95 px-3 pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-2.5 shadow-[0_-6px_24px_rgba(15,23,42,0.10)] backdrop-blur md:hidden">
-                <Link to="/ProjectCostEstimator" className="flex flex-1 items-center justify-center rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white">
-                  Get a Cost Estimate
+              <div className="fixed inset-x-0 bottom-0 z-40 flex items-stretch gap-2 border-t border-slate-200 bg-white/95 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-6px_24px_rgba(15,23,42,0.10)] backdrop-blur md:hidden">
+                <Link to="/ProjectCostEstimator" className="flex flex-[0.85] items-center justify-center whitespace-nowrap rounded-full bg-slate-900 px-2 py-2.5 text-[13px] font-semibold leading-none text-white">
+                  {t('layout.cost_estimate_short', 'Cost Estimate')}
                 </Link>
-                <Link to="/BookConsultation" className="flex flex-1 items-center justify-center rounded-full bg-blue-600 px-4 py-3 text-sm font-semibold text-white">
-                  Book Free Consultation
+                <Link to="/BookConsultation" className="flex flex-[1.15] items-center justify-center whitespace-nowrap rounded-full bg-blue-600 px-2 py-2.5 text-[13px] font-semibold leading-none text-white">
+                  {t('layout.book_free_consultation', 'Book Free Consultation')}
                 </Link>
               </div>
             </>
