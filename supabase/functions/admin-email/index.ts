@@ -88,7 +88,7 @@ const bodyToHtml = (text: string) => {
 // and a disclaimer footer. The plain-text part is unchanged.
 const htmlWrap = (text: string) => `<!doctype html><html><body style="margin:0;padding:0;background:#e8edf3;font-family:Arial,Helvetica,sans-serif">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#e8edf3"><tr><td align="center" style="padding:28px 12px">
-<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden">
+<table role="presentation" width="700" cellpadding="0" cellspacing="0" style="max-width:700px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden">
 <tr><td style="background:#0b2447;padding:22px 28px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
 <td style="background:#ffffff;border-radius:10px;padding:7px 12px;width:1%"><img src="${LOGO_URL}" width="132" alt="MCS Consultancy" style="display:block;border:0"></td>
