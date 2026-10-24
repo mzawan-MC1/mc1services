@@ -222,10 +222,16 @@ export default function AdminContacts() {
 
   const confirmMutation = useMutation({
     mutationFn: async (contact) => {
-      await dataLayer.email.confirmBooking(contact.id);
+      const result = await dataLayer.email.confirmBooking(contact.id);
       await dataLayer.contactSubmissions.update(contact.id, { status: 'confirmed' });
+      return result;
     },
-    onSuccess: () => { toast.success('Booking confirmed — the visitor has been emailed'); invalidate(); },
+    onSuccess: (data) => {
+      toast.success(data?.calendar === 'created'
+        ? 'Booking confirmed — visitor emailed and event added to Google Calendar'
+        : 'Booking confirmed — the visitor has been emailed');
+      invalidate();
+    },
     onError: (e) => toast.error(e.message || 'Confirmation email failed')
   });
 
@@ -267,6 +273,7 @@ export default function AdminContacts() {
           {bk.date && <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2.5 py-1 font-medium text-violet-700"><CalendarDays className="h-3.5 w-3.5" />{bk.date}</span>}
           {bk.time && <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2.5 py-1 font-medium text-violet-700"><Clock className="h-3.5 w-3.5" />{bk.time} GST</span>}
           {bk.topic && <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2.5 py-1 font-medium text-violet-700"><Tag className="h-3.5 w-3.5" />{bk.topic}</span>}
+          {contact.calendar_event_id && <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 font-medium text-emerald-700"><CalendarCheck className="h-3.5 w-3.5" />On Google Calendar</span>}
         </>
       );
     } else if (source === 'estimator') {

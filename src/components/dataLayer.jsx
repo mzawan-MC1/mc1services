@@ -357,6 +357,7 @@ export const dataLayer = {
     sendTest: (to) => dataLayer.email.invoke({ action: 'test', to: to || undefined }),
     confirmBooking: (submissionId) => dataLayer.email.invoke({ action: 'booking_confirmed', submission_id: submissionId }),
     resendAck: (submissionId) => dataLayer.email.invoke({ action: 'resend_ack', submission_id: submissionId }),
+    disconnectGoogle: () => dataLayer.email.invoke({ action: 'google_disconnect' }),
   },
 
   // Tools Page Content

@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataLayer } from '../components/dataLayer';
 import { toast } from 'sonner';
 import {
-  Loader2, Mail, Settings2, FileText, ScrollText, Send, Save, AlertTriangle, CheckCircle2, XCircle
+  Loader2, Mail, Settings2, FileText, ScrollText, Send, Save, AlertTriangle, CheckCircle2, XCircle, CalendarDays, Unlink
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -301,9 +301,154 @@ function LogTab() {
   );
 }
 
+function CalendarTab() {
+  const queryClient = useQueryClient();
+  const { data: settings, isLoading } = useQuery({
+    queryKey: ['email-settings'],
+    queryFn: () => dataLayer.email.getSettings()
+  });
+  const [form, setForm] = useState(null);
+
+  useEffect(() => {
+    if (settings) {
+      setForm({
+        google_client_id: settings.google_client_id || '',
+        google_client_secret: settings.google_client_secret || '',
+        meeting_minutes: settings.meeting_minutes ?? 30,
+      });
+    }
+  }, [settings]);
+
+  const saveMutation = useMutation({
+    mutationFn: () => dataLayer.email.saveSettings({
+      google_client_id: form.google_client_id.trim(),
+      google_client_secret: form.google_client_secret.trim(),
+      meeting_minutes: Number(form.meeting_minutes) || 30,
+    }),
+    onSuccess: () => { toast.success('Google Calendar settings saved'); queryClient.invalidateQueries(['email-settings']); },
+    onError: (e) => toast.error(e.message || 'Could not save')
+  });
+
+  const disconnectMutation = useMutation({
+    mutationFn: () => dataLayer.email.disconnectGoogle(),
+    onSuccess: () => { toast.success('Google Calendar disconnected'); queryClient.invalidateQueries(['email-settings']); },
+    onError: (e) => toast.error(e.message || 'Could not disconnect')
+  });
+
+  if (isLoading) return <div className="flex justify-center py-16"><Loader2 className="h-7 w-7 animate-spin text-blue-600" /></div>;
+  if (!settings || !form) return <SetupNotice />;
+
+  const needsSql = settings.google_client_id === undefined;
+  if (needsSql) {
+    return (
+      <Card className="border-amber-200 bg-amber-50">
+        <CardContent className="flex items-start gap-3 p-5">
+          <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+          <div className="text-sm text-amber-900">
+            <p className="font-semibold">One database step is needed first.</p>
+            <p className="mt-1">Run the one-time SQL file <span className="font-mono font-semibold">google-calendar-setup.sql</span> in Supabase → SQL Editor, then reload this page. It adds the Google Calendar fields (kept in the same admin-only settings row as your SMTP password).</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const connected = !!settings.google_refresh_token;
+  const savedCreds = !!(settings.google_client_id && settings.google_client_secret);
+  const dirty = form.google_client_id.trim() !== (settings.google_client_id || '')
+    || form.google_client_secret.trim() !== (settings.google_client_secret || '')
+    || Number(form.meeting_minutes) !== (settings.meeting_minutes ?? 30);
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+  const redirectUri = `${supabaseUrl}/functions/v1/google-calendar-callback`;
+  const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({
+    client_id: settings.google_client_id || '',
+    redirect_uri: redirectUri,
+    response_type: 'code',
+    scope: 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/userinfo.email',
+    access_type: 'offline',
+    prompt: 'consent',
+  }).toString();
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader><CardTitle className="text-base">Connection</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className={`h-2.5 w-2.5 rounded-full ${connected ? 'bg-emerald-500' : 'bg-slate-300'}`} />
+            {connected ? (
+              <p className="text-sm text-slate-700">
+                <span className="font-semibold text-slate-900">Connected</span>
+                {settings.google_connected_email && <> as <span className="font-medium">{settings.google_connected_email}</span></>}
+                {' '}— every booking you confirm now creates a calendar event (with a Google Meet link) and invites the visitor.
+              </p>
+            ) : (
+              <p className="text-sm text-slate-600">Not connected yet. Save your Google credentials below, then click Connect and sign in once.</p>
+            )}
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {connected ? (
+              <Button type="button" variant="outline" onClick={() => disconnectMutation.mutate()} disabled={disconnectMutation.isPending}>
+                <Unlink className="mr-2 h-4 w-4" /> Disconnect
+              </Button>
+            ) : (
+              <a
+                href={savedCreds && !dirty ? authUrl : undefined}
+                target="_blank"
+                rel="noreferrer"
+                onClick={(e) => { if (!savedCreds || dirty) e.preventDefault(); }}
+                className={`inline-flex h-10 items-center rounded-md bg-blue-600 px-4 text-sm font-semibold text-white transition hover:bg-blue-700 ${(!savedCreds || dirty) ? 'pointer-events-none opacity-50' : ''}`}
+              >
+                <CalendarDays className="mr-2 h-4 w-4" /> Connect Google Calendar
+              </a>
+            )}
+            {dirty && <span className="text-xs font-medium text-amber-600">You have unsaved changes — save them before connecting.</span>}
+            {!savedCreds && !dirty && <span className="text-xs text-slate-500">Add the Client ID and Secret below and save first.</span>}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle className="text-base">Google credentials</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <Label>Client ID</Label>
+            <Input className="mt-1" value={form.google_client_id} onChange={(e) => setForm((f) => ({ ...f, google_client_id: e.target.value }))} placeholder="…apps.googleusercontent.com" />
+          </div>
+          <div>
+            <Label>Client Secret</Label>
+            <Input className="mt-1" type="password" value={form.google_client_secret} onChange={(e) => setForm((f) => ({ ...f, google_client_secret: e.target.value }))} placeholder="GOCSPX-…" />
+          </div>
+          <div>
+            <Label>Consultation length</Label>
+            <select
+              className="mt-1 flex h-10 w-44 rounded-md border border-slate-200 bg-white px-3 text-sm"
+              value={form.meeting_minutes}
+              onChange={(e) => setForm((f) => ({ ...f, meeting_minutes: Number(e.target.value) }))}
+            >
+              <option value={30}>30 minutes</option>
+              <option value={45}>45 minutes</option>
+              <option value={60}>60 minutes</option>
+            </select>
+          </div>
+          <div className="rounded-xl bg-slate-50 px-4 py-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Redirect URI — paste this into Google Cloud Console</p>
+            <p className="mt-1 break-all font-mono text-xs text-slate-700">{redirectUri}</p>
+          </div>
+          <Button type="button" onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
+            <Save className="mr-2 h-4 w-4" /> Save calendar settings
+          </Button>
+          <p className="text-xs text-slate-500">Credentials live in the same admin-only settings row as your SMTP password. The connection uses a long-lived Google refresh token stored there too — it never expires unless you disconnect.</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 const TABS = [
   { key: 'settings', label: 'Settings', Icon: Settings2 },
   { key: 'templates', label: 'Templates', Icon: FileText },
+  { key: 'calendar', label: 'Calendar', Icon: CalendarDays },
   { key: 'log', label: 'Sent Log', Icon: ScrollText },
 ];
 
@@ -330,6 +475,7 @@ export default function AdminEmail() {
         </div>
         {tab === 'settings' && <SettingsTab />}
         {tab === 'templates' && <TemplatesTab />}
+        {tab === 'calendar' && <CalendarTab />}
         {tab === 'log' && <LogTab />}
       </div>
     </AdminLayout>

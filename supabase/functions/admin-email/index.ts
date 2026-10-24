@@ -124,6 +124,82 @@ const parseBookingContext = (message: string) => {
   };
 };
 
+// --- Google Calendar (Phase 3) -------------------------------------------
+// When a booking is confirmed and a Google account is connected in
+// Admin → Email → Calendar, create the event on the primary calendar and
+// invite the visitor (Google emails the invite itself). Best-effort: a
+// calendar failure never blocks the confirmation email.
+const pad2 = (n: number) => String(n).padStart(2, '0');
+
+const createCalendarEvent = async (
+  admin: ReturnType<typeof createClient>,
+  settings: Record<string, any>,
+  sub: Record<string, any>,
+  booking: { topic: string; date: string; time: string }
+): Promise<string> => {
+  if (!settings.google_refresh_token || !settings.google_client_id || !settings.google_client_secret) return 'not_connected';
+  if (sub.calendar_event_id) return 'already_created';
+  const iso = booking.date.match(/(\d{4}-\d{2}-\d{2})/)?.[1];
+  if (!iso) return 'no_datetime';
+  const tm = (booking.time || '').match(/(\d{1,2})(?::(\d{2}))?\s*(AM|PM)?/i);
+  let hh = tm ? parseInt(tm[1], 10) : 10;
+  const mm = tm?.[2] ? parseInt(tm[2], 10) : 0;
+  const ap = (tm?.[3] || '').toUpperCase();
+  if (ap === 'PM' && hh < 12) hh += 12;
+  if (ap === 'AM' && hh === 12) hh = 0;
+  const minutes = Number(settings.meeting_minutes) || 30;
+  const startDate = new Date(`${iso}T${pad2(hh)}:${pad2(mm)}:00+04:00`);
+  if (isNaN(startDate.getTime())) return 'no_datetime';
+  const endDate = new Date(startDate.getTime() + minutes * 60000);
+
+  const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id: settings.google_client_id,
+      client_secret: settings.google_client_secret,
+      refresh_token: settings.google_refresh_token,
+      grant_type: 'refresh_token'
+    })
+  });
+  const tokenJson = await tokenRes.json().catch(() => ({} as Record<string, unknown>));
+  if (!tokenRes.ok || !tokenJson.access_token) return 'failed';
+
+  const topic = booking.topic || 'Consultation';
+  const event = {
+    summary: `MCS Consultation: ${topic} — ${sub.name || 'Visitor'}`,
+    description: [
+      'Consultation booked through mc1services.com.',
+      '',
+      `Topic: ${topic}`,
+      `Visitor: ${sub.name || ''}`,
+      `Email: ${sub.email || ''}`,
+      `Phone: ${sub.phone || '—'}`,
+      sub.company ? `Company: ${sub.company}` : null,
+      '',
+      'Manage in admin: https://mc1services.com/admin/inquiries'
+    ].filter(Boolean).join('\n'),
+    start: { dateTime: startDate.toISOString(), timeZone: 'Asia/Dubai' },
+    end: { dateTime: endDate.toISOString(), timeZone: 'Asia/Dubai' },
+    attendees: sub.email ? [{ email: sub.email }] : [],
+    conferenceData: {
+      createRequest: { requestId: `mcs-${sub.id}`, conferenceSolutionKey: { type: 'hangoutsMeet' } }
+    },
+    reminders: { useDefault: true }
+  };
+  const res = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?sendUpdates=all&conferenceDataVersion=1', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${tokenJson.access_token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(event)
+  });
+  const ev = await res.json().catch(() => ({} as Record<string, unknown>));
+  if (!res.ok || !ev.id) return 'failed';
+  try {
+    await admin.from('contact_submissions').update({ calendar_event_id: ev.id }).eq('id', sub.id);
+  } catch { /* best-effort */ }
+  return 'created';
+};
+
 Deno.serve(async (request) => {
   const origin = request.headers.get('origin');
   if (origin && !allowedOrigins.has(origin)) {
@@ -159,6 +235,15 @@ Deno.serve(async (request) => {
   }
 
   const { data: settings } = await admin.from('email_settings').select('*').eq('id', 1).maybeSingle();
+
+  // Google Calendar disconnect does not need SMTP — handle it before the gate.
+  if (body.action === 'google_disconnect') {
+    await admin.from('email_settings')
+      .update({ google_refresh_token: null, google_connected_email: null })
+      .eq('id', 1);
+    return jsonResponse(origin, 200, { ok: true });
+  }
+
   if (!settings?.smtp_host || !settings?.smtp_user || !settings?.smtp_password) {
     return jsonResponse(origin, 422, { error: 'Email is not configured yet. Add your SMTP settings in Admin → Email first.' });
   }
@@ -224,9 +309,18 @@ Deno.serve(async (request) => {
     };
     const templateKey = action === 'booking_confirmed' ? 'booking_confirmed' : `ack_${sub.source || 'contact'}`;
     const result = await sendTemplate(templateKey, sub.email, vars, sub.id);
-    return result.ok
-      ? jsonResponse(origin, 200, { ok: true })
-      : jsonResponse(origin, 502, { error: result.error || 'Email failed to send.' });
+    if (!result.ok) {
+      return jsonResponse(origin, 502, { error: result.error || 'Email failed to send.' });
+    }
+    let calendar: string | undefined;
+    if (action === 'booking_confirmed') {
+      try {
+        calendar = await createCalendarEvent(admin, settings, sub, booking);
+      } catch {
+        calendar = 'failed';
+      }
+    }
+    return jsonResponse(origin, 200, { ok: true, calendar });
   }
 
   return jsonResponse(origin, 400, { error: 'Unknown action.' });
