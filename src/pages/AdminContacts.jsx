@@ -196,6 +196,29 @@ export default function AdminContacts() {
     onError: (e) => toast.error(e.message || 'Could not send the acknowledgement')
   });
 
+  // Split a stored message into tidy label → value rows (booking/estimator
+  // messages are "Key: value" lines) plus any free-text paragraphs, so the
+  // details popup reads organized instead of one raw text block.
+  const parseMessageLines = (message) => {
+    const rows = [];
+    const paras = [];
+    const lines = String(message || '').split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      if (i === 0 && !line.includes(':')) continue; // summary header line
+      const kv = line.match(/^([^:]{2,40}):\s*(.*)$/);
+      if (kv) {
+        let value = kv[2].trim();
+        if (!value && i + 1 < lines.length) { value = lines[i + 1].trim(); i++; } // "Notes:" style
+        rows.push({ label: kv[1].trim(), value });
+      } else {
+        paras.push(line);
+      }
+    }
+    return { rows, paras };
+  };
+
   const renderDetailChips = (contact, source, inline = false) => {
     let chips = null;
     if (source === 'booking') {
@@ -386,65 +409,70 @@ export default function AdminContacts() {
         )}
 
         <Dialog open={!!selectedContact} onOpenChange={() => setSelectedContact(null)}>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="max-h-[90vh] w-[92vw] max-w-[1200px] overflow-y-auto sm:w-[80vw]">
             <DialogHeader>
               <DialogTitle>Inquiry Details</DialogTitle>
             </DialogHeader>
             {selectedContact && (() => {
               const source = detectSource(selectedContact);
               const meta = SOURCE_META[source];
+              const parsed = parseMessageLines(selectedContact.message);
+              const field = (label, value, isLink = false) => (
+                <div key={label}>
+                  <p className="text-xs text-slate-400">{label}</p>
+                  {isLink
+                    ? <a href={`mailto:${value}`} className="font-semibold text-blue-600">{value}</a>
+                    : <p className="font-semibold text-slate-900">{value}</p>}
+                </div>
+              );
               return (
-                <div className="max-h-[70vh] space-y-4 overflow-y-auto pr-1">
+                <div>
                   <div className="flex items-center gap-2">
                     <Badge className={meta.badge}><meta.Icon className="mr-1 h-3 w-3" />{meta.label}</Badge>
                     <Badge className={statusColors[selectedContact.status || 'new']}>
                       {(selectedContact.status || 'new').replace(/_/g, ' ')}
                     </Badge>
                   </div>
-                  <div>
-                    <p className="text-sm text-slate-500">Name</p>
-                    <p className="font-medium">{selectedContact.name}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-slate-500">Email</p>
-                    <a href={`mailto:${selectedContact.email}`} className="font-medium text-blue-600">{selectedContact.email}</a>
-                  </div>
-                  {selectedContact.phone && (
-                    <div>
-                      <p className="text-sm text-slate-500">Phone</p>
-                      <p className="font-medium">{selectedContact.phone}</p>
+                  <div className="mt-4 grid gap-5 md:grid-cols-[1fr_1.25fr]">
+                    <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
+                      <p className="mb-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">Contact</p>
+                      <div className="grid gap-x-4 gap-y-3 text-sm sm:grid-cols-2">
+                        {field('Name', selectedContact.name)}
+                        {selectedContact.company && field('Company', selectedContact.company)}
+                        {field('Email', selectedContact.email, true)}
+                        {selectedContact.phone && field('Phone', selectedContact.phone)}
+                        {selectedContact.service_interest && field('Service interest', serviceLabels[selectedContact.service_interest] || selectedContact.service_interest)}
+                        {selectedContact.created_at && field('Submitted', format(new Date(selectedContact.created_at), 'MMM d, yyyy · h:mm a'))}
+                      </div>
                     </div>
-                  )}
-                  {selectedContact.company && (
-                    <div>
-                      <p className="text-sm text-slate-500">Company</p>
-                      <p className="font-medium">{selectedContact.company}</p>
+                    <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
+                      <p className="mb-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">Request details</p>
+                      {renderDetailChips(selectedContact, source)}
+                      {parsed.rows.length > 0 && (
+                        <div className="divide-y divide-dashed divide-slate-200">
+                          {parsed.rows.map((r, idx) => (
+                            <div key={idx} className="flex gap-4 py-1.5 text-sm">
+                              <span className="w-32 shrink-0 text-slate-500">{r.label}</span>
+                              <span className="font-medium text-slate-900">{r.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {parsed.paras.map((p, idx) => (
+                        <p key={idx} className="mt-2 whitespace-pre-wrap text-sm font-medium text-slate-900">{p}</p>
+                      ))}
+                      {parsed.rows.length === 0 && parsed.paras.length === 0 && (
+                        <p className="whitespace-pre-wrap text-sm font-medium text-slate-900">{selectedContact.message}</p>
+                      )}
                     </div>
-                  )}
-                  {selectedContact.service_interest && (
-                    <div>
-                      <p className="text-sm text-slate-500">Service Interest</p>
-                      <p className="font-medium">{serviceLabels[selectedContact.service_interest] || selectedContact.service_interest}</p>
-                    </div>
-                  )}
-                  {renderDetailChips(selectedContact, source)}
-                  <div>
-                    <p className="text-sm text-slate-500">Message</p>
-                    <p className="whitespace-pre-wrap font-medium">{selectedContact.message}</p>
                   </div>
-                  <div>
-                    <p className="text-sm text-slate-500">Submitted</p>
-                    <p className="font-medium">
-                      {selectedContact.created_at && format(new Date(selectedContact.created_at), 'MMMM d, yyyy h:mm a')}
-                    </p>
-                  </div>
-                  <div className="border-t pt-4">
+                  <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
                     {renderActions(selectedContact, source)}
                     <button
                       type="button"
                       onClick={() => ackMutation.mutate(selectedContact)}
                       disabled={ackMutation.isPending}
-                      className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-200 disabled:opacity-60"
+                      className="inline-flex h-8 items-center gap-1.5 rounded-full bg-white px-3 text-xs font-semibold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 disabled:opacity-60"
                     >
                       <Send className="h-3.5 w-3.5" /> Resend acknowledgement email
                     </button>
