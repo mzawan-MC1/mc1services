@@ -217,3 +217,13 @@ button:focus-visible {
   .animate-float-y, .animate-shimmer { animation: none; }
   .chart-draw { animation: none; stroke-dashoffset: 0; }
 }
+
+/* Mobile rhythm: desktop section padding (py-20 / py-24 / py-32) makes
+   phone pages feel endless. Cap it below the md breakpoint only —
+   desktop spacing is untouched. The element+class selector outranks
+   the single-class Tailwind utility. */
+@media (max-width: 767px) {
+  section.py-32 { padding-top: 4rem; padding-bottom: 4rem; }
+  section.py-24 { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+  section.py-20 { padding-top: 3rem; padding-bottom: 3rem; }
+}

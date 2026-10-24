@@ -98,14 +98,14 @@ export default function ProjectCostEstimator() {
       </div>
 
       {step === 1 && (
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <div className="mt-6 grid grid-cols-2 gap-2.5 sm:gap-3">
           {cfg.types.map((t) => {
             const Icon = ESTIMATOR_ICONS[t.icon] || Globe;
             return (
-              <button key={t.id} onClick={() => { setTypeId(t.id); setStep(2); }} className="group rounded-2xl border border-slate-200 p-5 text-left transition hover:border-blue-400 hover:bg-blue-50/50">
-                <Icon className="h-7 w-7 text-blue-600" />
-                <p className="mt-3 font-bold text-slate-900">{t.label}</p>
-                {t.blurb && <p className="mt-1 text-sm text-slate-500">{t.blurb}</p>}
+              <button key={t.id} onClick={() => { setTypeId(t.id); setStep(2); }} className="group rounded-2xl border border-slate-200 p-3.5 text-left transition hover:border-blue-400 hover:bg-blue-50/50 sm:p-5">
+                <Icon className="h-6 w-6 text-blue-600 sm:h-7 sm:w-7" />
+                <p className="mt-2 text-[15px] font-bold text-slate-900 sm:mt-3 sm:text-base">{t.label}</p>
+                {t.blurb && <p className="mt-1 text-xs text-slate-500 sm:text-sm">{t.blurb}</p>}
                 <p className="mt-2 text-xs font-semibold text-slate-400">From {fmt(t.baseMin)}{t.monthly ? ' / month' : ''}</p>
               </button>
             );
@@ -117,9 +117,9 @@ export default function ProjectCostEstimator() {
         <div className="mt-6 space-y-7">
           <div>
             <p className="font-semibold text-slate-900">{cfg.texts.sizeQuestion}</p>
-            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3">
               {cfg.sizes.map((s) => (
-                <button key={s.id} onClick={() => setSizeId(s.id)} className={`rounded-2xl border p-4 text-left transition ${size.id === s.id ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500' : 'border-slate-200 hover:border-blue-300'}`}>
+                <button key={s.id} onClick={() => setSizeId(s.id)} className={`rounded-2xl border p-3 text-left transition sm:p-4 ${size.id === s.id ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500' : 'border-slate-200 hover:border-blue-300'}`}>
                   <p className="font-bold text-slate-900">{s.label}</p>
                   {s.blurb && <p className="mt-1 text-xs text-slate-500">{s.blurb}</p>}
                 </button>
@@ -138,9 +138,9 @@ export default function ProjectCostEstimator() {
           )}
           <div>
             <p className="font-semibold text-slate-900">{cfg.texts.speedQuestion}</p>
-            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3">
               {cfg.speeds.map((t) => (
-                <button key={t.id} onClick={() => setSpeedId(t.id)} className={`rounded-2xl border p-4 text-left transition ${speed.id === t.id ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500' : 'border-slate-200 hover:border-blue-300'}`}>
+                <button key={t.id} onClick={() => setSpeedId(t.id)} className={`rounded-2xl border p-3 text-left transition sm:p-4 ${speed.id === t.id ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500' : 'border-slate-200 hover:border-blue-300'}`}>
                   <p className="font-bold text-slate-900">{t.label}</p>
                   {t.blurb && <p className="mt-1 text-xs text-slate-500">{t.blurb}</p>}
                 </button>

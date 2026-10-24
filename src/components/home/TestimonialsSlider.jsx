@@ -58,7 +58,7 @@ export default function TestimonialsSlider() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
               transition={{ duration: 0.5 }}
-              className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10"
+              className="bg-white/5 backdrop-blur-sm rounded-3xl p-6 sm:p-8 md:p-12 border border-white/10"
             >
               <Quote className="w-12 h-12 text-blue-400/30 mb-6" />
 

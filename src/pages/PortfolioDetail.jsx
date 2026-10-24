@@ -256,7 +256,7 @@ export default function PortfolioDetail() {
       {navItems.length > 1 && (
       <nav aria-label={t('portfolio.detail.case_study_sections', 'Case study sections')} className="sticky top-20 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl justify-center px-3 py-2.5 sm:px-6 sm:py-3 lg:px-8">
-          <div className="flex flex-wrap items-center justify-center gap-1 rounded-[1.75rem] border border-white/10 bg-slate-950/95 p-1.5 shadow-xl shadow-slate-950/25 ring-1 ring-white/5 sm:rounded-full">
+          <div className="flex max-w-full flex-nowrap items-center justify-start gap-1 overflow-x-auto rounded-full border border-white/10 bg-slate-950/95 p-1.5 shadow-xl shadow-slate-950/25 ring-1 ring-white/5 [scrollbar-width:none] sm:flex-wrap sm:justify-center sm:overflow-visible [&::-webkit-scrollbar]:hidden">
             {navItems.map(({ id, label, Icon }) => (
               <a
                 key={id}
@@ -299,26 +299,26 @@ export default function PortfolioDetail() {
 
                   {allMedia.length > 1 && (
                     <>
-                      <button type="button" aria-label="Previous project media" onClick={prevSlide} className="absolute left-4 top-1/2 z-10 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-xl backdrop-blur transition hover:scale-105 hover:bg-white md:h-16 md:w-16 rtl:left-auto rtl:right-4">
-                        <ChevronLeft className="h-8 w-8 text-slate-900 rtl:rotate-180" />
+                      <button type="button" aria-label="Previous project media" onClick={prevSlide} className="absolute left-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-xl backdrop-blur transition hover:scale-105 hover:bg-white sm:left-4 sm:h-12 sm:w-12 md:h-16 md:w-16 rtl:left-auto rtl:right-2 sm:rtl:right-4">
+                        <ChevronLeft className="h-5 w-5 text-slate-900 sm:h-6 sm:w-6 md:h-8 md:w-8 rtl:rotate-180" />
                       </button>
-                      <button type="button" aria-label="Next project media" onClick={nextSlide} className="absolute right-4 top-1/2 z-10 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-xl backdrop-blur transition hover:scale-105 hover:bg-white md:h-16 md:w-16 rtl:left-4 rtl:right-auto">
-                        <ChevronRight className="h-8 w-8 text-slate-900 rtl:rotate-180" />
+                      <button type="button" aria-label="Next project media" onClick={nextSlide} className="absolute right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-xl backdrop-blur transition hover:scale-105 hover:bg-white sm:right-4 sm:h-12 sm:w-12 md:h-16 md:w-16 rtl:left-2 rtl:right-auto sm:rtl:left-4">
+                        <ChevronRight className="h-5 w-5 text-slate-900 sm:h-6 sm:w-6 md:h-8 md:w-8 rtl:rotate-180" />
                       </button>
                     </>
                   )}
 
                   {allMedia[currentSlide]?.type === 'image' && (
-                    <button type="button" aria-label="Open project image" onClick={() => openLightbox(currentSlide)} className="absolute bottom-4 right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 shadow-xl backdrop-blur transition hover:scale-105 hover:bg-white rtl:left-4 rtl:right-auto">
-                      <ZoomIn className="h-6 w-6 text-slate-900" />
+                    <button type="button" aria-label="Open project image" onClick={() => openLightbox(currentSlide)} className="absolute bottom-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-xl backdrop-blur transition hover:scale-105 hover:bg-white sm:bottom-4 sm:right-4 sm:h-12 sm:w-12 rtl:left-3 rtl:right-auto sm:rtl:left-4">
+                      <ZoomIn className="h-4 w-4 text-slate-900 sm:h-6 sm:w-6" />
                     </button>
                   )}
                 </div>
 
                 {allMedia.length > 1 && (
-                  <div className="flex gap-2 p-4 bg-slate-50 overflow-x-auto">
+                  <div className="flex gap-2 overflow-x-auto bg-slate-50 p-3 sm:p-4">
                     {allMedia.map((media, i) => (
-                      <button type="button" aria-label={`Show project media ${i + 1}`} key={i} onClick={() => setCurrentSlide(i)} className={`relative flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden bg-slate-900 border-2 transition-all ${currentSlide === i ? 'border-blue-500 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'}`}>
+                      <button type="button" aria-label={`Show project media ${i + 1}`} key={i} onClick={() => setCurrentSlide(i)} className={`relative h-11 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 bg-slate-900 transition-all sm:h-14 sm:w-20 ${currentSlide === i ? 'border-blue-500 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'}`}>
                         {media.type === 'video' ? (
                           <div className="w-full h-full bg-slate-800 flex items-center justify-center"><Play className="w-6 h-6 text-white" /></div>
                         ) : (
@@ -486,16 +486,16 @@ export default function PortfolioDetail() {
       <AnimatePresence>
         {lightboxOpen && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4" onClick={() => setLightboxOpen(false)}>
-            <button type="button" aria-label="Close project media" onClick={() => setLightboxOpen(false)} className="absolute top-4 right-4 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center rtl:left-4 rtl:right-auto">
-              <X className="w-6 h-6 text-white" />
+            <button type="button" aria-label="Close project media" onClick={() => setLightboxOpen(false)} className="absolute top-4 right-4 w-10 h-10 sm:w-12 sm:h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center rtl:left-4 rtl:right-auto">
+              <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </button>
             {allMedia.length > 1 && (
               <>
-                <button type="button" aria-label="Previous project media" onClick={(e) => { e.stopPropagation(); setLightboxIndex((prev) => (prev - 1 + allMedia.length) % allMedia.length); }} className="absolute left-4 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center rtl:right-4 rtl:left-auto">
-                  <ChevronLeft className="w-6 h-6 text-white rtl:rotate-180" />
+                <button type="button" aria-label="Previous project media" onClick={(e) => { e.stopPropagation(); setLightboxIndex((prev) => (prev - 1 + allMedia.length) % allMedia.length); }} className="absolute left-2 sm:left-4 w-10 h-10 sm:w-12 sm:h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center rtl:right-2 sm:rtl:right-4 rtl:left-auto">
+                  <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-white rtl:rotate-180" />
                 </button>
-                <button type="button" aria-label="Next project media" onClick={(e) => { e.stopPropagation(); setLightboxIndex((prev) => (prev + 1) % allMedia.length); }} className="absolute right-4 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center rtl:left-4 rtl:right-auto">
-                  <ChevronRight className="w-6 h-6 text-white rtl:rotate-180" />
+                <button type="button" aria-label="Next project media" onClick={(e) => { e.stopPropagation(); setLightboxIndex((prev) => (prev + 1) % allMedia.length); }} className="absolute right-2 sm:right-4 w-10 h-10 sm:w-12 sm:h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center rtl:left-2 sm:rtl:left-4 rtl:right-auto">
+                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-white rtl:rotate-180" />
                 </button>
               </>
             )}
