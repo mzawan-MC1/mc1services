@@ -5,9 +5,11 @@ import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import {
   Loader2, Mail, Phone, Building2, Trash2, Eye, CalendarCheck, Calculator,
-  Sparkles, MessageCircle, ListTodo, Send, Clock, Tag, Banknote, CalendarDays
+  Sparkles, MessageCircle, ListTodo, Send, Clock, Tag, Banknote, CalendarDays,
+  Search, ArrowUpDown
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -115,10 +117,23 @@ const TABS = [
   { key: 'assistant', label: 'Assistant' },
 ];
 
+const STATUS_FILTERS = [
+  { key: 'all', label: 'All Statuses' },
+  { key: 'new', label: 'New' },
+  { key: 'contacted', label: 'Contacted' },
+  { key: 'in_progress', label: 'In Progress' },
+  { key: 'quote_sent', label: 'Quote Sent' },
+  { key: 'confirmed', label: 'Confirmed' },
+  { key: 'closed', label: 'Closed' },
+];
+
 export default function AdminContacts() {
   const queryClient = useQueryClient();
   const [selectedContact, setSelectedContact] = useState(null);
   const [tab, setTab] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOldest, setSortOldest] = useState(false);
 
   const { data: contacts = [], isLoading } = useQuery({
     queryKey: ['admin-contacts'],
@@ -131,10 +146,34 @@ export default function AdminContacts() {
     return map;
   }, [contacts]);
 
-  const visible = useMemo(
+  const bySource = useMemo(
     () => (tab === 'all' ? contacts : contacts.filter((c) => detectSource(c) === tab)),
     [contacts, tab]
   );
+
+  const statusCounts = useMemo(() => {
+    const map = { all: bySource.length };
+    bySource.forEach((c) => { const s = c.status || 'new'; map[s] = (map[s] || 0) + 1; });
+    return map;
+  }, [bySource]);
+
+  const visible = useMemo(() => {
+    let list = bySource;
+    if (statusFilter !== 'all') list = list.filter((c) => (c.status || 'new') === statusFilter);
+    const q = searchQuery.trim().toLowerCase();
+    if (q) list = list.filter((c) => [c.name, c.email, c.company].some((v) => (v || '').toLowerCase().includes(q)));
+    return [...list].sort((a, b) => {
+      if (statusFilter === 'all') {
+        // Closed inquiries sink to the bottom of the combined view.
+        const ca = a.status === 'closed' ? 1 : 0;
+        const cb = b.status === 'closed' ? 1 : 0;
+        if (ca !== cb) return ca - cb;
+      }
+      const ta = new Date(a.created_at || 0).getTime();
+      const tb = new Date(b.created_at || 0).getTime();
+      return sortOldest ? ta - tb : tb - ta;
+    });
+  }, [bySource, statusFilter, searchQuery, sortOldest]);
 
   const invalidate = () => queryClient.invalidateQueries(['admin-contacts']);
 
@@ -250,7 +289,10 @@ export default function AdminContacts() {
   // otherwise Convert to task. Everything else stays quiet.
   const renderActions = (contact, source) => {
     const wa = waNumber(contact.phone);
-    const showConfirm = source === 'booking' && contact.status !== 'confirmed';
+    // A closed inquiry is done: no workflow buttons, only contact channels
+    // (and the Task created link, if it was converted before closing).
+    const isClosed = contact.status === 'closed';
+    const showConfirm = source === 'booking' && contact.status !== 'confirmed' && !isClosed;
     const soft = 'inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-semibold ring-1 transition';
     return (
       <div className="flex flex-wrap items-center gap-2">
@@ -276,7 +318,7 @@ export default function AdminContacts() {
           <Link to="/admin/tasks" className={`${soft} bg-blue-50 text-blue-700 ring-blue-200 hover:bg-blue-100`}>
             <ListTodo className="h-3.5 w-3.5" /> Task created
           </Link>
-        ) : (
+        ) : !isClosed && (
           <button type="button" onClick={() => convertMutation.mutate(contact)} disabled={convertMutation.isPending} className={`${soft} disabled:opacity-60 ${showConfirm ? 'bg-blue-50 text-blue-700 ring-blue-200 hover:bg-blue-100' : 'bg-blue-600 text-white ring-transparent hover:bg-blue-700'}`}>
             <ListTodo className="h-3.5 w-3.5" /> Convert to task
           </button>
@@ -306,6 +348,33 @@ export default function AdminContacts() {
           ))}
         </div>
 
+        <div className="mb-5 flex flex-wrap items-center gap-2">
+          {STATUS_FILTERS.filter((f) => f.key === 'all' || (statusCounts[f.key] || 0) > 0 || statusFilter === f.key).map(({ key, label }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setStatusFilter(key)}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${statusFilter === key ? 'bg-blue-600 text-white shadow' : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'}`}
+            >
+              {label} <span className={`ml-1 rounded-full px-1.5 py-0.5 text-[10px] ${statusFilter === key ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'}`}>{statusCounts[key] || 0}</span>
+            </button>
+          ))}
+          <div className="ml-auto flex flex-wrap items-center gap-2">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search name, email, company"
+                className="w-60 bg-white pl-9"
+              />
+            </div>
+            <Button type="button" variant="outline" onClick={() => setSortOldest((v) => !v)} className="bg-white">
+              <ArrowUpDown className="mr-2 h-4 w-4" /> {sortOldest ? 'Oldest first' : 'Newest first'}
+            </Button>
+          </div>
+        </div>
+
         {isLoading ? (
           <div className="flex justify-center py-20">
             <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
@@ -313,7 +382,7 @@ export default function AdminContacts() {
         ) : visible.length === 0 ? (
           <Card className="py-12 text-center">
             <CardContent>
-              <p className="text-slate-500">{contacts.length === 0 ? 'No inquiries yet' : 'Nothing in this tab yet'}</p>
+              <p className="text-slate-500">{contacts.length === 0 ? 'No inquiries yet' : 'No inquiries match this view — try another tab, status, or search.'}</p>
             </CardContent>
           </Card>
         ) : (
@@ -322,7 +391,7 @@ export default function AdminContacts() {
               const source = detectSource(contact);
               const meta = SOURCE_META[source];
               return (
-                <Card key={contact.id}>
+                <Card key={contact.id} className={contact.status === 'closed' ? 'bg-slate-50/70 opacity-75' : ''}>
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
