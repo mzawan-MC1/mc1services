@@ -4,7 +4,7 @@ import { optimizeImageUrl } from '../../utils/optimizeImage';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../dataLayer';
-import { ArrowRight, BarChart3, Building2, Calendar, FileCheck2, FileText, Gavel, LayoutDashboard, ListChecks, Lock, Receipt, ShoppingCart, Sparkles } from 'lucide-react';
+import { ArrowRight, BarChart3, Building2, Calendar, ClipboardCheck, CreditCard, FileCheck2, FileText, Gavel, LayoutDashboard, ListChecks, Lock, Receipt, ShoppingCart, Sparkles, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 
@@ -108,12 +108,12 @@ function ProductStage({ t }) {
               </div>
               <div className="mt-3 grid grid-cols-3 gap-2.5">
                 {[
-                  { label: 'Documents processed', value: '12,480', delta: '+18%' },
-                  { label: 'Active workflows', value: '36', delta: 'Live' },
-                  { label: 'Tasks on track', value: '98%', delta: '+4%' },
+                  { label: 'Documents', value: '12,480', delta: '+18%' },
+                  { label: 'Workflows', value: '36', delta: 'Live' },
+                  { label: 'On track', value: '98%', delta: '+4%' },
                 ].map((kpi) => (
                   <div key={kpi.label} className="rounded-xl bg-white/5 p-3">
-                    <p className="truncate text-[9px] font-semibold uppercase tracking-wider text-slate-400">{kpi.label}</p>
+                    <p className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">{kpi.label}</p>
                     <p className="mt-1 text-base font-bold leading-none text-white">{kpi.value}</p>
                     <p className="mt-1 text-[10px] font-medium text-emerald-400">{kpi.delta}</p>
                   </div>
@@ -156,9 +156,9 @@ function ProductStage({ t }) {
         </div>
       </div>
 
-      <StageChip icon={Gavel} tile="from-blue-500 to-blue-700" title={t('home.hero.chip_bid', 'New bid placed')} sub={t('home.hero.chip_bid_sub', 'Live vehicle auction')} className="-top-7 end-2" delay="0s" />
-      <StageChip icon={ShoppingCart} tile="from-violet-500 to-purple-700" title={t('home.hero.chip_order', 'New order received')} sub={t('home.hero.chip_order_sub', 'E-commerce platform')} className="top-[44%] -end-4" delay="1.4s" />
-      <StageChip icon={FileCheck2} tile="from-teal-400 to-emerald-600" title={t('home.hero.chip_doc', 'AI document processed')} sub={t('home.hero.chip_doc_sub', 'ProFlow360 · Document AI')} className="-bottom-8 start-4" delay="2.6s" />
+      <StageChip icon={CreditCard} tile="from-blue-500 to-blue-700" title={t('home.hero.chip_payment', 'Payment received')} sub={t('home.hero.chip_payment_sub', 'Invoice #1042 · Settled')} className="-top-7 end-2" delay="0s" />
+      <StageChip icon={UserPlus} tile="from-violet-500 to-purple-700" title={t('home.hero.chip_lead', 'New lead captured')} sub={t('home.hero.chip_lead_sub', 'Website inquiry · Contact form')} className="top-[44%] -end-4" delay="1.4s" />
+      <StageChip icon={ClipboardCheck} tile="from-teal-400 to-emerald-600" title={t('home.hero.chip_delivered', 'Project delivered')} sub={t('home.hero.chip_delivered_sub', 'On time · This week')} className="-bottom-8 start-4" delay="2.6s" />
     </div>
   );
 }
