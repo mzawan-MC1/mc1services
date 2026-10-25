@@ -249,7 +249,7 @@ export default function AdminEstimator() {
       </Section>
 
       {/* ── Sticky save bar ────────────────────────────────────── */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur lg:left-64">
+      <div className="admin-savebar fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur lg:left-64">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
           <span className="text-sm text-slate-500">{dirty ? 'You have unsaved changes.' : 'All changes saved.'}</span>
           <div className="ms-auto flex items-center gap-2">

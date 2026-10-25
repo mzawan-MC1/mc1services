@@ -4,7 +4,7 @@ import { createPageUrl } from '../../utils';
 import {
   LayoutDashboard, FileText, Settings, Search, Image, Users, Mail,
   Menu, X, Eye, LogOut, PanelsTopLeft, Building2, BriefcaseBusiness,
-  CircleHelp, ContactRound, Home, ListTodo, MessageSquareQuote, ShieldCheck, UserCog, Newspaper, Calculator, Send, CalendarCheck2
+  CircleHelp, ContactRound, Home, ListTodo, MessageSquareQuote, ShieldCheck, UserCog, Newspaper, Calculator, Send, CalendarCheck2, PanelLeftClose, PanelLeftOpen
 } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import { Button } from '@/components/ui/button';
@@ -25,6 +25,15 @@ export default function AdminLayout({ children }) {
 
 function AdminShell({ children }) {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  // Desktop sidebar collapse — persisted, and mirrored onto a body
+  // class so the fixed save bars on settings pages (Admin → Cost
+  // Estimator / Booking Page) can drop their lg:left-64 offset.
+  const [collapsed, setCollapsed] = useState(() => { try { return localStorage.getItem('admin_sidebar_collapsed') === '1'; } catch { return false; } });
+  useEffect(() => {
+    try { localStorage.setItem('admin_sidebar_collapsed', collapsed ? '1' : '0'); } catch { /* private mode */ }
+    document.body.classList.toggle('admin-sidebar-collapsed', collapsed);
+    return () => document.body.classList.remove('admin-sidebar-collapsed');
+  }, [collapsed]);
   const [profile, setProfile] = useState({ name: '', avatar: '' });
   const navigate = useNavigate();
   const location = useLocation();
@@ -118,12 +127,13 @@ function AdminShell({ children }) {
 
   return (
     <AdminLayoutContext.Provider value={true}>
-    <div className="min-h-screen bg-slate-100 flex">
-      {/* Sidebar */}
-      <aside id="admin-sidebar" className={`fixed inset-y-0 left-0 z-50 w-64 flex-shrink-0 transform border-r border-slate-200 bg-white transition-transform duration-300 lg:static lg:translate-x-0 ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="h-full flex flex-col">
-          {/* Header */}
-          <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200">
+    <div className="flex h-screen overflow-hidden bg-slate-100">
+      {/* Sidebar — a fixed-height column on desktop: the header and
+          footer stay pinned and only the menu scrolls. */}
+      <aside id="admin-sidebar" className={`fixed inset-y-0 left-0 z-50 w-64 flex-shrink-0 transform overflow-hidden border-r border-slate-200 bg-white transition-all duration-300 lg:static lg:translate-x-0 ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'} ${collapsed ? 'lg:w-0 lg:border-r-0' : 'lg:w-64'}`}>
+        <div className="flex h-full w-64 flex-col">
+          {/* Header — pinned */}
+          <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 px-4">
             <Link to={createPageUrl('AdminDashboard')} onClick={() => setMobileSidebarOpen(false)} className="flex min-w-0 items-center gap-2">
                 <img src={profile.avatar} alt="avatar" className="w-8 h-8 rounded-lg object-cover border" />
                 <span className="font-semibold text-slate-900 truncate max-w-[150px]">{profile.name || 'Admin'}</span>
@@ -131,10 +141,13 @@ function AdminShell({ children }) {
             <button type="button" aria-label="Close admin menu" onClick={() => setMobileSidebarOpen(false)} className="lg:hidden p-2 hover:bg-slate-100 rounded-lg">
               <X className="w-5 h-5" />
             </button>
+            <button type="button" aria-label="Close sidebar" title="Close sidebar" onClick={() => setCollapsed(true)} className="hidden rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800 lg:block">
+              <PanelLeftClose className="h-5 w-5" />
+            </button>
           </div>
 
           {/* Navigation */}
-          <nav aria-label="Admin navigation" className="flex-1 overflow-y-auto px-2 py-3">
+          <nav aria-label="Admin navigation" className="min-h-0 flex-1 overflow-y-auto px-2 py-3">
             {menuSections.map((section) => (
               <section key={section.id} aria-labelledby={`admin-section-${section.id}`} className="mb-3">
                 <h2 id={`admin-section-${section.id}`} className="px-3 pb-1 pt-2 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">{section.label}</h2>
@@ -159,8 +172,8 @@ function AdminShell({ children }) {
             ))}
           </nav>
 
-          {/* Footer */}
-          <div className="border-t border-slate-200 p-4 space-y-2">
+          {/* Footer — pinned */}
+          <div className="shrink-0 space-y-2 border-t border-slate-200 p-4">
             <Link to={createPageUrl('Home')} onClick={() => setMobileSidebarOpen(false)}>
               <Button variant="outline" size="sm" className="w-full border-slate-300 text-slate-700 hover:bg-slate-100 justify-start">
                 <Eye className="w-4 h-4 mr-2" />
@@ -179,6 +192,13 @@ function AdminShell({ children }) {
           </div>
         </div>
       </aside>
+
+      {/* Reopen button — appears only while the desktop sidebar is closed */}
+      {collapsed && (
+        <button type="button" aria-label="Open sidebar" title="Open sidebar" onClick={() => setCollapsed(false)} className="fixed left-4 top-4 z-40 hidden h-10 w-10 items-center justify-center rounded-full bg-white text-slate-600 shadow-md ring-1 ring-slate-200 transition hover:bg-slate-50 hover:text-slate-900 lg:flex">
+          <PanelLeftOpen className="h-5 w-5" />
+        </button>
+      )}
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">

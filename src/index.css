@@ -227,3 +227,12 @@ button:focus-visible {
   section.py-24 { padding-top: 3.5rem; padding-bottom: 3.5rem; }
   section.py-20 { padding-top: 3rem; padding-bottom: 3rem; }
 }
+
+/* Admin: when the desktop sidebar is collapsed (body class set by
+   AdminLayout), the fixed save bars on the settings pages span the
+   full width instead of starting after the 256px sidebar. */
+@media (min-width: 1024px) {
+  body.admin-sidebar-collapsed .admin-savebar {
+    left: 0 !important;
+  }
+}
