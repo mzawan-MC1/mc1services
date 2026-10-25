@@ -587,7 +587,7 @@ export default function Layout({ children, currentPageName }) {
                 {/* CTA Button */}
                 <div className="hidden lg:block">
                   <Link
-                    to={createPageUrl(headerSettings?.cta_button_link || 'Contact')}
+                    to={createPageUrl(headerSettings?.cta_button_link || 'BookConsultation')}
                     className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full font-medium hover:shadow-lg hover:shadow-blue-500/25 transition-all"
                   >
                     {getLocalized(headerSettings, 'cta_button_text') || headerSettings?.cta_button_text || t('common.get_started', 'Get Started')}
@@ -677,7 +677,7 @@ export default function Layout({ children, currentPageName }) {
                       </Link>
                     )}
                     <Link
-                      to={createPageUrl('Contact')}
+                      to={createPageUrl(headerSettings?.cta_button_link || 'BookConsultation')}
                       onClick={() => setMobileMenuOpen(false)}
                       className="block mt-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-center px-6 py-3 rounded-full font-medium"
                     >

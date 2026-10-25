@@ -4,7 +4,7 @@ import { optimizeImageUrl } from '../../utils/optimizeImage';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dataLayer } from '../dataLayer';
-import { ArrowRight, BarChart3, Building2, Calendar, ClipboardCheck, CreditCard, FileCheck2, FileText, Gavel, LayoutDashboard, ListChecks, Lock, Receipt, ShoppingCart, Sparkles, UserPlus } from 'lucide-react';
+import { ArrowRight, BarChart3, Briefcase, Building2, Calendar, ClipboardCheck, CreditCard, FileCheck2, FileText, Gavel, LayoutDashboard, ListChecks, Lock, MessageSquare, Package, Receipt, Settings, ShoppingCart, Sparkles, UserPlus, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 
@@ -39,8 +39,14 @@ const STAGE_NAV = [
   { icon: Building2, label: 'Companies' },
   { icon: FileText, label: 'Documents' },
   { icon: ListChecks, label: 'Tasks' },
+  { icon: Briefcase, label: 'Projects' },
   { icon: Receipt, label: 'Invoicing' },
+  { icon: Package, label: 'Inventory' },
+  { icon: Calendar, label: 'Calendar' },
+  { icon: MessageSquare, label: 'Messages' },
+  { icon: Users, label: 'Team' },
   { icon: BarChart3, label: 'Reports' },
+  { icon: Settings, label: 'Settings' },
 ];
 
 const STAGE_ACTIVITY = [
@@ -92,6 +98,13 @@ function ProductStage({ t }) {
                   <item.icon className="h-3.5 w-3.5" /> {item.label}
                 </span>
               ))}
+              <div className="mt-auto flex items-center gap-2 border-t border-white/5 px-1 pt-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 text-[9px] font-bold text-white">MZ</span>
+                <span className="min-w-0">
+                  <span className="block truncate text-[10px] font-medium leading-tight text-slate-200">Workspace Admin</span>
+                  <span className="block text-[9px] leading-tight text-slate-500">Pro plan</span>
+                </span>
+              </div>
             </div>
             {/* Dashboard body */}
             <div className="min-w-0 flex-1 p-4">
@@ -230,7 +243,7 @@ export default function HeroSection() {
       </div>
 
       <div className="relative mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
-        <div className="grid items-center gap-14 lg:grid-cols-[1.08fr_0.92fr]">
+        <div className="grid items-center gap-14 lg:grid-cols-[0.4fr_0.6fr]">
           <div className="max-w-3xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
