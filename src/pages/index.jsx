@@ -65,6 +65,7 @@ const AdminBlog = lazy(() => import("./AdminBlog"));
 const AdminBlogEdit = lazy(() => import("./AdminBlogEdit"));
 
 const AdminEstimator = lazy(() => import("./AdminEstimator"));
+const AdminBooking = lazy(() => import("./AdminBooking"));
 
 const AdminEmail = lazy(() => import("./AdminEmail"));
 
@@ -198,6 +199,8 @@ const PAGES = {
 
     AdminEstimator: AdminEstimator,
 
+    AdminBooking: AdminBooking,
+
     AdminEmail: AdminEmail,
     
     AdminFAQEdit: AdminFAQEdit,
@@ -273,6 +276,7 @@ const ALT_ROUTE_MAP = {
     '/admin/blog': 'AdminBlog',
     '/admin/blog/edit': 'AdminBlogEdit',
     '/admin/estimator': 'AdminEstimator',
+    '/admin/booking': 'AdminBooking',
     '/admin/team': 'AdminTeam',
     '/admin/inquiries': 'AdminContacts',
     '/admin/email': 'AdminEmail',

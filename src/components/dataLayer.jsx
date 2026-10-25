@@ -1,6 +1,7 @@
 import { supabase, supabaseHelpers, storageHelpers } from './supabaseClient';
 import { PORTFOLIO_CATEGORIES_SETTING_KEY, normalizePortfolioCategories, serializePortfolioCategories } from '../config/portfolioCategories';
 import { ESTIMATOR_SETTING_KEY, normalizeEstimatorConfig, serializeEstimatorConfig } from '../config/estimatorConfig';
+import { BOOKING_SETTING_KEY, normalizeBookingConfig, serializeBookingConfig } from '../config/bookingConfig';
 
 // Unified data layer that routes all data calls through Supabase
 export const dataLayer = {
@@ -23,6 +24,19 @@ export const dataLayer = {
       setting_value: serializeEstimatorConfig(config),
       setting_category: 'tools',
       display_name: 'Project Cost Estimator'
+    }, 'setting_key')
+  },
+
+  booking: {
+    getConfig: async () => {
+      const rows = await supabaseHelpers.getByKey('site_settings', 'setting_key', BOOKING_SETTING_KEY);
+      return normalizeBookingConfig(rows[0]?.setting_value);
+    },
+    saveConfig: (config) => supabaseHelpers.upsert('site_settings', {
+      setting_key: BOOKING_SETTING_KEY,
+      setting_value: serializeBookingConfig(config),
+      setting_category: 'tools',
+      display_name: 'Book a Consultation'
     }, 'setting_key')
   },
 

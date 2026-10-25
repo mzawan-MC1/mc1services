@@ -6,9 +6,7 @@ import { toast } from 'sonner';
 import { dataLayer } from '../components/dataLayer';
 import SEOHead from '../components/SEOHead';
 import TurnstileWidget from '../components/TurnstileWidget';
-
-const TIME_SLOTS = ['10:00 AM', '11:00 AM', '12:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'];
-const FALLBACK_TOPICS = ['Software Development', 'AI & Automation', 'Mobile App Development', 'E-commerce', 'Digital Marketing', 'IT Services', 'Other'];
+import { DEFAULT_BOOKING_CONFIG, CORE_FIELD_KEYS } from '../config/bookingConfig';
 
 function SectionHeader({ n, title, hint }) {
   return (
@@ -20,33 +18,42 @@ function SectionHeader({ n, title, hint }) {
   );
 }
 
-const NEXT_STEPS = [
-  { title: 'Send your request', text: 'Pick a topic, a date and a time that suits you — it takes under a minute.' },
-  { title: 'We confirm personally', text: 'We reply by email or WhatsApp to lock in the exact slot. No automated calendar spam.' },
-  { title: 'Meet for 30 minutes', text: 'A video call or phone chat about your project — honest advice, no sales pressure.' },
-];
+const isoDay = (offsetDays) => {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  return d.toISOString().split('T')[0];
+};
 
 export default function BookConsultation() {
+  // Everything on this page — texts, topics, time slots, date rules and
+  // the detail fields — is edited in Admin → Booking Page. Until the
+  // admin saves anything there, the built-in defaults apply, which are
+  // exactly how the page originally shipped.
+  const { data: remoteCfg } = useQuery({
+    queryKey: ['booking-config'],
+    queryFn: () => dataLayer.booking.getConfig(),
+  });
+  const cfg = remoteCfg || DEFAULT_BOOKING_CONFIG;
+  const texts = cfg.texts;
+
   const [topic, setTopic] = useState('');
   const [date, setDate] = useState('');
   const [slot, setSlot] = useState('');
-  const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', notes: '' });
+  const [form, setForm] = useState({});
   const [turnstileToken, setTurnstileToken] = useState('');
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [sending, setSending] = useState(false);
   const [booked, setBooked] = useState(false);
 
-  const { data: services = [] } = useQuery({
-    queryKey: ['booking-services'],
-    queryFn: async () => { try { return await dataLayer.services.getAll(); } catch { return []; } },
-  });
-  const topics = useMemo(() => {
-    const titles = services.map((s) => s.title).filter(Boolean);
-    return titles.length ? [...titles, 'Other'] : FALLBACK_TOPICS;
-  }, [services]);
+  const topics = useMemo(() => cfg.topics.filter((t) => t.enabled), [cfg]);
+  const slots = useMemo(() => cfg.slots.filter((s) => s.enabled), [cfg]);
+  const fields = useMemo(() => cfg.fields.filter((f) => f.enabled), [cfg]);
 
-  const today = new Date().toISOString().split('T')[0];
+  const minDate = isoDay(cfg.dateRules?.minNoticeDays || 0);
+  const maxDate = (cfg.dateRules?.maxDaysAhead || 0) > 0 ? isoDay(cfg.dateRules.maxDaysAhead) : undefined;
   const prettyDate = date ? new Date(`${date}T12:00:00`).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : '';
+  const val = (key) => form[key] || '';
+  const setVal = (key, v) => setForm((f) => ({ ...f, [key]: v }));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -67,17 +74,21 @@ export default function BookConsultation() {
     })();
     if (!topic) { toast.error('Please choose what you would like to discuss'); return; }
     if (!date || !slot) { toast.error('Please pick a date and a time slot'); return; }
-    if (!form.name.trim() || !form.email.trim()) { toast.error('Please add your name and email'); return; }
+    const missing = fields.filter((f) => f.required && !val(f.key).trim());
+    if (missing.length) { toast.error(`Please fill in: ${missing[0].label.replace(/\s*\*$/, '')}`); return; }
     if (!turnstileToken) { toast.error('Please complete the security verification'); return; }
     setSending(true);
     try {
+      const customLines = fields
+        .filter((f) => !CORE_FIELD_KEYS.includes(f.key) && val(f.key).trim())
+        .map((f) => `${f.label.replace(/\s*\*$/, '')}: ${val(f.key).trim()}`);
       await dataLayer.contactSubmissions.submitPublic({
-        name: form.name.trim(),
-        email: form.email.trim().toLowerCase(),
-        phone: form.phone.trim() || null,
-        company: form.company.trim() || null,
+        name: val('name').trim(),
+        email: val('email').trim().toLowerCase(),
+        phone: val('phone').trim() || null,
+        company: val('company').trim() || null,
         service_interest: topicCode,
-        message: `Consultation booking request\nTopic: ${topic}\nPreferred date: ${prettyDate} (${date})\nPreferred time: ${slot} (GST, UTC+4)\nFormat: Video call / phone\n\nNotes: ${form.notes.trim() || '—'}`,
+        message: `Consultation booking request\nTopic: ${topic}\nPreferred date: ${prettyDate} (${date})\nPreferred time: ${slot} (GST, UTC+4)\nFormat: Video call / phone\n\nNotes: ${val('notes').trim() || '—'}${customLines.length ? `\n${customLines.join('\n')}` : ''}`,
         source: 'booking',
         context: { topic, date: `${prettyDate} (${date})`, time: slot },
         status: 'new',
@@ -91,7 +102,12 @@ export default function BookConsultation() {
     } finally { setSending(false); }
   };
 
-  const waText = encodeURIComponent(`Hi MCS, I just requested a consultation.\nTopic: ${topic}\nPreferred: ${prettyDate} at ${slot} GST\nName: ${form.name}`);
+  const waText = encodeURIComponent(`Hi MCS, I just requested a consultation.\nTopic: ${topic}\nPreferred: ${prettyDate} at ${slot} GST\nName: ${val('name')}`);
+  const successText = texts.successText
+    .replaceAll('{date}', prettyDate)
+    .replaceAll('{time}', slot)
+    .replaceAll('{topic}', topic)
+    .replaceAll('{email}', val('email'));
   const inputCls = 'mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:ring-4 focus:ring-blue-100';
 
   return (
@@ -102,12 +118,10 @@ export default function BookConsultation() {
         <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_70%_0%,rgba(37,99,235,0.35),transparent),radial-gradient(50%_50%_at_10%_100%,rgba(20,184,166,0.25),transparent)]" />
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-blue-200 ring-1 ring-white/15">
-            <Video className="h-3.5 w-3.5" /> Free 30-minute consultation
+            <Video className="h-3.5 w-3.5" /> {texts.badge}
           </p>
-          <h1 className="mt-5 max-w-3xl text-4xl font-extrabold leading-tight text-white md:text-5xl">Book a Consultation</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-slate-300">
-            Pick a time that suits you. We'll confirm your slot by email or WhatsApp — no obligation, just honest advice about your project.
-          </p>
+          <h1 className="mt-5 max-w-3xl text-4xl font-extrabold leading-tight text-white md:text-5xl">{texts.title}</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-slate-300">{texts.intro}</p>
         </div>
       </section>
 
@@ -115,23 +129,23 @@ export default function BookConsultation() {
         {booked ? (
           <div className="mx-auto max-w-2xl rounded-3xl bg-white px-8 py-14 text-center shadow-sm ring-1 ring-slate-200/70">
             <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-50 text-green-600"><CheckCircle2 className="h-9 w-9" /></span>
-            <h2 className="mt-5 text-2xl font-bold text-slate-900">Request received</h2>
-            <p className="mx-auto mt-2 max-w-md text-slate-500">
-              You've asked for <strong className="text-slate-700">{prettyDate} at {slot} GST</strong> to discuss <strong className="text-slate-700">{topic}</strong>. We'll confirm shortly at {form.email}.
-            </p>
-            <a href={`https://wa.me/971508322799?text=${waText}`} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-white transition hover:brightness-105">
-              <MessageCircle className="h-4 w-4" /> Confirm faster on WhatsApp
-            </a>
+            <h2 className="mt-5 text-2xl font-bold text-slate-900">{texts.successTitle}</h2>
+            <p className="mx-auto mt-2 max-w-md text-slate-500">{successText}</p>
+            {cfg.showWhatsappButton && (
+              <a href={`https://wa.me/971508322799?text=${waText}`} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-white transition hover:brightness-105">
+                <MessageCircle className="h-4 w-4" /> {texts.whatsappLabel}
+              </a>
+            )}
           </div>
         ) : (
           <div className="grid items-start gap-6 lg:grid-cols-[320px_1fr]">
             {/* Sidebar — what happens next + direct contact */}
             <aside className="order-2 space-y-6 lg:order-1 lg:sticky lg:top-24">
               <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70">
-                <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900">What happens next</h2>
+                <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900">{texts.stepsTitle}</h2>
                 <ol className="mt-5 space-y-5">
-                  {NEXT_STEPS.map((s, i) => (
-                    <li key={s.title} className="flex gap-3.5">
+                  {cfg.steps.map((s, i) => (
+                    <li key={s.id} className="flex gap-3.5">
                       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-bold text-blue-600 ring-1 ring-blue-100">{i + 1}</span>
                       <div>
                         <p className="text-sm font-semibold text-slate-900">{s.title}</p>
@@ -141,32 +155,34 @@ export default function BookConsultation() {
                   ))}
                 </ol>
                 <div className="mt-6 flex flex-wrap gap-2 border-t border-slate-100 pt-5">
-                  {['Free of charge', '30 minutes', 'No obligation'].map((b) => (
+                  {cfg.badges.map((b) => (
                     <span key={b} className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600"><Check className="h-3 w-3 text-teal-600" />{b}</span>
                   ))}
                 </div>
               </div>
 
-              <div className="rounded-3xl bg-slate-900 p-6 text-white shadow-sm">
-                <h2 className="text-sm font-bold uppercase tracking-wider">Prefer to talk directly?</h2>
-                <div className="mt-4 space-y-3 text-sm">
-                  <a href="tel:+971508322799" className="flex items-center gap-3 text-slate-200 transition hover:text-white"><Phone className="h-4 w-4 shrink-0 text-teal-300" /> +971 50 832 2799</a>
-                  <a href="mailto:info@mc1services.com" className="flex items-center gap-3 text-slate-200 transition hover:text-white"><Mail className="h-4 w-4 shrink-0 text-teal-300" /> info@mc1services.com</a>
-                  <a href="https://wa.me/971508322799" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-slate-200 transition hover:text-white"><MessageCircle className="h-4 w-4 shrink-0 text-teal-300" /> WhatsApp us anytime</a>
+              {cfg.showDirectCard && (
+                <div className="rounded-3xl bg-slate-900 p-6 text-white shadow-sm">
+                  <h2 className="text-sm font-bold uppercase tracking-wider">{texts.directTitle}</h2>
+                  <div className="mt-4 space-y-3 text-sm">
+                    <a href="tel:+971508322799" className="flex items-center gap-3 text-slate-200 transition hover:text-white"><Phone className="h-4 w-4 shrink-0 text-teal-300" /> +971 50 832 2799</a>
+                    <a href="mailto:info@mc1services.com" className="flex items-center gap-3 text-slate-200 transition hover:text-white"><Mail className="h-4 w-4 shrink-0 text-teal-300" /> info@mc1services.com</a>
+                    <a href="https://wa.me/971508322799" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-slate-200 transition hover:text-white"><MessageCircle className="h-4 w-4 shrink-0 text-teal-300" /> {texts.directWhatsappLabel}</a>
+                  </div>
                 </div>
-              </div>
+              )}
             </aside>
 
             {/* The booking form, in three numbered sections */}
             <form onSubmit={submit} className="order-1 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70 md:p-8 lg:order-2">
               <section>
-                <SectionHeader n={1} title="What would you like to discuss?" />
+                <SectionHeader n={1} title={texts.topicsTitle} />
                 <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-3">
                   {topics.map((t) => {
-                    const active = topic === t;
+                    const active = topic === t.label;
                     return (
-                      <button type="button" key={t} onClick={() => setTopic(t)} aria-pressed={active} className={`flex min-h-[2.75rem] items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 text-center text-[13px] font-medium leading-snug transition ${active ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
-                        {active && <Check className="h-3.5 w-3.5 shrink-0" />}{t}
+                      <button type="button" key={t.id} onClick={() => setTopic(t.label)} aria-pressed={active} className={`flex min-h-[2.75rem] items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 text-center text-[13px] font-medium leading-snug transition ${active ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+                        {active && <Check className="h-3.5 w-3.5 shrink-0" />}{t.label}
                       </button>
                     );
                   })}
@@ -174,45 +190,59 @@ export default function BookConsultation() {
               </section>
 
               <section className="mt-8 border-t border-slate-100 pt-8">
-                <SectionHeader n={2} title="Pick a date & time" hint="— all times Gulf Standard Time" />
+                <SectionHeader n={2} title={texts.datetimeTitle} hint={texts.datetimeHint} />
                 <div className="mt-4 grid gap-5 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
                   <div>
-                    <label className="text-xs font-semibold uppercase tracking-wide text-slate-400">Preferred date</label>
-                    <input type="date" min={today} value={date} onChange={(e) => setDate(e.target.value)} className={inputCls} />
+                    <label className="text-xs font-semibold uppercase tracking-wide text-slate-400">{texts.dateLabel}</label>
+                    <input type="date" min={minDate} max={maxDate} value={date} onChange={(e) => setDate(e.target.value)} className={inputCls} />
                     {prettyDate && <p className="mt-2 text-xs font-medium text-blue-600">{prettyDate}</p>}
                   </div>
                   <div>
-                    <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400"><Clock3 className="h-3.5 w-3.5" /> Time (GST)</label>
+                    <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400"><Clock3 className="h-3.5 w-3.5" /> {texts.timeLabel}</label>
                     <div className="mt-2 grid grid-cols-3 gap-2">
-                      {TIME_SLOTS.map((s) => (
-                        <button type="button" key={s} onClick={() => setSlot(s)} aria-pressed={slot === s} className={`rounded-xl px-2 py-2.5 text-xs font-semibold transition ${slot === s ? 'bg-slate-900 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>{s}</button>
+                      {slots.map((s) => (
+                        <button type="button" key={s.id} onClick={() => setSlot(s.label)} aria-pressed={slot === s.label} className={`rounded-xl px-2 py-2.5 text-xs font-semibold transition ${slot === s.label ? 'bg-slate-900 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>{s.label}</button>
                       ))}
-                      <span className="col-span-2 flex items-center rounded-xl bg-slate-50 px-3 text-[11px] font-medium text-slate-400 ring-1 ring-inset ring-slate-100">Dubai time (UTC+4)</span>
+                      <span className="col-span-2 flex items-center rounded-xl bg-slate-50 px-3 text-[11px] font-medium text-slate-400 ring-1 ring-inset ring-slate-100">{texts.tzNote}</span>
                     </div>
                   </div>
                 </div>
               </section>
 
               <section className="mt-8 border-t border-slate-100 pt-8">
-                <SectionHeader n={3} title="Your details" />
+                <SectionHeader n={3} title={texts.detailsTitle} />
                 <div className="mt-4 grid gap-5 sm:grid-cols-2">
-                  <div><label className="text-xs font-semibold uppercase tracking-wide text-slate-400">Your name *</label><input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputCls} placeholder="Full name" /></div>
-                  <div><label className="text-xs font-semibold uppercase tracking-wide text-slate-400">Email *</label><input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputCls} placeholder="you@company.com" /></div>
-                  <div><label className="text-xs font-semibold uppercase tracking-wide text-slate-400">Phone / WhatsApp</label><input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputCls} placeholder="+971 …" /></div>
-                  <div><label className="text-xs font-semibold uppercase tracking-wide text-slate-400">Company</label><input value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className={inputCls} placeholder="Company name" /></div>
+                  {fields.filter((f) => f.key !== 'notes').map((f) => (
+                    <div key={f.key}>
+                      <label className="text-xs font-semibold uppercase tracking-wide text-slate-400">{f.label}{f.required ? ' *' : ''}</label>
+                      <input
+                        type={f.key === 'email' ? 'email' : 'text'}
+                        value={val(f.key)}
+                        onChange={(e) => setVal(f.key, e.target.value)}
+                        className={inputCls}
+                        placeholder={f.placeholder}
+                      />
+                    </div>
+                  ))}
                 </div>
-                <div className="mt-5">
-                  <label className="text-xs font-semibold uppercase tracking-wide text-slate-400">Anything we should prepare? (optional)</label>
-                  <textarea rows={4} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className={inputCls} placeholder="A few lines about your project, goals or questions…" />
-                </div>
+                {fields.some((f) => f.key === 'notes') && (
+                  <div className="mt-5">
+                    {(() => { const nf = fields.find((f) => f.key === 'notes'); return (
+                      <>
+                        <label className="text-xs font-semibold uppercase tracking-wide text-slate-400">{nf.label}{nf.required ? ' *' : ''}</label>
+                        <textarea rows={4} value={val('notes')} onChange={(e) => setVal('notes', e.target.value)} className={inputCls} placeholder={nf.placeholder} />
+                      </>
+                    ); })()}
+                  </div>
+                )}
               </section>
 
               <div className="mt-8 border-t border-slate-100 pt-6">
                 <TurnstileWidget siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || ''} onVerify={setTurnstileToken} resetKey={turnstileResetKey} />
                 <button type="submit" disabled={sending} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-blue-600 px-8 py-3.5 font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60 sm:w-auto">
-                  {sending ? <Loader2 className="h-5 w-5 animate-spin" /> : <CalendarCheck2 className="h-5 w-5" />} Request this slot
+                  {sending ? <Loader2 className="h-5 w-5 animate-spin" /> : <CalendarCheck2 className="h-5 w-5" />} {texts.submitLabel}
                 </button>
-                <p className="mt-3 text-xs leading-relaxed text-slate-400">This sends a booking request — we confirm the exact time with you personally. Prefer email? <Link to="/Contact" className="font-semibold text-blue-600">Use the contact form</Link>.</p>
+                <p className="mt-3 text-xs leading-relaxed text-slate-400">{texts.underSubmit} <Link to="/Contact" className="font-semibold text-blue-600">{texts.underSubmitLinkLabel}</Link>.</p>
               </div>
             </form>
           </div>
