@@ -243,8 +243,8 @@ export default function HeroSection() {
       </div>
 
       <div className="relative mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
-        <div className="grid items-center gap-14 lg:grid-cols-[0.6fr_0.4fr]">
-          <div className="max-w-3xl">
+        <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="min-w-0 max-w-3xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -313,7 +313,7 @@ export default function HeroSection() {
           </motion.div>
           </div>
 
-          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="relative hidden lg:block">
+          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="relative hidden min-w-0 lg:block">
             <ProductStage t={t} />
           </motion.div>
         </div>
