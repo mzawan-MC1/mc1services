@@ -242,8 +242,8 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
       </div>
 
-      <div className="relative mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
-        <div className="grid items-center gap-14 lg:grid-cols-[0.4fr_0.6fr]">
+      <div className="relative mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
+        <div className="grid items-center gap-14 lg:grid-cols-[0.6fr_0.4fr]">
           <div className="max-w-3xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
